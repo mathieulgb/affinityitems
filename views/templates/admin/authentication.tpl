@@ -182,12 +182,12 @@ $(document).ready(function () {
 	<div class="ae-info-auth"> 
 		{l s='If you have any problems with your Affinity Items module, please access to the ' mod='affinityitems'} 
 		{if $lang=="fr"}
-			<a class="ae-email-color" href="http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/fr-home">{l s='documentation' mod='affinityitems'}</a>
-			/ <a class="ae-email-color" href="http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/fr-page-faq">{l s='FAQ' mod='affinityitems'}</a>
-			/ <a class="ae-email-color" href="http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/fr-page-installation">{l s='installation guide' mod='affinityitems'}</a>
+			<a class="ae-email-color" target="_blank" href="http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/fr-home">{l s='documentation' mod='affinityitems'}</a>
+			/ <a class="ae-email-color" target="_blank" href="http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/fr-page-faq">{l s='FAQ' mod='affinityitems'}</a>
+			/ <a class="ae-email-color" target="_blank" href="http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/fr-page-installation">{l s='installation guide' mod='affinityitems'}</a>
 		{else}
-			<a class="ae-email-color" href="http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/en-home">{l s='documentation' mod='affinityitems'}</a>
-			/ <a class="ae-email-color" href="http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/en-page-installation">{l s='installation guide' mod='affinityitems'}</a>
+			<a class="ae-email-color" target="_blank" href="http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/en-home">{l s='documentation' mod='affinityitems'}</a>
+			/ <a class="ae-email-color" target="_blank" href="http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/en-page-installation">{l s='installation guide' mod='affinityitems'}</a>
 		{/if}
 		<br />
 		{l s='We can install and configure the Affinity Items module for your website at no extra cost' mod='affinityitems'}
