@@ -160,7 +160,6 @@ $(document).ready(function () {
 	<div class="aealert" style="display:none;"></div>
 
 	<div class='aemodule-description'>
-
 		<div class='aemodule-text-content'>
 			<strong class='aewhite aemodule-text'>{l s='Improve your sales by up to 50%' mod='affinityitems'} <br> {l s='thanks to personalized recommendations.' mod='affinityitems'}</strong>
 			<br />
@@ -176,19 +175,36 @@ $(document).ready(function () {
 			<br /><br />
 			<a class="ae-link-color" href="#moreabout"><strong class='aemodule-text'>{l s='More about' mod='affinityitems'}</strong></a>
 		</div>
-
-			<object type="text/html" data="http://www.youtube.com/embed/AIEfj2UV-qU" width="400" height="236"></object>
-
+		<object type="text/html" data="http://www.youtube.com/embed/rxn3fHYNL3s" width="400" height="236"></object>
 		<div class='clear'></div>
+	</div>
 
+	<div class="ae-info-auth"> 
+		{l s='If you have any problems with your Affinity Items module, please access to the ' mod='affinityitems'} 
+		{if $lang=="fr"}
+			<a class="ae-email-color" href="http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/fr-home">{l s='documentation' mod='affinityitems'}</a>
+			/ <a class="ae-email-color" href="http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/fr-page-faq">{l s='FAQ' mod='affinityitems'}</a>
+			/ <a class="ae-email-color" href="http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/fr-page-installation">{l s='installation guide' mod='affinityitems'}</a>
+		{else}
+			<a class="ae-email-color" href="http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/en-home">{l s='documentation' mod='affinityitems'}</a>
+			/ <a class="ae-email-color" href="http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/en-page-installation">{l s='installation guide' mod='affinityitems'}</a>
+		{/if}
+		<br />
+		{l s='We can install and configure the Affinity Items module for your website at no extra cost' mod='affinityitems'}
+		<br>
+		{l s='Do not hesitate to contact us for any questions :' mod='affinityitems'}
+		<ul>
+			<li>{l s='The technical support at' mod='affinityitems'} <span class="ae-email-color">+33 9 54 52 85 12</span> {l s='or contact' mod='affinityitems'} <a class="ae-email-color" href="mailto:mathieu@affinity-engine.fr">mathieu@affinity-engine.fr</a></li>
+			<li>{l s='The commercial service at' mod='affinityitems'} <span class="ae-email-color">+33 9 80 47 24 83</span></li>
+		</ul>
 	</div>
 
 	<div class="aecontent">
 		<form class="aelogincontainer">
-		<div class='aeauth-description'>
-			<strong>{l s='Please register or login' mod='affinityitems'}<br />{l s='to launch the installation process' mod='affinityitems'}</strong>
-			<p>{l s='If you have already an account' mod='affinityitems'} <br /> {l s='your shop will automatically be associated with your account.' mod='affinityitems'}</p>
-		</div>
+			<div class='aeauth-description'>
+				<strong>{l s='Please register or login' mod='affinityitems'}<br />{l s='to launch the installation process' mod='affinityitems'}</strong>
+				<p>{l s='If you have already an account' mod='affinityitems'} <br /> {l s='your shop will automatically be associated with your account.' mod='affinityitems'}</p>
+			</div>
 			<span class='aetitle aepurple'>{l s='Already an account' mod='affinityitems'}</span>
 			<input type="text" class="aeinput" id="lemail" placeholder="{l s='Email' mod='affinityitems'}" />
 			<br>

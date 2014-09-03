@@ -28,6 +28,15 @@ $_MODULE['<{affinityitems}prestashop>authentication_64e9655f3225cb9552e7df2d21eb
 $_MODULE['<{affinityitems}prestashop>authentication_64ba6de398a3948d0f82e3b995fe2b3b'] = 'Et une offre d’essai gratuit pendant 1 mois.';
 $_MODULE['<{affinityitems}prestashop>authentication_f2bf0dd60d5fb4374171813138dfe98b'] = 'Ne prenez pas de risque : essayez !';
 $_MODULE['<{affinityitems}prestashop>authentication_49fa2426b7903b3d4c89e2c1874d9346'] = 'En savoir plus';
+$_MODULE['<{affinityitems}prestashop>authentication_d3c0865d5786134f125b8850f8e3e80e'] = 'Si vous rencontrez un problème avec le module Affinity Items, merci d\'accèder à la';
+$_MODULE['<{affinityitems}prestashop>authentication_55876228853abf632dec9346a4f372ec'] = 'documentation';
+$_MODULE['<{affinityitems}prestashop>authentication_1fe917b01f9a3f87fa2d7d3b7643fac1'] = 'FAQ';
+$_MODULE['<{affinityitems}prestashop>authentication_7917c6b5add6fd94b4b84af4d931004a'] = 'guide d\'installation';
+$_MODULE['<{affinityitems}prestashop>authentication_06838f7fb55bc25156359ce9142fa297'] = 'Nous pouvons installer et configurer le module Affinity Items pour votre site sans frais supplémentaire';
+$_MODULE['<{affinityitems}prestashop>authentication_f4b5efa7f344e80c64b0a80cf5808e8e'] = 'N\'hésitez pas à nous contacter aux coordonnées indiquées ci-dessous pour en discuter ou prendre rendez-vous.';
+$_MODULE['<{affinityitems}prestashop>authentication_489c5580365fd86687d8a35ea6f9e936'] = 'Le support technique au';
+$_MODULE['<{affinityitems}prestashop>authentication_3f132f3bfc4d05665168d4d019127bef'] = 'ou contacter';
+$_MODULE['<{affinityitems}prestashop>authentication_1ff6f5b1d3aac7ec6d3b1f7e5459d4ee'] = 'Le service commerciale au';
 $_MODULE['<{affinityitems}prestashop>authentication_b595033e5b1944ab0b8e7f613bd5f80f'] = 'Merci de vous inscrire / connecter';
 $_MODULE['<{affinityitems}prestashop>authentication_904be86c79f05d817900f38098a55c11'] = 'afin de lancer le processus d\'installation';
 $_MODULE['<{affinityitems}prestashop>authentication_062f3f5ae8644882a2da949705ced1ac'] = 'Si vous possédez déjà un compte,';
@@ -94,7 +103,6 @@ $_MODULE['<{affinityitems}prestashop>dashboard_63309e55464cc966fb74f767fb027e00'
 $_MODULE['<{affinityitems}prestashop>dashboard_16bc24aba7745ee3251aefe80cc871e5'] = 'et bénéficiez d’un accroissement notable de votre taux de transformation';
 $_MODULE['<{affinityitems}prestashop>dashboard_d004018aac10bf8c47373ce9efc4eab9'] = 'de votre panier moyen et de la fidélité des visiteurs.';
 $_MODULE['<{affinityitems}prestashop>dashboard_64e9655f3225cb9552e7df2d21eb13e8'] = 'Facile à installer, sans coûts fixes, sans engagement et hyper rentable.';
-$_MODULE['<{affinityitems}prestashop>dashboard_f334987533208c4cbb4dcb99ede9e08d'] = 'Essayer gratuitement pendant 1 mois';
 $_MODULE['<{affinityitems}prestashop>dashboard_f2bf0dd60d5fb4374171813138dfe98b'] = 'Ne prenez pas de risque : essayez !';
 $_MODULE['<{affinityitems}prestashop>dashboard_c33e404a441c6ba9648f88af3c68a1ca'] = 'Statistiques';
 $_MODULE['<{affinityitems}prestashop>dashboard_0cb10b43b6cbf7dfe9f6bcd11449653a'] = 'visiteurs avec';

@@ -921,3 +921,20 @@ ul#syncStep {
 	font-size: 20px;
 }
 
+.ae-info-auth {
+	font-weight: bold;
+	background-color: #fcf8e3;
+	border-color: #faebcc;
+	color: #8a6d3b;
+	padding-left: 35px;
+	line-height: 2.5;
+	margin-top: 20px;
+	-moz-border-radius: 10px;
+	list-style: initial;
+	border-radius: 5px;
+}
+
+.ae-info-auth ul {
+	list-style: initial;
+	padding-left: 40px;
+}
