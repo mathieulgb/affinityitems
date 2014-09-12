@@ -37,8 +37,7 @@ class Synchronize {
 				$pclass = new ReflectionClass($class);
 				if($pclass->isSubclassOf(new ReflectionClass('AbstractModuleSynchronize'))) {
 					$instance = new $class();
-					$order = $instance::ORDER;
-					$instances[$order] = $instance;
+					$instances[$pclass->getConstant('ORDER')] = $instance;
 				}
 			}
 			$this->launchSync($instances);

@@ -665,11 +665,9 @@ class AffinityItems extends Module {
 	public function getAuthentication()
 	{
 		$html = '';
-		$lang = Db::getInstance()->getValue('SELECT `iso_code` FROM `'._DB_PREFIX_.'lang` 
-			WHERE `id_lang` = \''.(int)$this->context->cookie->id_lang.'\'');
 		$this->context->smarty->assign(array(
 			'aetoken' => Configuration::get('AE_BACKOFFICE_TOKEN'),
-			'lang' => $lang,
+			'lang' => Context::getContext()->language->iso_code,
 			'ajaxController' => version_compare(_PS_VERSION_, '1.5', '>=') ? true : false,
 			'prestashopToken' => Tools::getAdminToken('AEAjax'.(int)Tab::getIdFromClassName('AEAjax').(int)$this->context->cookie->id_employee),
 			'activity' => AEAdapter::getActivity()
