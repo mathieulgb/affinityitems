@@ -47,7 +47,7 @@ class AffinityItems extends Module {
 	{
 		$this->name = 'affinityitems';
 		$this->tab = 'advertising_marketing';
-		$this->version = '1.0.1';
+		$this->version = '1.1.0';
 		$this->author = 'Affinity Engine';
 		parent::__construct();
 
@@ -77,7 +77,7 @@ class AffinityItems extends Module {
 		$this->displayName = $this->l('Affinity Items');
 		$this->description = $this->l('Improve your sales by 10 to 60% with a personalized merchandizing: offer the appropriate products to each visitor.');
 		$this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
-		$this->checkForUpdates();
+		//$this->checkForUpdates();
 	}
 
 
@@ -176,12 +176,15 @@ class AffinityItems extends Module {
 
 		if (parent::uninstall())
 		{
-			try {
-				$disable_request = new DisableRequest((bool)Configuration::get('AE_BREAK_CONTRACT'));
-				$disable_request->post();
-			} catch(Exception $e)
+			if (self::isConfig() && self::isLastSync())
 			{
-				AELogger::log('[INFO]', $e->getMessage());
+				try {
+					$disable_request = new DisableRequest((bool)Configuration::get('AE_BREAK_CONTRACT'));
+					$disable_request->post();
+				} catch(Exception $e)
+				{
+					AELogger::log('[INFO]', $e->getMessage());
+				}
 			}
 
 			foreach ($sql as $s)
@@ -265,21 +268,35 @@ class AffinityItems extends Module {
 	 *
 	*/
 
-	public function hookauthentication($params)
+
+	public function linkGuestToMember($member_id)
 	{
-		if ($this->aecookie->getCookie()->__isset('aeguest'))
+		if (self::isConfig() && self::isLastSync())
 		{
-			try {
-				$data = new stdClass();
-				$data->guestId = (String)$this->aecookie->getCookie()->__get('aeguest');
-				$data->memberId = (String)$params['cart']->id_customer;
-				$request = new LinkGuestToMemberRequest($data);
-				$request->post();
-			} catch(Exception $e)
+			if ($this->aecookie->getCookie()->__isset('aeguest') && !AELibrary::isEmpty($member_id))
 			{
-				AELogger::log('[ERROR]', $e->getMessage());
+				try {
+					$data = new stdClass();
+					$data->guestId = (String)$this->aecookie->getCookie()->__get('aeguest');
+					$data->memberId = (String)$member_id;
+					$request = new LinkGuestToMemberRequest($data);
+					$request->post();
+				} catch(Exception $e)
+				{
+					AELogger::log('[ERROR]', $e->getMessage());
+				}
 			}
 		}
+	}
+
+	public function hookcreateAccount($params)
+	{
+		$this->linkGuestToMember($params['newCustomer']->id);
+	}
+
+	public function hookauthentication($params)
+	{
+		$this->linkGuestToMember($params['cart']->id_customer);
 	}
 
 	/*
@@ -359,141 +376,40 @@ class AffinityItems extends Module {
 		return $products;
 	}
 
-	public function formatConfiguration($configuration, $hook_name)
+	public function formatConfiguration($configuration, $hook_name, $index)
 	{
 		$hook_configuration = new stdClass();
 		foreach ($configuration as $key => $value)
 		{
 			$k = str_replace($hook_name, '', $key);
-			$hook_configuration->{$k} = $value;
+			$j = preg_replace('/_'.$index.'+/i', '', $k);
+			$hook_configuration->{$j} = $value;
 		}
 		return $hook_configuration;
 	}
 
-	public function hookHome()
+	public function preg_match_count_object_key($pattern, $subject)
 	{
-		if (self::isConfig() && self::isLastSync() && (bool)Configuration::get('AE_RECOMMENDATION'))
+		$i = 0;
+		foreach ($subject as $key => $value)
 		{
-			$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_HOME'));
-			if ((bool)$hook_configuration->recoHome)
-			{
-				$aecontext = new stdClass();
-				$aecontext->context = 'recoAll';
-				$aecontext->area = 'HOME';
-				$aecontext->size = (int)$hook_configuration->recoSizeHome;
-				$products = $this->getRecommendation($aecontext, false);
-				$hook_configuration = $this->formatConfiguration($hook_configuration, 'Home');
-				if (!empty($products))
-				{
-					$this->smarty->assign(array(
-						'aeproducts' => $products,
-						'aeconfiguration' => $hook_configuration,
-						'size' => Image::getSize($hook_configuration->imgSize)));
-					return $this->display(__FILE__, '/views/templates/hook/'.Tools::substr(str_replace('.', '', _PS_VERSION_), 0, 2).'/hrecommendation.tpl');
-				}
-			}
+			if (preg_match($pattern, $key))
+				$i++;
 		}
+		return $i;
 	}
 
-	public function hookLeftColumn()
+	public static function splitBySemicolon($field)
 	{
-		if (self::isConfig() && self::isLastSync() && (bool)Configuration::get('AE_RECOMMENDATION'))
+		$response = array();
+		if ($exp = explode(';', $field))
 		{
-			$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_LEFT'));
-			if ((bool)$hook_configuration->recoLeft)
+			foreach ($exp as $expr)
 			{
-				$aecontext = new stdClass();
-				$aecontext->context = 'recoAll';
-				$aecontext->area = 'LEFT';
-				$aecontext->size = (int)$hook_configuration->recoSizeLeft;
-				$products = $this->getRecommendation($aecontext, false);
-				$hook_configuration = $this->formatConfiguration($hook_configuration, 'Left');
-				if (!empty($products))
-				{
-					$this->smarty->assign(array(
-						'aeproducts' => $products,
-						'aeconfiguration' => $hook_configuration,
-						'size' => Image::getSize($hook_configuration->imgSize)));
-					return $this->display(__FILE__, '/views/templates/hook/'.Tools::substr(str_replace('.', '', _PS_VERSION_), 0, 2).'/vrecommendation.tpl');
-				}
+				array_push($response, $expr);
 			}
 		}
-	}
-
-	public function hookRightColumn()
-	{
-		if (self::isConfig() && self::isLastSync() && (bool)Configuration::get('AE_RECOMMENDATION'))
-		{
-			$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_RIGHT'));
-			if ((bool)$hook_configuration->recoRight)
-			{
-				$aecontext = new stdClass();
-				$aecontext->context = 'recoAll';
-				$aecontext->area = 'RIGHT';
-				$aecontext->size = (int)$hook_configuration->recoSizeRight;
-				$products = $this->getRecommendation($aecontext, false);
-				$hook_configuration = $this->formatConfiguration($hook_configuration, 'Right');
-				if (!empty($products))
-				{
-					$this->smarty->assign(array(
-						'aeproducts' => $products,
-						'aeconfiguration' => $hook_configuration,
-						'size' => Image::getSize($hook_configuration->imgSize)));
-					return $this->display(__FILE__, '/views/templates/hook/'.Tools::substr(str_replace('.', '', _PS_VERSION_), 0, 2).'/vrecommendation.tpl');
-				}
-			}
-		}
-	}
-
-	public function hookProductFooter()
-	{
-		if (self::isConfig() && self::isLastSync() && (bool)Configuration::get('AE_RECOMMENDATION'))
-		{
-			$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_PRODUCT'));
-			if ((bool)$hook_configuration->recoProduct)
-			{
-				$aecontext = new stdClass();
-				$aecontext->context = 'recoSimilar';
-				$aecontext->size = (int)$hook_configuration->recoSizeProduct;
-				$aecontext->productId = (string)Tools::getValue('id_product');
-				$products = $this->getRecommendation($aecontext, true);
-				$hook_configuration = $this->formatConfiguration($hook_configuration, 'Product');
-				if (!empty($products))
-				{
-					$this->smarty->assign(array(
-						'aeproducts' => $products,
-						'aeconfiguration' => $hook_configuration,
-						'size' => Image::getSize($hook_configuration->imgSize)));
-					return $this->display(__FILE__, '/views/templates/hook/'.Tools::substr(str_replace('.', '', _PS_VERSION_), 0, 2).'/hrecommendation.tpl');
-				}
-			}
-		}
-	}
-
-
-	public function hookShoppingCart($params)
-	{
-		if (self::isConfig() && self::isLastSync() && (bool)Configuration::get('AE_RECOMMENDATION'))
-		{
-			$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_CART'));
-			if ((bool)$hook_configuration->recoCart)
-			{
-				$aecontext = new stdClass();
-				$aecontext->context = 'recoCart';
-				$aecontext->orderLines = $this->getCartOrderLines($params);
-				$aecontext->size = (int)$hook_configuration->recoSizeCart;
-				$products = $this->getRecommendation($aecontext, false);
-				$hook_configuration = $this->formatConfiguration($hook_configuration, 'Cart');
-				if (!empty($products))
-				{
-					$this->smarty->assign(array(
-						'aeproducts' => $products,
-						'aeconfiguration' => $hook_configuration,
-						'size' => Image::getSize($hook_configuration->imgSize)));
-					return $this->display(__FILE__, '/views/templates/hook/'.Tools::substr(str_replace('.', '', _PS_VERSION_), 0, 2).'/hrecommendation.tpl');
-				}
-			}
-		}
+		return $response;
 	}
 
 	public function getCartOrderLines($params)
@@ -519,56 +435,240 @@ class AffinityItems extends Module {
 		return $attribute_ids;
 	}
 
+	public function hookHome()
+	{
+		if (self::isConfig() && self::isLastSync() && (bool)Configuration::get('AE_RECOMMENDATION'))
+		{
+			$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_HOME'));
+			$recommendations = array();
+			for($i = 1; $i <= ($this->preg_match_count_object_key('/recoHome/i', $hook_configuration)); $i++)
+			{
+				$aecontext = new stdClass();
+				if ((bool)$hook_configuration->{'recoHome_'.$i})
+				{
+					$aecontext->context = $hook_configuration->{'recoTypeHome_'.$i};
+					if (AELibrary::equals($hook_configuration->{'recoTypeHome_'.$i}, 'recoAllFiltered'))
+					{
+						if (!AELibrary::equals($hook_configuration->{'recoFilterHome_'.$i}, 'onSale'))
+						{
+							$aecontext->{strtolower(preg_replace('/by/i', '', $hook_configuration->{'recoFilterHome_'.$i})).'Ids'} =
+							self::splitBySemicolon($hook_configuration->{strtolower(preg_replace('/by/i', '', $hook_configuration->{'recoFilterHome_'.$i})).'IdsHome_'.$i});
+						}
+						else
+							$aecontext->{$hook_configuration->{'recoFilterHome_'.$i}} = true;
+					}
+					$aecontext->area = 'HOME';
+					$aecontext->size = (int)$hook_configuration->{'recoSizeHome_'.$i};
+					$products = $this->getRecommendation($aecontext, false);
+					$theme = AEAdapter::getThemeById($hook_configuration->{'recoThemeHome_'.$i});
+					array_push($recommendations, array('aeproducts' => $products,
+						'theme' => unserialize($theme[0]['configuration']), 'configuration' => $hook_configuration, 'titleZone' => $hook_configuration->{'recoTitleHome_'.$i}));
+				}
+			}
+			if (!empty($recommendations))
+			{
+				$this->smarty->assign(array('recommendations' => $recommendations));
+				return $this->display(__FILE__, '/views/templates/hook/'.Tools::substr(str_replace('.', '', _PS_VERSION_), 0, 2).'/hrecommendation.tpl');
+			}
+		}
+	}
+
+	public function hookLeftColumn()
+	{
+		if (self::isConfig() && self::isLastSync() && (bool)Configuration::get('AE_RECOMMENDATION'))
+		{
+			$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_LEFT'));
+			$recommendations = array();
+			for($i = 1; $i <= ($this->preg_match_count_object_key('/recoLeft/i', $hook_configuration)); $i++)
+			{
+				$aecontext = new stdClass();
+				if ((bool)$hook_configuration->{'recoLeft_'.$i})
+				{
+					$aecontext->context = $hook_configuration->{'recoTypeLeft_'.$i};
+					if (AELibrary::equals($hook_configuration->{'recoTypeLeft_'.$i}, 'recoAllFiltered'))
+					{
+						if (!AELibrary::equals($hook_configuration->{'recoFilterLeft_'.$i}, 'onSale'))
+						{
+							$aecontext->{strtolower(preg_replace('/by/i', '', $hook_configuration->{'recoFilterLeft_'.$i})).'Ids'} =
+							self::splitBySemicolon($hook_configuration->{strtolower(preg_replace('/by/i', '', $hook_configuration->{'recoFilterLeft_'.$i})).'IdsLeft_'.$i});
+						}
+						else
+							$aecontext->{$hook_configuration->{'recoFilterLeft_'.$i}} = true;
+					}
+
+					$aecontext->area = 'LEFT';
+					$aecontext->size = (int)$hook_configuration->{'recoSizeLeft_'.$i};
+					$products = $this->getRecommendation($aecontext, false);
+					$theme = AEAdapter::getThemeById($hook_configuration->{'recoThemeLeft_'.$i});
+					array_push($recommendations, array('aeproducts' => $products,
+						'theme' => unserialize($theme[0]['configuration']), 'configuration' => $hook_configuration, 'titleZone' => $hook_configuration->{'recoTitleLeft_'.$i}));
+				}
+			}
+			if (!empty($recommendations))
+			{
+				$this->smarty->assign(array('recommendations' => $recommendations));
+				return $this->display(__FILE__, '/views/templates/hook/'.Tools::substr(str_replace('.', '', _PS_VERSION_), 0, 2).'/vrecommendation.tpl');
+			}
+		}
+	}
+
+	public function hookRightColumn()
+	{
+		if (self::isConfig() && self::isLastSync() && (bool)Configuration::get('AE_RECOMMENDATION'))
+		{
+			$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_RIGHT'));
+			$recommendations = array();
+			for($i = 1; $i <= ($this->preg_match_count_object_key('/recoRight/i', $hook_configuration)); $i++)
+			{
+				$aecontext = new stdClass();
+				if ((bool)$hook_configuration->{'recoRight_'.$i})
+				{
+					$aecontext->context = $hook_configuration->{'recoTypeRight_'.$i};
+
+					if (AELibrary::equals($hook_configuration->{'recoTypeRight_'.$i}, 'recoAllFiltered'))
+					{
+						if (!AELibrary::equals($hook_configuration->{'recoFilterRight_'.$i}, 'onSale'))
+						{
+							$aecontext->{strtolower(preg_replace('/by/i', '', $hook_configuration->{'recoFilterRight_'.$i})).'Ids'} =
+							self::splitBySemicolon($hook_configuration->{strtolower(preg_replace('/by/i', '', $hook_configuration->{'recoFilterRight_'.$i})).'IdsRight_'.$i});
+						}
+						else
+							$aecontext->{$hook_configuration->{'recoFilterRight_'.$i}} = true;
+					}
+
+					$aecontext->area = 'RIGHT';
+					$aecontext->size = (int)$hook_configuration->{'recoSizeRight_'.$i};
+					$products = $this->getRecommendation($aecontext, false);
+					$theme = AEAdapter::getThemeById($hook_configuration->{'recoThemeRight_'.$i});
+					array_push($recommendations, array('aeproducts' => $products,
+						'theme' => unserialize($theme[0]['configuration']), 'configuration' => $hook_configuration, 'titleZone' => $hook_configuration->{'recoTitleRight_'.$i}));
+				}
+			}
+			if (!empty($recommendations))
+			{
+				$this->smarty->assign(array('recommendations' => $recommendations));
+				return $this->display(__FILE__, '/views/templates/hook/'.Tools::substr(str_replace('.', '', _PS_VERSION_), 0, 2).'/vrecommendation.tpl');
+			}
+		}
+	}
+
+	public function hookProductFooter()
+	{
+		if (self::isConfig() && self::isLastSync() && (bool)Configuration::get('AE_RECOMMENDATION'))
+		{
+			$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_PRODUCT'));
+			$recommendations = array();
+			for($i = 1; $i <= ($this->preg_match_count_object_key('/recoProduct/i', $hook_configuration)); $i++)
+			{
+				$aecontext = new stdClass();
+				if ((bool)$hook_configuration->{'recoProduct_'.$i})
+				{
+					$aecontext->context = $hook_configuration->{'recoTypeProduct_'.$i};
+					$aecontext->area = 'PRODUCT';
+					$aecontext->size = (int)$hook_configuration->{'recoSizeProduct_'.$i};
+					$aecontext->productId = (string)Tools::getValue('id_product');
+					$products = $this->getRecommendation($aecontext, false);
+					$theme = AEAdapter::getThemeById($hook_configuration->{'recoThemeProduct_'.$i});
+					array_push($recommendations, array('aeproducts' => $products,
+						'theme' => unserialize($theme[0]['configuration']), 'configuration' => $hook_configuration, 'titleZone' => $hook_configuration->{'recoTitleProduct_'.$i}));
+				}
+			}
+			if (!empty($recommendations))
+			{
+				$this->smarty->assign(array('recommendations' => $recommendations));
+				return $this->display(__FILE__, '/views/templates/hook/'.Tools::substr(str_replace('.', '', _PS_VERSION_), 0, 2).'/hrecommendation.tpl');
+			}
+		}
+	}
+
+
+	public function hookShoppingCart($params)
+	{
+		if (self::isConfig() && self::isLastSync() && (bool)Configuration::get('AE_RECOMMENDATION'))
+		{
+			$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_CART'));
+			$recommendations = array();
+			for($i = 1; $i <= ($this->preg_match_count_object_key('/recoCart/i', $hook_configuration)); $i++)
+			{
+				$aecontext = new stdClass();
+				if ((bool)$hook_configuration->{'recoCart_'.$i})
+				{
+					$aecontext->context = 'recoCart';
+					$aecontext->size = (int)$hook_configuration->{'recoSizeCart_'.$i};
+					$aecontext->orderLines = $this->getCartOrderLines($params);
+					$products = $this->getRecommendation($aecontext, false);
+					$theme = AEAdapter::getThemeById($hook_configuration->{'recoThemeCart_'.$i});
+					array_push($recommendations, array('aeproducts' => $products,
+						'theme' => unserialize($theme[0]['configuration']), 'configuration' => $hook_configuration, 'titleZone' => $hook_configuration->{'recoTitleCart_'.$i}));
+				}
+			}
+			if (!empty($recommendations))
+			{
+				$this->smarty->assign(array('recommendations' => $recommendations));
+				return $this->display(__FILE__, '/views/templates/hook/'.Tools::substr(str_replace('.', '', _PS_VERSION_), 0, 2).'/hrecommendation.tpl');
+			}
+		}
+	}
+
 	public function renderCategory($category_id)
 	{
-		$render = '';
+		$render = array();
 		if (self::isConfig() && self::isLastSync() && (bool)Configuration::get('AE_RECOMMENDATION'))
 		{
 			$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_CATEGORY'));
-			if ((bool)$hook_configuration->recoCategory)
+			for($i = 1; $i <= ($this->preg_match_count_object_key('/recoCategory/i', $hook_configuration)); $i++)
 			{
+				$recommendations = array();
 				$aecontext = new stdClass();
-				$aecontext->context = 'recoCategory';
-				$aecontext->categoryId = $category_id;
-				$aecontext->size = (int)$hook_configuration->recoSizeCategory;
-				$products = $this->getRecommendation($aecontext, false);
-				$hook_configuration = $this->formatConfiguration($hook_configuration, 'Category');
-				if (!empty($products))
+				if ((bool)$hook_configuration->{'recoCategory_'.$i})
 				{
-					$this->smarty->assign(array(
-						'aeproducts' => $products,
-						'aeconfiguration' => $hook_configuration,
-						'size' => Image::getSize($hook_configuration->imgSize)));
-					$render = $this->display(__FILE__, '/views/templates/hook/'.Tools::substr(str_replace('.', '', _PS_VERSION_), 0, 2).'/srecommendation.tpl');
+					$aecontext->context = 'recoCategory';
+					$aecontext->categoryId = $category_id;
+					$aecontext->size = (int)$hook_configuration->{'recoSizeCategory_'.$i};
+					$products = $this->getRecommendation($aecontext, false);
+					$theme = AEAdapter::getThemeById($hook_configuration->{'recoThemeCategory_'.$i});
+					array_push($recommendations, array('aeproducts' => $products,
+						'theme' => unserialize($theme[0]['configuration']), 'configuration' => $hook_configuration, 'titleZone' => $hook_configuration->{'recoTitleCategory_'.$i}));
+				}
+				if (!empty($recommendations))
+				{
+					$this->smarty->assign(array('recommendations' => $recommendations));
+					$render[] = $this->display(__FILE__, '/views/templates/hook/'.Tools::substr(str_replace('.', '', _PS_VERSION_), 0, 2).'/srecommendation.tpl');
 				}
 			}
+
 		}
+
 		return $render;
 	}
 
 	public function renderSearch($expr)
 	{
-		$render = '';
+		$render = array();
 		if (self::isConfig() && self::isLastSync() && (bool)Configuration::get('AE_RECOMMENDATION'))
 		{
 			$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_SEARCH'));
-			if ((bool)$hook_configuration->recoSearch)
+			for($i = 1; $i <= ($this->preg_match_count_object_key('/recoSearch/i', $hook_configuration)); $i++)
 			{
+				$recommendations = array();
 				$aecontext = new stdClass();
-				$aecontext->context = 'recoSearch';
-				$aecontext->keywords = $expr;
-				$aecontext->size = (int)$hook_configuration->recoSizeSearch;
-				$products = $this->getRecommendation($aecontext, false);
-				$hook_configuration = $this->formatConfiguration($hook_configuration, 'Search');
-				if (!empty($products))
+				if ((bool)$hook_configuration->{'recoSearch_'.$i})
 				{
-					$this->smarty->assign(array(
-						'aeproducts' => $products,
-						'aeconfiguration' => $hook_configuration,
-						'size' => Image::getSize($hook_configuration->imgSize)));
-					$render = $this->display(__FILE__, '/views/templates/hook/'.Tools::substr(str_replace('.', '', _PS_VERSION_), 0, 2).'/srecommendation.tpl');
+					$aecontext->context = 'recoSearch';
+					$aecontext->keywords = $expr;
+					$aecontext->size = (int)$hook_configuration->{'recoSizeSearch_'.$i};
+					$products = $this->getRecommendation($aecontext, false);
+					$theme = AEAdapter::getThemeById($hook_configuration->{'recoThemeSearch_'.$i});
+					array_push($recommendations, array('aeproducts' => $products,
+						'theme' => unserialize($theme[0]['configuration']), 'configuration' => $hook_configuration, 'titleZone' => $hook_configuration->{'recoTitleSearch_'.$i}));
+				}
+				if (!empty($recommendations))
+				{
+					$this->smarty->assign(array('recommendations' => $recommendations));
+					$render[] = $this->display(__FILE__, '/views/templates/hook/'.Tools::substr(str_replace('.', '', _PS_VERSION_), 0, 2).'/srecommendation.tpl');
 				}
 			}
+
 		}
 		return $render;
 	}
@@ -595,23 +695,25 @@ class AffinityItems extends Module {
 		$html = '';
 		if (_PS_VERSION_ < '1.5')
 		{
+			$html .= "<link rel='stylesheet' type='text/css' href='".($this->_path)."resources/css/".Tools::substr(str_replace('.', '', _PS_VERSION_), 0, 2)."/aefront.css' />";
 			$html .= "<link rel='stylesheet' type='text/css' href='".($this->_path)."resources/css/main.css' />";
-			$html .= "<link rel='stylesheet' type='text/css' href='".($this->_path)."resources/css/14/aebackoffice.css' />";
-			$html .= "<link rel='stylesheet' type='text/css' href='".($this->_path)."resources/css/ui.all.css' />";
+			$html .= "<link rel='stylesheet' type='text/css' href='".($this->_path)."resources/css/font-awesome.min.css' />";
 			$html .= "<link rel='stylesheet' type='text/css' href='".($this->_path)."resources/css/jquery.nouislider.css' />";
 			$html .= "<link rel='stylesheet' type='text/css' href='".($this->_path)."resources/css/jquery.powertip.min.css' />";
-			$html .= "<script type='text/javascript' src='".($this->_path)."resources/js/ui.core.min.js'></script>";
+			$html .= "<link rel='stylesheet' type='text/css' href='".($this->_path)."resources/css/introjs.min.css' />";
+			$html .= "<script type='text/javascript' src='".($this->_path)."resources/js/intro.min.js'></script>";
 			$html .= "<script type='text/javascript' src='".($this->_path)."resources/js/jquery.nouislider.min.js'></script>";
 			$html .= "<script type='text/javascript' src='".($this->_path)."resources/js/jquery.powertip.min.js'></script>";
 		}
 		else
 		{
+			$this->context->controller->addCSS(($this->_path).'resources/css/'.Tools::substr(str_replace('.', '', _PS_VERSION_), 0, 2).'/aefront.css', 'all');
 			$this->context->controller->addCSS(($this->_path).'resources/css/main.css', 'all');
-			$this->context->controller->addCSS(($this->_path).'resources/css/'.Tools::substr(str_replace('.', '', _PS_VERSION_), 0, 2).'/aebackoffice.css', 'all');
-			$this->context->controller->addCSS(($this->_path).'resources/css/ui.all.css', 'all');
+			$this->context->controller->addCSS(($this->_path).'resources/css/font-awesome.min.css', 'all');
 			$this->context->controller->addCSS(($this->_path).'resources/css/jquery.nouislider.css', 'all');
 			$this->context->controller->addCSS(($this->_path).'resources/css/jquery.powertip.min.css', 'all');
-			$this->context->controller->addJS(($this->_path).'resources/js/ui.core.min.js');
+			$this->context->controller->addCSS(($this->_path).'resources/css/introjs.min.css', 'all');
+			$this->context->controller->addJS(($this->_path).'resources/js/intro.min.js');
 			$this->context->controller->addJS(($this->_path).'resources/js/jquery.nouislider.min.js');
 			$this->context->controller->addJS(($this->_path).'resources/js/jquery.powertip.min.js');
 		}
@@ -624,12 +726,26 @@ class AffinityItems extends Module {
 	public function getDashboard()
 	{
 		$html = '';
+
+		AEAdapter::getActiveLanguageIds();
+
 		if ($this->postProcess())
 			$html .= Module::displayConfirmation($this->l('Settings updated.'));
 
-		$configuration = array();
 		$site_request = new SiteRequest(array());
 		$data = $site_request->get();
+		$protocol_link = (Configuration::get('PS_SSL_ENABLED') || Tools::usingSecureMode()) ? 'https://' : 'http://';
+		$use_s_s_l = ((isset($this->ssl) && $this->ssl && Configuration::get('PS_SSL_ENABLED')) || Tools::usingSecureMode()) ? true : false;
+		$protocol_content = ($use_s_s_l) ? 'https://' : 'http://';
+
+		if (_PS_VERSION_ >= '1.5')
+			$theme_id = Tools::getValue('id_theme') ? Tools::getValue('id_theme') : AEAdapter::getLastCreatedTheme();
+		else
+			$theme_id = Tools::getValue('id_theme') ? Tools::getValue('id_theme') : 1;
+
+		$theme = AEAdapter::getThemeById($theme_id);
+		$theme_selected = array('themeId' => $theme_id, 'themeConfiguration' => unserialize($theme[0]['configuration']));
+		$theme_list = AEAdapter::getThemeList();
 
 		foreach (self::$hook_list as $hook)
 		{
@@ -638,80 +754,107 @@ class AffinityItems extends Module {
 		}
 
 		$this->context->smarty->assign(array(
+			'version' => Tools::substr(str_replace('.', '', _PS_VERSION_), 0, 2),
 			'baseUrl' =>  version_compare(_PS_VERSION_, '1.5', '>=') ? $this->context->shop->getBaseURL() : __PS_BASE_URI__,
 			'siteId' =>Configuration::get('AE_SITE_ID'),
 			'aetoken' => Configuration::get('AE_BACKOFFICE_TOKEN'),
 			'data' => $data,
 			'statistics' => isset($data->statistics) ? Tools::jsonDecode($data->statistics) : array(),
 			'notifications' => $this->getNotification($data),
-			'localHosts' => unserialize(Configuration::get('AE_HOST_LIST')),
 			'abtestingPercentage' => Configuration::get('AE_A_TESTING'),
 			'recommendation' => Configuration::get('AE_RECOMMENDATION'),
+			'recommendations' => array(array('aeproducts' => AEAdapter::renderPreviewRecommendation(), 'theme' => $theme_selected['themeConfiguration'])),
+			'link' => new Link($protocol_link, $protocol_content),
+			'priceDisplay' => Product::getTaxCalculationMethod((int)$this->context->cookie->id_customer),
+			'PS_CATALOG_MODE' => (bool)Configuration::get('PS_CATALOG_MODE'),
 			'blacklist' => unserialize(Configuration::get('AE_AB_TESTING_BLACKLIST')),
 			'breakContract' => Configuration::get('AE_BREAK_CONTRACT'),
 			'syncDiff' => Configuration::get('AE_SYNC_DIFF'),
 			'logs' => AELogger::getLog(),
 			'hookList' => self::$hook_list,
-			'configuration' => $configuration,
+			'themeList' => $theme_list,
+			'themeSelected' => $theme_selected,
 			'ajaxController' => version_compare(_PS_VERSION_, '1.5', '>=') ? true : false,
 			'prestashopToken' => Tools::getAdminToken('AEAjax'.(int)Tab::getIdFromClassName('AEAjax').(int)$this->context->cookie->id_employee),
+			'configuration' => $configuration,
+			'additionalCss' => Configuration::get('AE_ADDITIONAL_CSS'),
 			'imgSizeList' => $this->getImageSize()
 			));
 
-		$html .= $this->display(($this->_path), '/views/templates/admin/dashboard.tpl');
-		return $html;
-	}
+$html .= $this->display(($this->_path), '/views/templates/admin/dashboard.tpl');
+return $html;
+}
 
-	public function getAuthentication()
-	{
-		$html = '';
-		$this->context->smarty->assign(array(
-			'aetoken' => Configuration::get('AE_BACKOFFICE_TOKEN'),
-			'lang' => Context::getContext()->language->iso_code,
-			'ajaxController' => version_compare(_PS_VERSION_, '1.5', '>=') ? true : false,
-			'prestashopToken' => Tools::getAdminToken('AEAjax'.(int)Tab::getIdFromClassName('AEAjax').(int)$this->context->cookie->id_employee),
-			'activity' => AEAdapter::getActivity()
+public function getAuthentication()
+{
+	$html = '';
+	$this->context->smarty->assign(array(
+		'aetoken' => Configuration::get('AE_BACKOFFICE_TOKEN'),
+		'employee' => AEAdapter::getEmployeesByProfile($this->context->cookie->id_employee),
+		'lang' => Context::getContext()->language->iso_code,
+		'ajaxController' => version_compare(_PS_VERSION_, '1.5', '>=') ? true : false,
+		'prestashopToken' => Tools::getAdminToken('AEAjax'.(int)Tab::getIdFromClassName('AEAjax').(int)$this->context->cookie->id_employee),
+		'activity' => AEAdapter::getActivity()
 		));
-		$html .= $this->display(($this->_path), '/views/templates/admin/authentication.tpl');
-		return $html;
-	}
+	$html .= $this->display(($this->_path), '/views/templates/admin/authentication.tpl');
+	return $html;
+}
 
-	public function postProcess()
+public function postProcess()
+{
+	if (Tools::isSubmit('configZoneReco'))
 	{
-		if (Tools::isSubmit('configuration'))
+		$configuration = new stdClass();
+		foreach (self::$hook_list as $hook)
 		{
-			Configuration::updateValue('AE_RECOMMENDATION', Tools::getValue('recommendation') ? 1 : 0);
-			$configuration = new stdClass();
-			foreach (self::$hook_list as $hook)
+			$object = new stdClass();
+			foreach ($_POST as $key => $value)
 			{
-				$object = new stdClass();
-				foreach ($_POST as $key => $value)
-				{
-					if (preg_match( '/'.$hook.'/i', $key))
-						$object->{$key} = $value;
-				}
-				$object->area = Tools::strtolower($hook);
-				$configuration->{$hook} = $object;
+				if (preg_match( '/'.$hook.'/i', $key))
+					$object->{$key} = $value;
 			}
-			foreach ($configuration as $key => $value)
-			{
-				try {
-					Configuration::updateValue('AE_CONFIGURATION_'.Tools::strtoupper($key), serialize($value));
-				} catch(Exception $e)
-				{
-					error_log($e);
-				}
-			}
-			return true;
+			$object->area = Tools::strtolower($hook);
+			$configuration->{$hook} = $object;
 		}
-		else if (Tools::isSubmit('syncDiff') && Tools::isSubmit('blacklist'))
+		foreach ($configuration as $key => $value)
 		{
-			Configuration::updateValue('AE_SYNC_DIFF', Tools::getValue('syncDiff'));
-			Tools::getValue('breakContract') ? Configuration::updateValue('AE_BREAK_CONTRACT', 1) : Configuration::updateValue('AE_BREAK_CONTRACT', 0);
-			self::setBlackList(Tools::safeOutput(Tools::getValue('blacklist')));
-			return true;
+			try {
+				Configuration::updateValue('AE_CONFIGURATION_'.Tools::strtoupper($key), serialize($value));
+			} catch(Exception $e)
+			{
+				error_log($e);
+			}
 		}
 	}
+	else if (Tools::isSubmit('themeId'))
+	{
+		$configuration = array();
+		foreach ($_POST as $key => $value)
+		{
+			if (preg_match('/background|title|product|picture|price|cart|detail/i', $key))
+			{
+				$configuration[$key] = $value;
+			}
+		}
+
+		if (!AELibrary::isEmpty(Tools::getValue('themeName')))
+			AEAdapter::insertTheme(Tools::getValue('themeName'), serialize($configuration));
+		else
+			AEAdapter::updateTheme(Tools::getValue('themeId'), serialize($configuration));
+		return true;
+	}
+	else if (Tools::isSubmit('syncDiff') && Tools::isSubmit('blacklist'))
+	{
+		Configuration::updateValue('AE_SYNC_DIFF', Tools::getValue('syncDiff'));
+		Tools::getValue('breakContract') ? Configuration::updateValue('AE_BREAK_CONTRACT', 1) : Configuration::updateValue('AE_BREAK_CONTRACT', 0);
+		self::setBlackList(Tools::safeOutput(Tools::getValue('blacklist')));
+		return true;
+	}
+	else if (Tools::isSubmit('additionalCss'))
+	{
+		Configuration::updateValue('AE_ADDITIONAL_CSS', Tools::getValue('additionalCss'));
+	}
+}
 
 	/*
 	 *
@@ -732,6 +875,7 @@ class AffinityItems extends Module {
 		if (!$this->getPerson() instanceof stdClass)
 		{
 			$this->smarty->assign(array(
+				'additionalCss' => Configuration::get('AE_ADDITIONAL_CSS'),
 				'abtesting' => $this->getPerson()->getGroup(),
 				'renderCategory' => isset($render_category) ? $render_category : '',
 				'renderSearch' => isset($render_search) ? $render_search : '',
@@ -821,14 +965,14 @@ class AffinityItems extends Module {
 	private function checkForUpdates()
 	{
 		if (version_compare(_PS_VERSION_, '1.5', '<') && self::isInstalled($this->name))
-			foreach (array('1.0.0', '1.0.1') as $version)
+			foreach (array('1.1.0') as $version)
 			{
-				$file = dirname(__FILE__).'/upgrade/install-'.$version.'.php';
-				if (Configuration::get('AE_VERSION') < $version && file_exists($file))
-				{
-					include_once($file);
-					call_user_func('upgrade_module_'.str_replace('.', '_', $version), $this);
-				}
+				$file = dirname(__FILE__).'/upgrade/Upgrade-'.$version.'.php';
+				//if (Configuration::get('AE_VERSION') < $version && file_exists($file))
+				//{
+				include_once($file);
+				call_user_func('upgrade_module_'.str_replace('.', '_', $version), $this);
+				//}
 			}
 	}
 

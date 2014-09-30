@@ -18,6 +18,7 @@
 
 $hook_list = array(
 	'header',
+	'createAccount',
 	'backOfficeHeader',
 	'addproduct',
 	'updateproduct',

@@ -64,7 +64,7 @@ class Recommendation {
 		$person->syncAction();
 		$this->aecontext->person = $person;
 		$request = new RecommendationRequest($this->aecontext);
-		
+
 		if(is_object($productPool = $request->post())) {
 			$productPool = $productPool->recommend;
 		} else {
@@ -75,6 +75,10 @@ class Recommendation {
 
 		$select = AEAdapter::getRecommendationSelect();
 		$tax = AEAdapter::getRecommendationTax();
+
+		if(AELibrary::equals($this->aecontext->context, "recoLastSeen")) {
+			$productPool = array_slice(array_reverse(unserialize(AECookie::getInstance()->getCookie()->__get('recoLastSeen'))), 0, $this->aecontext->size);
+		}
 
 		if(!empty($productPool) && $this->render) {
 			$products = AEAdapter::renderRecommendation($select, $tax, $productPool, $this->langId);

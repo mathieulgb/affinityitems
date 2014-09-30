@@ -99,12 +99,14 @@ class AEAdapter {
 
 	public static function getCategoryFeatures($category_id)
 	{
+		$active_lang = !AELibrary::isEmpty(self::getActiveLanguageIds()) ? 'AND l.id_lang IN ('.self::getActiveLanguageIds().')' : '';
 		return Db::getInstance()->ExecuteS(
 			'SELECT DISTINCT c.id_parent, l.iso_code, cl.name, cl.description
 			FROM '._DB_PREFIX_.'category_group cg, '._DB_PREFIX_.'category c, '._DB_PREFIX_.'category_lang cl, '._DB_PREFIX_.'lang l
 			WHERE c.id_category = cg.id_category
 			AND cl.id_lang = l.id_lang
 			AND c.id_category = cl.id_category
+			'.$active_lang.'
 			AND c.id_category = '.(int)$category_id);
 	}
 
@@ -205,13 +207,15 @@ class AEAdapter {
 
 	public static function getProductsLocalizations($product_id)
 	{
+		$active_lang = !AELibrary::isEmpty(self::getActiveLanguageIds()) ? 'AND l.id_lang IN ('.self::getActiveLanguageIds().')' : '';
 		return Db::getInstance()->executeS('SELECT l.iso_code, pl.description, pl.description_short, pl.name, m.name as mname, s.name as sname
 			FROM  `'._DB_PREFIX_.'product` p
 			LEFT JOIN `'._DB_PREFIX_.'product_lang` pl ON pl.id_product = p.id_product
 			LEFT JOIN `'._DB_PREFIX_.'lang` l ON l.id_lang = pl.id_lang
 			LEFT JOIN `'._DB_PREFIX_.'manufacturer` m ON p.id_manufacturer = m.id_manufacturer
 			LEFT JOIN `'._DB_PREFIX_.'supplier` s ON p.id_supplier = s.id_supplier
-			WHERE p.id_product = '.intval($product_id).';');
+			WHERE p.id_product = '.intval($product_id).'
+			'.$active_lang.';');
 	}
 
 	public static function getProductCategories($product_id)
@@ -594,6 +598,77 @@ class AEAdapter {
 		return $products;
 	}
 
+	public static function renderPreviewRecommendation()
+	{
+		$product_number = version_compare(_PS_VERSION_, '1.6', '>=') ? 1 : 4;
+		$products = Db::getInstance()->ExecuteS('
+			'.self::getRecommendationSelect().'
+			FROM '._DB_PREFIX_.'product p
+			LEFT JOIN '._DB_PREFIX_.'product_lang pl ON (pl.id_product = p.id_product)
+			LEFT JOIN '._DB_PREFIX_.'product_attribute pa ON (p.id_product = pa.id_product AND default_on = 1)
+			LEFT JOIN '._DB_PREFIX_.'manufacturer m ON m.id_manufacturer = p.id_manufacturer
+			LEFT JOIN '._DB_PREFIX_.'image i ON (i.id_product = p.id_product AND i.cover = 1)
+			LEFT JOIN '._DB_PREFIX_.'image_lang il ON (il.id_image = i.id_image)
+			LEFT JOIN '._DB_PREFIX_.'category_lang cl ON (cl.id_category = p.id_category_default)
+			'.self::getRecommendationTax().'
+			WHERE pl.id_lang = 1
+			AND cl.id_lang = 1
+			AND p.active = 1
+			GROUP BY p.id_product
+			LIMIT 0,'.$product_number.'');
+
+		$products = Product::getProductsProperties(1, $products);
+
+		return $products;
+	}
+
+
+	public static function getEmployeesByProfile($id_employee)
+	{
+		if (version_compare(_PS_VERSION_, '1.5', '>='))
+		{
+			return EmployeeCore::getEmployeesByProfile((int)$id_employee);
+		}
+		else
+		{
+			return Db::getInstance()->executeS('
+				SELECT *
+				FROM `'._DB_PREFIX_.'employee`
+				WHERE `id_profile` = '.(int)$id_employee);
+		}
+	}
+
+	public static function insertTheme($name, $configuration)
+	{
+		Db::getInstance()->execute('INSERT INTO `'._DB_PREFIX_.'ae_theme` VALUES(\'\', \''.$name.'\', \''.$configuration.'\');');
+	}
+
+	public static function updateTheme($theme_id, $configuration)
+	{
+		Db::getInstance()->execute('UPDATE `'._DB_PREFIX_.'ae_theme` SET configuration = \''.$configuration.'\' WHERE id_theme = '.$theme_id.';');
+	}
+
+	public static function getThemeList()
+	{
+		return Db::getInstance()->executeS('SELECT DISTINCT id_theme, name, configuration
+			FROM `'._DB_PREFIX_.'ae_theme`;');
+	}
+
+	public static function getThemeById($theme_id)
+	{
+		return Db::getInstance()->executeS('SELECT DISTINCT id_theme, name, configuration
+			FROM `'._DB_PREFIX_.'ae_theme`
+			WHERE id_theme = '.$theme_id.';');
+	}
+
+
+	public static function getLastCreatedTheme()
+	{
+		return Db::getInstance()->getValue('SELECT DISTINCT MAX(id_theme) as id_theme
+			FROM `'._DB_PREFIX_.'ae_theme`;');
+	}
+
+
 	public static function insertNotification($notification)
 	{
 		Db::getInstance()->execute('INSERT INTO `'._DB_PREFIX_.'ae_notification`
@@ -632,6 +707,15 @@ class AEAdapter {
 		$multishop = (Context::getContext()->shop->isFeatureActive()) ? Shop::getContextShopID(true) : 1;
 		return Db::getInstance()->ExecuteS('SELECT * FROM '._DB_PREFIX_.'ae_log WHERE id_shop = '.intval($multishop).'
 			ORDER BY date_add DESC LIMIT 0, 500');
+	}
+
+	public static function getActiveLanguageIds()
+	{
+		$ids = array();
+		$languages = Language::getLanguages();
+		foreach ($languages as $key => $language)
+			array_push($ids, $language['id_lang']);
+		return implode(",", $ids);
 	}
 
 	public static function getHost()
@@ -750,6 +834,16 @@ class AEAdapter {
 	public static function getBackOfficeToken()
 	{
 		return Configuration::get('AE_BACKOFFICE_TOKEN');
+	}
+
+	public static function getActiveRecommendation()
+	{
+		return Configuration::get('AE_RECOMMENDATION');
+	}
+
+	public static function setActiveRecommendation($active)
+	{
+		Configuration::updateValue('AE_RECOMMENDATION', $active);
 	}
 
 	public static function isConfig()

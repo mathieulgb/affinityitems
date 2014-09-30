@@ -38,8 +38,8 @@ class AEAjaxController extends ModuleAdminController {
 				echo Tools::jsonEncode($ret);
 			}
 		}
-		else if (Tools::getIsset('percentage'))
-			echo AEAjaxAdapter::setAbTestingPercentage();
+		else if (Tools::getIsset('percentage') || Tools::getIsset('activation'))
+			echo AEAjaxAdapter::setProperty();
 		else if ((Tools::getIsset('ip') || Tools::getIsset('ipList')) && Tools::getIsset('type'))
 			echo AEAjaxAdapter::setHosts();
 		else if (Tools::getIsset('synchronize'))

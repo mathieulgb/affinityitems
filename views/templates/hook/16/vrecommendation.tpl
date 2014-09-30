@@ -23,25 +23,27 @@
 *  International Registered Trademark & Property of PrestaShop SA
 *}
 
-<div class="ae-area ae-{$aeconfiguration->area|escape:'htmlall'}">
-
-<div id="{$aeconfiguration->parentId|escape:'htmlall'}" class="{$aeconfiguration->classParent|escape:'htmlall'}">
-	<h4 class="{$aeconfiguration->classTitle|escape:'htmlall'}">{$aeconfiguration->label|escape:'htmlall'}</h4>
-	<div id="{$aeconfiguration->contentId|escape:'htmlall'}" class="{$aeconfiguration->classContent|escape:'htmlall'}">
-		<ul id="{$aeconfiguration->listId|escape:'htmlall'}" class="{$aeconfiguration->classList|escape:'htmlall'}">
-			{foreach from=$aeproducts item=product name=myLoop}
-				<li id="{$aeconfiguration->elementListId|escape:'htmlall'}" class="{$aeconfiguration->classElementList|escape:'htmlall'} {if $smarty.foreach.myLoop.last} last_item{elseif $smarty.foreach.myLoop.first} first_item{else} item{/if}">
-					<a href="{$product.link|escape:'html'}" rel="{$product.id_product|escape:'htmlall'}" title="{l s='About' mod='affinityitems'} {$product.name|escape:html:'UTF-8'}" class="{$aeconfiguration->classElementImage|escape:'htmlall'}">
-					<img src="{$link->getImageLink($product.link_rewrite, $product.id_image, $aeconfiguration->imgSize)|escape:'html'}" height="{$size.height|escape:'htmlall'}" width="{$size.width|escape:'htmlall'}" alt="{$product.name|escape:html:'UTF-8'}" />
-					</a>
-					<div>
-						<h5 class="{$aeconfiguration->classElementName|escape:'htmlall'}"><a href="{$product.link|escape:'html'}" rel="{$product.id_product|escape:'htmlall'}" title="{l s='About' mod='affinityitems'} {$product.name|escape:html:'UTF-8'}">{$product.name|truncate:14:'...'|escape:html:'UTF-8'}</a></h5>
-						<p class="{$aeconfiguration->classElementDescription|escape:'htmlall'}"><a href="{$product.link|escape:'html'}" rel="{$product.id_product|escape:'htmlall'}" title="{l s='About' mod='affinityitems'} {$product.name|escape:html:'UTF-8'}">{$product.description_short|strip_tags:'UTF-8'|truncate:44}</a></p>
-					</div>
-				</li>
+{foreach from=$recommendations item=reco name=affinityitemsRecommendations}
+{if isset($reco.aeproducts) AND $reco.aeproducts}
+<div class="ae-area ae-{$reco.configuration->area|escape:'htmlall'}">
+<div {if $reco.theme.backgroundDisplayOptions} style="{if !$reco.theme.backgroundColorTransparent}background-color: {$reco.theme.backgroundColor};{/if} border: {$reco.theme.backgroundBorderSize}px solid {$reco.theme.backgroundBorderColor}; border-radius: {$reco.theme.backgroundBorderRoundedSize}px" {/if} id="{$reco.theme.backgroundProductsBlockId|escape:'htmlall'}" class="{$reco.theme.backgroundProductsBlockClass|escape:'htmlall'}">
+	{if $reco.theme.titleActivation}<h4 {if $reco.theme.titleDisplayOptions} style="color: {$reco.theme.titleColor}; font-size: {$reco.theme.titleSize}px; border: {$reco.theme.titleBorderSize}px solid {$reco.theme.titleBorderColor}; border-radius: {$reco.theme.titleBorderRoundedSize}px; {if !$reco.theme.titleBackgroundColorTransparent}background-color: {$reco.theme.titleBackgroundColor}{/if}; text-align: {$reco.theme.titleAlign}; line-height: {$reco.theme.titleLineHeight}px; "{/if} class="{$reco.theme.titleClass|escape:'htmlall'}">{$reco.titleZone}</h4>{/if}
+	<div id="{$reco.theme.backgroundContentId|escape:'htmlall'}" class="{$reco.theme.backgroundContentClass|escape:'htmlall'}">
+		<ul id="{$reco.theme.backgroundListId|escape:'htmlall'}" class="{$reco.theme.backgroundListClass|escape:'htmlall'}">
+			{foreach from=$reco.aeproducts item=product name=affinityItemsProducts}
+			<li {if $reco.theme.productDisplayOptions} style="height: {$reco.theme.productHeight}px;width: {$reco.theme.productWidth}px; {if !$reco.theme.productBackgroundColorTransparent}background-color: {$reco.theme.productBackgroundColor};{/if} border: {$reco.theme.productBorderSize}px solid {$reco.theme.productBorderColor}; border-radius: {$reco.theme.productBorderRoundedSize}px; margin-right: {$reco.theme.productMarginRight}px" {/if} id="{$reco.theme.productId|escape:'htmlall'}" class="{$reco.theme.productClass|escape:'htmlall'} {if $smarty.foreach.affinityItemsProducts.last} last_item{elseif $smarty.foreach.affinityItemsProducts.first} first_item{else} item{/if}">
+				<a href="{$product.link|escape:'html'}" rel="{$product.id_product|escape:'htmlall'}" title="{l s='About' mod='affinityitems'} {$product.name|escape:html:'UTF-8'}" id="{$reco.theme.pictureLinkId}" class="{$reco.theme.pictureLinkClass|escape:'htmlall'}">
+					<img {if $reco.theme.pictureDisplayOptions} style="border: {$reco.theme.pictureBorderSize}px solid {$reco.theme.pictureBorderColor}; border-radius: {$reco.theme.pictureBorderRoundedSize}px;" {/if} src="{$link->getImageLink($product.link_rewrite, $product.id_image, $reco.theme.pictureResolution)|escape:'html'}" height="{$reco.theme.pictureHeight}" width="{$reco.theme.pictureWidth}" alt="{$product.name|escape:html:'UTF-8'}" id="{$reco.theme.pictureId}" class="{$reco.theme.pictureClass}"/>
+				</a>
+				<div>
+					{if $reco.theme.productTitleActivation} <h5 {if $reco.theme.productTitleDisplayOptions} style="height: {$reco.theme.productTitleHeight}px" {/if} class="{$reco.theme.productTitleClass}" id="{$reco.theme.productTitleId}"><a {if $reco.theme.productTitleDisplayOptions} style="color:{$reco.theme.productTitleColor};font-size: {$reco.theme.productTitleSize}px;text-align: {$reco.theme.productTitleAlign}; line-height: {$reco.theme.productTitleLineHeight}px;"{/if} href="{$product.link|escape:'html'}" rel="{$product.id_product|escape:'htmlall'}" title="{l s='About' mod='affinityitems'} {$product.name|escape:html:'UTF-8'}">{$product.name|truncate:14:'...'|escape:html:'UTF-8'}</a></h5>{/if}
+					{if $reco.theme.productDescriptionActivation}<p id="{$reco.theme.productDescriptionId}" class="{$reco.theme.productDescriptionClass}"><a  {if $reco.theme.productDescriptionDisplayOptions} style="color:{$reco.theme.productDescriptionColor};font-size: {$reco.theme.productDescriptionSize}px; text-align: {$reco.theme.productDescriptionAlign}; line-height: {$reco.theme.productDescriptionLineHeight}px;"{/if} href="{$product.link|escape:'html'}" rel="{$product.id_product|escape:'htmlall'}" title="{l s='About' mod='affinityitems'} {$product.name|escape:html:'UTF-8'}">{$product.description_short|strip_tags:'UTF-8'|truncate:44}</a></p>{/if}
+				</div>
+			</li>
 			{/foreach}
 		</ul>
 	</div>
 </div>
-
 </div>
+{/if}
+{/foreach}

@@ -21,5 +21,5 @@ require_once(dirname(__FILE__).'/../../../init.php');
 
 require_once('../loader.php');
 
-echo AEAjaxAdapter::setAbTestingPercentage();
+echo AEAjaxAdapter::setProperty();
 

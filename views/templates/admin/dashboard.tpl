@@ -1,597 +1,721 @@
 {*
-* 2014 Affinity-Engine
-*
-* NOTICE OF LICENSE
-*
-* DISCLAIMER
-*
-* Do not edit or add to this file if you wish to upgrade AffinityItems to newer
-* versions in the future. If you wish to customize AffinityItems for your
-* needs please refer to http://www.affinity-engine.fr for more information.
-*
-*  @author    Affinity-Engine SARL <contact@affinity-engine.fr>
-*  @copyright 2014 Affinity-Engine SARL
-*  @license   http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL Version 2 (GPLv2)
-*  International Registered Trademark & Property of Affinity Engine SARL
-*}
+	* 2014 Affinity-Engine
+	*
+	* NOTICE OF LICENSE
+	*
+	* DISCLAIMER
+	*
+	* Do not edit or add to this file if you wish to upgrade AffinityItems to newer
+	* versions in the future. If you wish to customize AffinityItems for your
+	* needs please refer to http://www.affinity-engine.fr for more information.
+	*
+	*  @author    Affinity-Engine SARL <contact@affinity-engine.fr>
+	*  @copyright 2014 Affinity-Engine SARL
+	*  @license   http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL Version 2 (GPLv2)
+	*  International Registered Trademark & Property of Affinity Engine SARL
+	*}
 
 <script>
 {literal}
-var progressBarWidth;
-
-var checkIp = /((^\s*((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\s*$)|(^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$))/;
-
-
-function isNumber(n) {
-	return !isNaN(parseFloat(n)) && isFinite(n);
-}
-
-function progress() {
+var step = ['Categories', 'Products', 'Carts', 'Orders', 'Actions'];
+function synchronize() {
 	$.ajax({
 		{/literal}{if $ajaxController}{literal}
 		url: "index.php?controller=AEAjax&configure=affinityitems&ajax",
 		{/literal}{else}{literal}
 		url: "{/literal}{$module_dir|escape:'htmlall':'UTF-8'}{literal}ajax/synchronize.php",
 		{/literal}{/if}{literal}
-		data: {"synchronize" : true, "getInformation" : true, "token" : "{/literal}{$prestashopToken|escape:'htmlall':'UTF-8'}{literal}"},
-		type: "POST",
-		async: true,
-		success: function (e, t, n) {
-			var response = jQuery.parseJSON(e);
-			if(response._ok == true) {
-				if(!response._lock && response._percentage == 100) {
-					$("#progressBar").hide();
-					$("#tsync").text("{/literal}{l s='Your system is synchronized' mod='affinityitems'}{literal}");
-				} else {
-					progressBarWidth = parseInt(response._percentage) * $("#progressBar").width() / 100;
-					$("#progressBar").find("div").css("width", progressBarWidth).html(parseInt(response._percentage) + "% ");
-					$("#tsync").text("{/literal}{l s='Install in progress, please wait' mod='affinityitems'}...{literal}");
-				}
-				$("#syncStep li").each(function( index ) {
-					if((index+1) == response._step) {
-						if(response._lock) {
-							$( this ).attr('class', 'aeloading');
-						} else {
-							$( this ).attr('class', 'aechecked');
-						}
-					} else if((index+1) < response._step) {
-						$( this ).attr('class', 'aechecked');
-					}
-				});
-			}
-		},
-		error: function (e, t, n) {}
-	});
-	setTimeout("progress()", 60000);
-}
-
-function addRemoteIp(ip) {
-	var ipList = [];
-	if(Object.prototype.toString.call(ip) === '[object Array]') {
-		ip = ip[0];
-		$( "#remoteList option" ).each(function( index ) {
-			ipList.push( $(this).val() );
-		});
-		if(checkIp.test(ip)) {
-			if($.inArray(ip, ipList) < 0) {
-				ipList.push( ip );
-				$.ajax({
-					{/literal}{if $ajaxController}{literal}
-					url: "index.php?controller=AEAjax&configure=affinityitems&ajax",
-					{/literal}{else}{literal}
-					url: "{/literal}{$module_dir|escape:'htmlall':'UTF-8'}{literal}ajax/host.php",
-					{/literal}{/if}{literal}
-					type: "POST",
-					data : {"ipList" : ipList, "type" : "remote", "token" : "{/literal}{$prestashopToken|escape:'htmlall':'UTF-8'}{literal}", "aetoken" : '{/literal}{$aetoken}{literal}'},
-					async: false,
-					success: function (e, t, n) {
-						var response = jQuery.parseJSON(e);
-						if(response._ok == true) {
-							$('#remoteList').append('<option value="'+ip+'">'+ip+'</option>');
-						}
-					},
-					error: function (e, t, n) {}
-				});
-			}
-		}
-	}
-}
-
-function removeRemoteIp(ip) {
-	var ipList = [];
-	if(Object.prototype.toString.call(ip) === '[object Array]') {
-		ip = ip[0];
-		$( "#remoteList option" ).each(function( index ) {
-			if($(this).val() !== ip) {
-				ipList.push( $(this).val() );
-			}
-		});
-		$.ajax({
-			{/literal}{if $ajaxController}{literal}
-			url: "index.php?controller=AEAjax&configure=affinityitems&ajax",
-			{/literal}{else}{literal}
-			url: "{/literal}{$module_dir|escape:'htmlall':'UTF-8'}{literal}ajax/host.php",
-			{/literal}{/if}{literal}
+			data: {"synchronize" : true, "getInformation" : true, "token" : "{/literal}{$prestashopToken|escape:'htmlall':'UTF-8'}{literal}"},
 			type: "POST",
-			data : {"ipList" : ipList, "type" : "remote", "token" : "{/literal}{$prestashopToken|escape:'htmlall':'UTF-8'}{literal}", "aetoken" : '{/literal}{$aetoken}{literal}'},
-			async: false,
+			async: true,
 			success: function (e, t, n) {
 				var response = jQuery.parseJSON(e);
+				$(".items-box-synchronization-content").empty();
 				if(response._ok == true) {
-					$('#remoteList').empty();
-					ipList.forEach(function(key) {
-						$('#remoteList').append('<option value="'+key+'">'+key+'</option>');
-					});
+					if(!response._lock && response._percentage == 100) {
+						$(".items-box-synchronization-content").append("{/literal}<p class='items-checked'>{l s='Your system is synchronized' mod='affinityitems'}</p>{literal}");
+					} else {
+						$(".items-box-synchronization-content").append("{/literal}<p class='items-loading'>{l s='Install in progress, please wait' mod='affinityitems'}...</p>{literal}");
+						$(".items-box-synchronization-content").append("{/literal}<p>{l s='Step' mod='affinityitems'} "+ response._step +" / 5 : </p>{literal}");
+						$(".items-box-synchronization-content").append("{/literal}<p>"+step[response._step-1]+" {l s='synchronization' mod='affinityitems'}</p>{literal}");
+					}
 				}
-			},
-			error: function (e, t, n) {}
-		});
-	}
+			}});
+	setTimeout("synchronize()", 10000);
+}
+
+function changeZoneTab(name) {
+	{/literal}{foreach from=$hookList item=hook}{literal}
+	$('#zone-{/literal}{$hook|lower}{literal}').hide();
+	{/literal}{/foreach}{literal}
+	$('#zone-'+name+'').show();
 }
 
 $(document).ready(function() {
-	$("#tabs").tabs();
-	progress();
-	$('.aenotification').slideDown();
-	$("a#parentToogle").click(function() {
-		$(".childToogle").slideUp("slow");
-		if($(this).closest("tr").next().find("div#childToogle").css('display')=='none') {
-			$(this).closest("tr").next().find("div#childToogle").slideToggle("slow");
+	synchronize();
+
+ 	$("#items-wiki").load("http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/fr-page-faq .wiki-holder", function(response, status, xhr) {
+    	var html = $("#items-wiki").html();
+    	var result = html.replace(/<a href="/g, '<a target="_blank" class="ae-email-color" href="http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/');
+    	$("#items-wiki").html(result);
+    });
+
+	$('#zone-home').show();
+	var slider = $('#slider'),
+	input  = $('#input-number');
+
+	input.keydown(function( e ) {
+		var value = Number( slider.val() );
+
+		switch ( e.which ) {
+			case 38: slider.val( value + 5 ); break;
+			case 40: slider.val( value - 5 ); break;
 		}
 	});
 
-	$( ".setNotificationRead" ).click(function() {
-		var parent = $(this).parent();
+	var dropoptions = {
+		accept:".items-item"
+	};
+
+	var tabs = new Array();
+	$('.items-tab').each(function(index, value) {
+		tabs.push(value.id);
+	});
+	var hash = window.location.hash.substring(1);
+	if(hash) {
+		showTab(hash);
+	} else {
+		showTab('home');
+	}
+
+	$('#themeSelector').on('change', function() {
+		var url = location.search;
+		var regex = /id_theme=[0-9]*/i;
+		var redirect = url;
+		if(regex.exec(url)) {
+			redirect = url.replace(regex, 'id_theme='+$('#themeSelector').val());
+		} else {
+			redirect = url+"&id_theme="+$('#themeSelector').val();
+		}
+		document.location.href = redirect+'#theme-editor';
+	});
+
+	$.each(tabs, function(index, value) {
+		$('#' + value).click(function(){showTab(value);});
+	});
+
+	function showTab(name) {
+		window.location.hash = '#' + name;
+		$.each(tabs, function(index, value) {
+			var tab     = $('#' + value);
+			var content = $('#content-' + value);
+
+			if(name === value) {
+				tab.addClass('active');
+				content.show();
+			} else {
+				tab.removeClass('active');
+				content.hide();
+			}
+		});
+	}
+
+	$('#registerTheme').click(function() {
+		$('.items-register-theme').slideDown();
+		return false;
+	});
+
+	$('.zone-tab').click(function() {
+		$( ".zone-tab" ).each(function( index ) {
+			$(this).css("color", "black");
+			$(this).css("font-weight", "initial");
+			$(this).css("border", "1px solid #bdc3c7");
+			$(this).css("border-bottom-width", "6px");
+		});
+		$(this).css("color", "#604a7b");
+		$(this).css("font-weight", "bold");
+		$(this).css("border", "1px solid rgb(96, 74, 123)");
+		$(this).css("border-bottom-width", "6px");
+	});
+
+	$('.ae-type-recommendation-select').on("change", function() {
+		var zone = $(this).parent().parent();
+		if($(this).val() == "recoAllFiltered") {
+			$(this).closest(zone).find(".items-reco-all-filtered").fadeIn();
+		} else {
+			$(this).closest(zone).find(".items-reco-all-filtered").hide();
+		}
+	});
+
+	$('.items-reco-all-filtered-select').on("change", function() {
+		if($(this).val() == "byCategory") {
+			$(this).closest('.items-reco-all-filtered').find(".categoryIds").show();
+			$(this).closest('.items-reco-all-filtered').find(".attributeIds").hide();
+			$(this).closest('.items-reco-all-filtered').find(".featureIds").hide();
+		} else if($(this).val() == "byAttribute") {
+			$(this).closest('.items-reco-all-filtered').find(".categoryIds").hide();
+			$(this).closest('.items-reco-all-filtered').find(".attributeIds").show();
+			$(this).closest('.items-reco-all-filtered').find(".featureIds").hide();
+		} else if($(this).val() == "byFeature") {
+			$(this).closest('.items-reco-all-filtered').find(".categoryIds").hide();
+			$(this).closest('.items-reco-all-filtered').find(".attributeIds").hide();
+			$(this).closest('.items-reco-all-filtered').find(".featureIds").show();
+		} else {
+			$(this).closest('.items-reco-all-filtered').find(".categoryIds").hide();
+			$(this).closest('.items-reco-all-filtered').find(".attributeIds").hide();
+			$(this).closest('.items-reco-all-filtered').find(".featureIds").hide();
+		}
+	});
+
+	var toolbox = 'default';
+	$('.toolbox-button').click(function() {
+		$('.' + toolbox + '-toolbox').hide();
+		toolbox = $(this).attr('toolbox');
+		$('.' + toolbox + '-toolbox').show();
+	});
+
+	$("#myonoffswitch").on('change', function(){
+		var checked = $(this).is(':checked') ? 1 : 0;
 		$.ajax({
 			{/literal}{if $ajaxController}{literal}
 			url: "index.php?controller=AEAjax&configure=affinityitems&ajax",
 			{/literal}{else}{literal}
-			url: "{/literal}{$module_dir|escape:'htmlall':'UTF-8'}{literal}ajax/notification.php",
+			url: "{/literal}{$module_dir|escape:'htmlall':'UTF-8'}{literal}ajax/property.php",
 			{/literal}{/if}{literal}
 			type: "POST",
-			data : {"notificationId" : $(this).val(), "aetoken" : '{/literal}{$aetoken}{literal}'},
+			data : {"activation" : checked, "token" : "{/literal}{$prestashopToken|escape:'htmlall':'UTF-8'}{literal}", "aetoken" : '{/literal}{$aetoken}{literal}'},
 			async: false,
 			success: function (e, t, n) {
-				var response = jQuery.parseJSON(e);
-				if(response._ok == true) {
-					parent.fadeOut();
+				if(checked) {
+					$(".items-box-description.notactivate").css("display", "block");
+					$(".items-box-description.notactivate").slideUp();
+				} else {
+					$(".items-box-description.notactivate").slideDown();
 				}
-			},
-			error: function (e, t, n) {}
+			}
 		});
 	});
 
-	$('.aenumber').bind('keypress', function (event) {
-		var charCode = event.which;
-		var keyChar = String.fromCharCode(charCode); 
-		return /[0-9]/.test(keyChar);
+	$('.items-tooltip').powerTip({
+		placement: 's',
+		smartPlacement: true
 	});
 
-	$('#submitLocalIp').click(function () {
-		var ipList = [];
-		if(checkIp.test($('#aeip').val())) {
-			$( "#localList option" ).each(function( index ) {
-				ipList.push( $(this).val() );
-			});
-			if($.inArray($('#aeip').val(), ipList) < 0) {
-				$.ajax({
-					{/literal}{if $ajaxController}{literal}
-					url: "index.php?controller=AEAjax&configure=affinityitems&ajax",
-					{/literal}{else}{literal}
-					url: "{/literal}{$module_dir|escape:'htmlall':'UTF-8'}{literal}ajax/host.php",
-					{/literal}{/if}{literal}
-					type: "POST",
-					data : {"ip" : $('#aeip').val(), "type" : "local", "token" : "{/literal}{$prestashopToken|escape:'htmlall':'UTF-8'}{literal}", "aetoken" : '{/literal}{$aetoken}{literal}'},
-					async: false,
-					success: function (e, t, n) {
-						var response = jQuery.parseJSON(e);
-						if(response._ok == true) {
-							$('#localList').append('<option value="'+$('#aeip').val()+'">'+$('#aeip').val()+'</option>');
-							$('#aeip').val("");
-						}
-					},
-					error: function (e, t, n) {}
-				});
-			}
-		}
-	});
 
-	$("#abtesting").noUiSlider({
-		range: [10, 90]
-		,start: {/literal}{$abtestingPercentage}{literal}
-		,step: 5
-		,direction: "ltr"
-		,handles: 1
-		,serialization: {
-			resolution: 1
-			,to: [ $('#value'), 'text' ]
+	$("#slider").noUiSlider({
+		start: {/literal}{$abtestingPercentage}{literal},
+		range: {
+			'min': 0,
+			'max': 100
+		},
+		step: 5,
+		connect: 'lower',
+		serialization: {
+			lower: [
+			$.Link({
+				target: $('#input-number'),
+				format: {
+					decimals: 0
+				}
+			})
+			]
 		}
 	}).change( function(){
 		$.ajax({
 			{/literal}{if $ajaxController}{literal}
 			url: "index.php?controller=AEAjax&configure=affinityitems&ajax",
 			{/literal}{else}{literal}
-			url: "{/literal}{$module_dir|escape:'htmlall':'UTF-8'}{literal}ajax/abtesting.php",
+			url: "{/literal}{$module_dir|escape:'htmlall':'UTF-8'}{literal}ajax/property.php",
 			{/literal}{/if}{literal}
 			type: "POST",
-			data : {"percentage" : $("#value").text(), "token" : "{/literal}{$prestashopToken|escape:'htmlall':'UTF-8'}{literal}", "aetoken" : '{/literal}{$aetoken}{literal}'},
+			data : {"percentage" : $("#input-number").val(), "token" : "{/literal}{$prestashopToken|escape:'htmlall':'UTF-8'}{literal}", "aetoken" : '{/literal}{$aetoken}{literal}'},
 			async: false,
-			success: function (e, t, n) {
-				var response = jQuery.parseJSON(e);
-				if(response._ok == true) {}
-			},
-			error: function (e, t, n) {}
+			success: function (e, t, n) {}
 		});
 	});
-
-	$('.abtestingdetails').powerTip({
-		placement: 's',
-		smartPlacement: true
-	});
-
+	{/literal}{include file="./live-editor.tpl"}{literal}
 });
-
 {/literal}
 </script>
 
-<div class="aewrapper">
-	<div class="aeheader">
-		<div class="aelogo"></div>  
+<div class="items-wrapper">
+	<div class="items-header">
+		<div class="aelogo"></div>
 	</div>
-	<div class="aealert aehide"></div>
-	{if $recommendation == 0}
-	<div class="aegeneral-activation"> 
-	<p class='ae-warning-text'>{l s='Warning: the recommendation is not yet activated' mod='affinityitems'}</p> 
-	<p>{l s='After having configured the different areas, make sure to enable the general recommendation in the Configuration Tab.' mod='affinityitems'}</p></div>
-	{/if}
-	<div id="tabs">
-		<ul>
-			<li><a href="#home">{l s='Home' mod='affinityitems'}</a></li>
-			<li><a href="#synchronization">{l s='Synchronization' mod='affinityitems'}</a></li>
-			<li><a href="#configuration">{l s='Configuration' mod='affinityitems'}</a></li>
-			<li><a href="#servers">{l s='Advanced configuration' mod='affinityitems'}</a></li>
-			<li><a href="#account">{l s='Account and support' mod='affinityitems'}</a></li>
-			<li><a href="#logs">{l s='Logs' mod='affinityitems'}</a></li>
-		</ul>
-	</div>
-
-	<div id='home'>
-
-		<div class="aenotification">
-			{foreach from=$notifications item=notification}
-			<div class="aenotice">
-				<button type="button" class="setNotificationRead" data-dismiss="alert" value="{$notification.id_notification|escape:'htmlall':'UTF-8'}" aria-hidden="true">×</button>
-				<strong>{$notification.title|escape:'htmlall':'UTF-8'}</strong><br />
-				<p>{$notification.text|escape:'htmlall':'UTF-8'}</p>
-			</div>
-			{/foreach}
+	<div class="items-tabs">
+		<div id="home" class="items-first-tab items-tab active">
+			<i class="fa fa-home"></i> 
+			{l s='Home' mod='affinityitems'}
 		</div>
-
-		<div class='aemodule-description'>
-
-			<div class='aemodule-text-content'>
-				<strong class='aewhite aemodule-text'>{l s='Improve your sales by up to 50%' mod='affinityitems'} <br> {l s='thanks to personalized recommendations.' mod='affinityitems'}</strong>
-				<br />
-				<p class='aewhite aemodule-text'>{l s='Give each visitor the products that fit his tastes' mod='affinityitems'}
-					<br />{l s='& needs and benefit from higher transformation rate' mod='affinityitems'}
-					<br />{l s='average basket and visitors loyalty.' mod='affinityitems'}</p>
-					<p class='aewhite aemodule-text'>{l s='Easy to install, this service has no fixed costs, requires no commitment, and drives a big bunch of profits.' mod='affinityitems'}
-						<br />
-						{l s='And a free trial offer for 1 month.' mod='affinityitems'}
-					</p>
-					<br />
-					<strong class='aewhite aemodule-text'>{l s='Take no risks try and see !' mod='affinityitems'}</strong>
-					<br /><br />
-				</div>
-
+		<div id="config" class="items-tab">
+			<i class="fa fa-wrench"></i> 
+			{l s='Configuration' mod='affinityitems'}
+		</div>
+		<div id="theme-editor" class="items-tab">
+			<i class="fa fa-wrench"></i> 
+			{l s='Theme editor' mod='affinityitems'}
+		</div>
+		<div id="logs" class="items-tab">
+			<i class="fa fa-list-alt"></i> 
+			{l s='Logs' mod='affinityitems'}
+		</div>
+		<div id="support" class="items-tab items-support">
+			<i class="fa fa-life-ring"></i>
+			{l s='Support' mod='affinityitems'}
+		</div>
+	</div>
+	<div id="content-home" class="items-content">
+		<div class="items-box items-line items-explain">
+			<div class="items-explain-description">
+				<strong>{l s='Improve your sales by up to 50%' mod='affinityitems'} <br> {l s='thanks to personalized recommendations.' mod='affinityitems'}</strong><br><br>
+				<p>{l s='Give each visitor the products that fit his tastes' mod='affinityitems'}</p>
+				<p>{l s='& needs and benefit from higher transformation rate' mod='affinityitems'}</p>
+				<p>{l s='average basket and visitors loyalty.' mod='affinityitems'}</p><br />
+				<p>{l s='Easy to install, this service has no fixed costs, requires no commitment, and drives a big bunch of profits.' mod='affinityitems'}</p><br>
+				<strong>{l s='And a free trial offer for 1 month.' mod='affinityitems'}</strong><br><br>
+				<p>{l s='Take no risks try and see !' mod='affinityitems'}</p>
+			</div>
+			<div class="items-explain-image">
 				<object type="text/html" data="http://www.youtube.com/embed/AIEfj2UV-qU" width="400" height="236"></object>
-
-				<div class='clear'></div>
-
 			</div>
-
-		<h2 class="aepurple aestat-title">{l s='Statistics' mod='affinityitems'}</h2>
-
-		<div class="aeblock">
-			<span class="aetitleblock"><div class='aepurple'>% {l s='guests with' mod='affinityitems'} <br> <span class="aelittle">{l s='recommendations' mod='affinityitems'}</span></div></span>
-			<span class='aedarkblue' id="value"></span><span class='aedarkblue'> %</span>
-			<div id="abtesting"></div>
-			<a href="#" id="abtestingdetails" class="abtestingdetails" title="{l s='The outcome measurement is based on the AB Testing method, an unbiased and reliable impact measure, no matter the conditions' mod='affinityitems'}
-			<br>{l s='In this method, a control group of visitors is not eligible for the recommandation.' mod='affinityitems'}
-			<br>{l s='You can control the AB Testing groups' mod='affinityitems'} :
-			<br>• {l s='First test our solution with a low rate of recommandation' mod='affinityitems'}
-			<br>• {l s='Maximize the rate to benefit from the full recommandation impact' mod='affinityitems'}<br>">{l s='More about' mod='affinityitems'}</a>
-		
 		</div>
-		<div class="aeblock">
-			<span class="aetitleblock"><div class='aepurple'>{l s='Monthly recommendations' mod='affinityitems'}</div></span>
-			<div class='aedarkblue'> {if isset($data->recommendation)}{$data->recommendation} recos{else} <img src="{$module_dir|escape:'htmlall':'UTF-8'}/resources/img/error.png"> {/if}</div>
-		</div>
-		<div class="aeblock">
-			<span class="aetitleblock"><div class='aepurple'>{l s='Sales impact' mod='affinityitems'}</div></span>
-			<div class='aedarkblue'>{if !empty($statistics)} {if $statistics->salesImpactByPercentage > 0} + {/if} {$statistics->salesImpactByPercentage|string_format:"%.2f"} % {else} 
-				{l s='Impact statistics under construction' mod='affinityitems'}{/if}</div>
-				<a href="#" id="abtestingdetails" class="abtestingdetails" title="
-				{l s='The outcome measurement becomes significant after an observation period of 2-6 weeks, depending on the frequency of the customers orders on your site and the impact of the personnalization' mod='affinityitems'} <br> {l s='The outcome measurement is automatically displayed when the significance test is conclusive.' mod='affinityitems'}
-				<br>{l s='The percentage value shows the turnover increase by website visitor benefiting from the recommandation, compared to those without recommandation.' mod='affinityitems'}
-				<br>{l s='This "AB Testing" method gives an unbiased measurement: the external factors like seasonal sales and weather, as well as your marketing activities, SEO or traffic acquisition, have no influence on the measure.' mod='affinityitems'}
-				<br>{l s='It only quantifies the global impact of the personnalization offered by Affinity Items.' mod='affinityitems'}<br>">{l s='More about' mod='affinityitems'}</a>
-			</div>
-			<div class="clear"></div>
-
-			{if !empty($statistics)}
-
-			<div class="aemblock">
-				<span class="aetitleblock"><div class='aepurple'>{l s='Detailed statistics.' mod='affinityitems'} <span class="aelittle">{l s='Recommendation effect on the website performance' mod='affinityitems'}</span></div></span>
-
-			<div class="aelblock">
-				<div class="aetitlelblock">{l s='Turnover' mod='affinityitems'}</div>
-				<div class="aetitlelegend">{$statistics->sales|string_format:"%.2f"} €</div>
-				<div class="aelpercentage">{if $statistics->salesImpactByPercentage > 0} + {/if} {$statistics->salesImpactByPercentage|string_format:"%.2f"} %</div>
-				<div class='aeldetail'>{if $statistics->salesImpact > 0} + {/if} {$statistics->salesImpact|string_format:"%.2f"} €</div>
-			</div>
-			<div class="aelblock">
-				<div class="aetitlelblock">{l s='Conversion rate' mod='affinityitems'}</div>
-				<div class="aetitlelegend">{$statistics->conversionRate|string_format:"%.2f"} %</div>
-				<div class="aelpercentage">{if $statistics->conversionRateImpactByPercentage > 0} + {/if} {$statistics->conversionRateImpactByPercentage|string_format:"%.2f"} %</div>
-				<div class='aeldetail'>{if $statistics->orderImpact > 0} + {/if} {$statistics->orderImpact|string_format:"%.2f"} {l mod='affinityitems' s='paniers'}</div>
-			</div>
-			<div class="aelblock">
-				<div class="aetitlelblock">{l s='Average invoice' mod='affinityitems'}</div>
-				<div class="aetitlelegend">{$statistics->averageOrderImpact|string_format:"%.2f"} €</div>
-				<div class="aelpercentage">{if $statistics->averageOrderImpactByPercentage > 0} + {/if} {$statistics->averageOrderImpactByPercentage|string_format:"%.2f"} %</div>
-				<div class='aeldetail'>{if $statistics->averageOrderImpactByAmount > 0} + {/if} {$statistics->averageOrderImpactByAmount|string_format:"%.2f"} {l mod='affinityitems' s='€/panier'}</div>
-			</div>
-
-			<div class="clear"></div>
-		</div>
-
-		{/if}
-
-	</div>
-	<div id='synchronization'>
-
-		<div id="progressBar"><div></div></div>
-
-		<div class="aesync">
-			<h2 id="tsync" class="tsync aepurple"></h2>
-		</div>
-		
-		<div class="syncStepDescription">{l s='The personalization service analyzes your catalog and your sales history to compute the profiles of your products and your users. After this initialization step, the customization service can suggest relevant recommendations to each visitor, even if they come on your website for the first time. The new products and members are then synchronized along the way. The first step is few minutes to few hours long, depending on the size of your database and the performances of your server.' mod='affinityitems'}</div>
-
-		<div class="aesync">
-			<h2 class="syncStepTitle aepurple">{l s='Installation steps' mod='affinityitems'}</h2>
-		</div>
-
-		<div class="syncStep">
-			<ul id="syncStep">
-				<li class="aeunchecked">{l s='Categories synchronization' mod='affinityitems'}</li>
-				<li class="aeunchecked">{l s='Products synchronization' mod='affinityitems'}</li>
-				<li class="aeunchecked">{l s='Carts synchronization' mod='affinityitems'}</li>
-				<li class="aeunchecked">{l s='Orders synchronization' mod='affinityitems'}</li>
-				<li class="aeunchecked">{l s='Actions synchronization' mod='affinityitems'}</li>
+		<div class="clear"></div>
+		<div class="ae-info-auth">
+			{l s='We can install and configure the Affinity Items module for your website at no extra cost' mod='affinityitems'}
+			<br>
+			{l s='Do not hesitate to contact us for any questions :' mod='affinityitems'}
+			<ul>
+				<li>{l s='The technical support at' mod='affinityitems'} <span class="ae-email-color">+33 9 54 52 85 12</span> {l s='or contact' mod='affinityitems'} <a class="ae-email-color" href="mailto:mathieu@affinity-engine.fr">mathieu@affinity-engine.fr</a></li>
+				<li>{l s='The commercial service at' mod='affinityitems'} <span class="ae-email-color">+33 9 80 47 24 83</span></li>
 			</ul>
 		</div>
-	</div>
-	<div id='configuration'>
-		<form action='#configuration' method='POST'/>
-
-		<input type="hidden" name="configuration" value="true">
-
-		<div class="general-activation">
-
-			<strong class="aepurple aeactivation">{l s='General activation' mod='affinityitems'}</strong>
-
-			<div class="onoffswitch">
-				<input type="checkbox" name="recommendation" class="onoffswitch-checkbox" id="myonoffswitch" {if $recommendation == "1"} checked {/if}>
-				<label class="onoffswitch-label" for="myonoffswitch">
-					<div class="onoffswitch-inner"></div>
-					<div class="onoffswitch-switch"></div>
-				</label>
+		<div class="clear"></div>
+		<div class="items-title">
+			{l s='Général' mod='affinityitems'}
+		</div>
+		<div class="items-box">
+			<div class="items-box-title">
+				{l s='General activation' mod='affinityitems'}
 			</div>
-		<a class="display-recommendation" href="{$baseUrl}?aeabtesting=A" target="_blank">{l s='Display recommendation' mod='affinityitems'}</a>
-
+			<div class="items-box-content">
+				<div class="items-box-description notactivate{if $recommendation == 1} items-hide {/if}">
+					{l s='Warning: the recommendation is not yet activated' mod='affinityitems'}
+					{l s='After having configured the different recommendation areas, make sure to enable the general recommendation' mod='affinityitems'}
+				</div>
+				<div class="clear"></div>
+				<div class="onoffswitch">
+					<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" {if $recommendation==1} checked {/if}>
+					<label class="onoffswitch-label" for="myonoffswitch">
+						<span class="onoffswitch-inner"></span>
+						<span class="onoffswitch-switch"></span>
+					</label>
+				</div>
+			</div>
 		</div>
-		<div id="clear"></div>
-		<br />
-
-		<table class="aetable"> 
-			<tr> 
-				<th></th> 
-				<th> {l s='Activation' mod='affinityitems'} </th> 
-				<th> {l s='Recommendation area label' mod='affinityitems'} </th> 
-				<th> {l s='Number of displayed products' mod='affinityitems'} </th>
-				<th> {l s='Pictures size' mod='affinityitems'} </th> 
-				<th> {l s='Settings' mod='affinityitems'} </th> 
-			</tr> 
-
-			{foreach from=$hookList item=hookName}
-
-			<tr class="optionnalRecommendation"> 
-				<th> {$hookName|escape:'htmlall':'UTF-8'} </th>
-				<th>  
-					<input type="radio" name="reco{$hookName|escape:'htmlall':'UTF-8'}" value="1" {if $configuration.{$hookName}->reco{$hookName} == "1"} checked="checked" {/if}>
-					<label class="t"><img src="{$module_dir|escape:'htmlall':'UTF-8'}/resources/img/enabled.png" alt="Activé" title="Activé"></label>
-					<input type="radio" name="reco{$hookName}" value="0" {if $configuration.{$hookName}->reco{$hookName} == "0"} checked="checked" {/if}>
-					<label class="t"><img src="{$module_dir|escape:'htmlall':'UTF-8'}/resources/img/disabled.png" alt="Désactivé" title="Désactivé"></label>
-				</th> 
-				<th> <input type='text' name="label{$hookName|escape:'htmlall':'UTF-8'}" value="{$configuration.{$hookName}->label{$hookName}}">  </th> 
-				<th> <input type='text' name="recoSize{$hookName|escape:'htmlall':'UTF-8'}" value="{$configuration.{$hookName}->recoSize{$hookName}}" class="aenumber"> </th> 
-				<th> 
-					<select name="imgSize{$hookName|escape:'htmlall':'UTF-8'}">
-						{foreach from=$imgSizeList item=size}
-							<option value="{$size.name|escape:'htmlall':'UTF-8'}" {if $size.name == $configuration.{$hookName}->imgSize{$hookName}} selected {/if}>{$size.name}</option>
-						{/foreach}
-					</select> 
-				</th> 
-				<th class="aetoogle"> <a href="#" id="parentToogle" class="aetoogle" onClick="return false;">{l s='Display settings' mod='affinityitems'}</a> </th> 
-			</tr>
-
-			<tr>
-				<td colspan="6">
-						{if $hookName=="Category" || $hookName=="Search"}
-						<div id="childToogle" class="childToogle ae-child-huge">
-						<p><label class="aepurple">{l s='Selector' mod='affinityitems'} : </label><input type="text" value="{$configuration.{$hookName}->selector{$hookName}}" name="selector{$hookName|escape:'htmlall':'UTF-8'}" /></p>
-						<p><label class="aepurple">{l s='Position selector' mod='affinityitems'} :</label>
-							<select name="selectorPosition{$hookName|escape:'htmlall':'UTF-8'}" class='ae-selector-position'>
-								<option value="before" {if $configuration.{$hookName}->selectorPosition{$hookName} == "before"} selected {/if}>Before</option>
-								<option value="after" {if $configuration.{$hookName}->selectorPosition{$hookName} == "after"} selected {/if}>After</option>
-							</select>
-						</p>
-						{else}
-						<div id="childToogle" class="childToogle ae-child-little">
-						{/if}
-						<fieldset>
-							<legend><strong class="aepurple">&lt;div&gt;</strong> id='<input type="text" value="{$configuration.{$hookName}->parentId{$hookName}}" name="parentId{$hookName|escape:'htmlall':'UTF-8'}" />' 
-								class='<input type="text" value="{$configuration.{$hookName}->classParent{$hookName}}" name="classParent{$hookName|escape:'htmlall':'UTF-8'}" />'</legend>  
-							
-							<p class="aeclasstitle"><strong class="aepurple">{l s='Title' mod='affinityitems'}</strong> class='<input type="text" value="{$configuration.{$hookName}->classTitle{$hookName}}" name="classTitle{$hookName|escape:'htmlall':'UTF-8'}" />'</p> 
-
-							<fieldset>
-								<legend><strong class="aepurple">&lt;div&gt;</strong> id='<input type="text" value="{$configuration.{$hookName}->contentId{$hookName}}" name="contentId{$hookName|escape:'htmlall':'UTF-8'}" />' class='<input type="text" value="{$configuration.{$hookName}->classContent{$hookName}}" name="classContent{$hookName|escape:'htmlall':'UTF-8'}" />'</legend>
-								<fieldset>
-									<legend>
-										<strong class="aepurple">&lt;ul&gt;</strong> 
-											id='<input type="text" value="{$configuration.{$hookName}->listId{$hookName}}" name="listId{$hookName}" />'class='<input type="text" value="{$configuration.{$hookName}->classList{$hookName}}" name="classList{$hookName|escape:'htmlall':'UTF-8'}" />'</legend>
-											<fieldset class='little-fieldset'>
-											<legend> <strong class="aepurple">&lt;li&gt;</strong>id='<input type="text"  value="{$configuration.{$hookName}->elementListId{$hookName}}" name="elementListId{$hookName|escape:'htmlall':'UTF-8'}" />' class='<input type="text"  value="{$configuration.{$hookName}->classElementList{$hookName}}" name="classElementList{$hookName|escape:'htmlall':'UTF-8'}" />' </legend>
-
-												<p><strong class="aepurple">Product image class :</strong><input type="text" class="aeright" value="{$configuration.{$hookName}->classElementImage{$hookName}}" name="classElementImage{$hookName|escape:'htmlall':'UTF-8'}" /></p>
-												
-												<p><strong class="aepurple">Product name class :</strong><input type="text" class="aeright" value="{$configuration.{$hookName}->classElementName{$hookName}}" name="classElementName{$hookName|escape:'htmlall':'UTF-8'}" /></p>
-												
-												<p><strong class="aepurple">Product description class :</strong><input type="text" class="aeright" value="{$configuration.{$hookName}->classElementDescription{$hookName}}" name="classElementDescription{$hookName|escape:'htmlall':'UTF-8'}" /></p>
-
-												<p><strong class="aepurple">Price container class :</strong><input type="text" class="aeright" value="{$configuration.{$hookName}->classPriceContainer{$hookName}}" name="classPriceContainer{$hookName|escape:'htmlall':'UTF-8'}" /></p>
-												
-												<p><strong class="aepurple">Price class :</strong><input type="text" class="aeright" value="{$configuration.{$hookName}->classPrice{$hookName}}" name="classPrice{$hookName|escape:'htmlall':'UTF-8'}" /></p>
-
-											</fieldset>
-								</fieldset>
-							</fieldset>
-						</fieldset>
+		<div class="items-box">
+			<div class="items-box-title">
+				{l s='Account' mod='affinityitems'}
+			</div>
+			<div class="items-box-content">
+				<div class="items-box-description">
+					{l s='Manage your payment options and access your invoices in the customer area. Also find all the system messages and more detailed statistics on the impact of your personnalization service.' mod='affinityitems'}
+				</div>
+				<div class="clear"></div>
+				{if isset($data->authToken)}
+				<a class="items-manager-button" target="_blank" href="http://manager.affinityitems.com/login/{$siteId|escape:'htmlall':'UTF-8'}/{$data->authToken|escape:'htmlall':'UTF-8'}">
+					<div class="items-button">
+						{l s='Access my account' mod='affinityitems'}
 					</div>
-				</td>
-			</tr>
-
-			{/foreach}
-
-		</table>
-
-		<div class="clear"></div>
-
-		<input type="submit" value="{l s='Save' mod='affinityitems'}" name="submit" class="aebutton aeright submit">
-		
-		<div class="clear"></div>
-		
-	</form>
-</div>
-
-<div id='servers'>
-	<div class="servers-description">{l s=' To secure access to the recommendations, please indicate the servers that are allowed to query these recommendations. Instructions: first create the server in the list of known server, then add it to the list of enabled servers' mod='affinityitems'}</div>
-
-	<div class="aesrv-container">
-
-	<div class="serverList">
-
-		<div class="server-list-text">
-					<p class="aepurple kserver">{l s='Known servers' mod='affinityitems'}</p><p class="aepurple eserver">{l s='Enabled servers' mod='affinityitems'}</p>
-					<div class="clear"></div>
+				</a>
+				{/if}
+			</div>
 		</div>
-
-		<select id="localList" multiple class='aeservers aeleft'>
-			{foreach from=$localHosts item=host}
-				<option value="{$host|escape:'htmlall':'UTF-8'}">{$host|escape:'htmlall':'UTF-8'}</option>
-			{/foreach}
-		</select>
-
-		<div class="betweensrv">
-			<a href="#" class="add-server" onClick="addRemoteIp($('#localList').val());return false;"> {l s='Add' mod='affinityitems'} >> </a>
-			<br />
-			<a href="#" class="remove-server" onClick="removeRemoteIp($('#remoteList').val());return false;"> {l s='Delete' mod='affinityitems'} << </a>
+		<div class="items-box">
+			<div class="items-box-title">
+				{l s='Synchronization' mod='affinityitems'} 
+			</div>
+			<div class="items-box-content">
+				<div class="items-box-description">
+					<div class="items-box-synchronization-content"></div>
+				</div>
+			</div>
+			<div class="items-box-footer">
+				<div class="items-detail grow">
+					<a class="items-tooltip" title="{l s='The personalization service analyzes your catalog and your sales history to compute the profiles of your products and your users.' mod='affinityitems'} <br /> {l s='After this initialization step, the customization service can suggest relevant recommendations to each visitor, even if they come on your website for the first time. The new products and members are then synchronized along the way.' mod='affinityitems'} <br /> {l s='The first step is few minutes to few hours long, depending on the size of your database and the performances of your server.' mod='affinityitems'}" href="#">{l s='More about' mod='affinityitems'}</a>
+				</div>
+			</div>
 		</div>
-
-
-		{if isset($data->hosts)}
-		<select id="remoteList" multiple class='aeservers aeright'>
-			{foreach from=$data->hosts item=host}
-			<option value="{$host|escape:'htmlall':'UTF-8'}">{$host|escape:'htmlall':'UTF-8'}</option>
-			{/foreach}
-		</select>
-		{else} 
-		<img class="servers-error" src="{$module_dir|escape:'htmlall':'UTF-8'}/resources/img/error.png"> 
+		<div class="clear"></div>
+		<div class="items-title">
+			{l s='Statistics' mod='affinityitems'}
+		</div>
+		<div class="items-box">
+			<div class="items-box-title">
+				{l s='Guests with' mod='affinityitems'} {l s='recommendations' mod='affinityitems'}
+			</div>
+			<div class="items-box-content">
+				<input id="input-number" type="text">% 
+				<div id="slider"></div>
+			</div>
+			<div class="items-box-footer">
+				<div class="items-detail grow">
+					<a class="items-tooltip"  title="{l s='The outcome measurement is based on the AB Testing method, an unbiased and reliable impact measure, no matter the conditions' mod='affinityitems'}<br>{l s='In this method, a control group of visitors is not eligible for the recommandation.' mod='affinityitems'}<br>{l s='You can control the AB Testing groups' mod='affinityitems'} : <br>• {l s='First test our solution with a low rate of recommandation' mod='affinityitems'} <br>• {l s='Maximize the rate to benefit from the full recommandation impact' mod='affinityitems'}" href="#">{l s='More about' mod='affinityitems'}</a>				
+				</div>
+			</div>
+		</div>
+		<div class="items-box items-stat">
+			<div class="items-box-title">
+				{l s='Recommendation number' mod='affinityitems'}
+				{l s='last 30 days' mod='affinityitems'}
+			</div>
+			<div class="items-box-content">
+				<div class="items-main-stat">
+					{if isset($data->recommendation)}{$data->recommendation} recos{else} <img src="{$module_dir|escape:'htmlall':'UTF-8'}/resources/img/error.png"> {/if}
+				</div>
+			</div>
+		</div>
+		<div class="items-box items-stat">
+			<div class="items-box-title">
+				{l s='Sales impact' mod='affinityitems'}
+			</div>
+			<div class="items-box-content">
+				<div class="items-main-stat">
+					{if !empty($statistics)} {if $statistics->salesImpactByPercentage > 0} + {/if} 
+					{$statistics->salesImpactByPercentage|string_format:"%.2f"} % 
+					{else} 
+					{l s='Impact statistics under construction' mod='affinityitems'}
+					{/if}
+				</div>
+			</div>
+			<div class="items-box-footer">
+				<div class="items-detail grow">
+					<a class="items-tooltip"  title="{l s='The outcome measurement becomes significant after an observation period of 2-6 weeks, depending on the frequency of the customers orders on your site and the impact of the personnalization' mod='affinityitems'} <br> {l s='The outcome measurement is automatically displayed when the significance test is conclusive.' mod='affinityitems'}<br>{l s='The percentage value shows the turnover increase by website visitor benefiting from the recommandation, compared to those without recommandation.' mod='affinityitems'}<br>{l s='This AB Testing method gives an unbiased measurement: the external factors like seasonal sales and weather, as well as your marketing activities, SEO or traffic acquisition, have no influence on the measure.' mod='affinityitems'}<br>{l s='It only quantifies the global impact of the personnalization offered by Affinity Items.' mod='affinityitems'}"href="#">{l s='More about' mod='affinityitems'}</a>				
+				</div>
+			</div>
+		</div>
+		{if !empty($statistics)}
+		<div class="items-box items-line">
+			<div class="items-box-title">
+				<strong>{l s='Detailed statistics.' mod='affinityitems'}</strong> {l s='Recommendation effect on the website performance' mod='affinityitems'}
+			</div>
+			<div class="items-line-item">
+				<div class="items-box-title">
+					{l s='Turnover' mod='affinityitems'}
+				</div>
+				<div class="items-box-content">
+					<div class="items-third-stat">
+						{$statistics->sales|string_format:"%.2f"} €
+					</div>
+					<div class="items-main-stat">
+						{if $statistics->salesImpactByPercentage > 0} + {/if} {$statistics->salesImpactByPercentage|string_format:"%.2f"} %
+					</div>
+					<div class="items-second-stat">
+						{if $statistics->salesImpact > 0} + {/if} {$statistics->salesImpact|string_format:"%.2f"} €
+					</div>
+				</div>
+			</div>
+			<div class="items-line-item">
+				<div class="items-box-title">
+					{l s='Conversion rate' mod='affinityitems'}
+				</div>
+				<div class="items-box-content">
+					<div class="items-third-stat">
+						{$statistics->conversionRate|string_format:"%.2f"} %
+					</div>
+					<div class="items-main-stat">
+						{if $statistics->conversionRateImpactByPercentage > 0} + {/if} {$statistics->conversionRateImpactByPercentage|string_format:"%.2f"} %
+					</div>
+					<div class="items-second-stat">
+						{if $statistics->orderImpact > 0} + {/if} {$statistics->orderImpact|string_format:"%.2f"} {l s='paniers' mod='affinityitems'}
+					</div>
+				</div>
+			</div>
+			<div class="items-line-item">
+				<div class="items-box-title">
+					{l s='Average invoice' mod='affinityitems'}
+				</div>
+				<div class="items-box-content">
+					<div class="items-third-stat">
+						{$statistics->averageOrderImpact|string_format:"%.2f"} €
+					</div>
+					<div class="items-main-stat">
+						{if $statistics->averageOrderImpactByPercentage > 0} + {/if} {$statistics->averageOrderImpactByPercentage|string_format:"%.2f"} %
+					</div>
+					<div class="items-second-stat">
+						{if $statistics->averageOrderImpactByAmount > 0} + {/if} {$statistics->averageOrderImpactByAmount|string_format:"%.2f"} {l s='€/panier' mod='affinityitems'}
+					</div>
+				</div>
+			</div>
+		</div>
 		{/if}
-
-	</div>
-
-	<div class="clear"></div>
-
-	<div class="srvinput">
-		<input type="text" id="aeip" class="aeip"><input type="submit" id="submitLocalIp" value="+">
-	</div>
-
-	</div>
-
-	<div class="clear clear-margin-thirty"></div>
-
-	<form action='#servers' method='POST'/>
+		<div class="clear"></div>
 	
-	<div class="aeblock">
-		<span class="aetitleblock"><div class="aepurple">{l s='Rescind' mod='affinityitems'} <br /> <span class="aelittle">{l s='contract' mod='affinityitems'} </div></span>
-		<div class="aedarkblue"> <span class="ae-rescind"> {l s='Check this box to have your website data deleted on our platform after the uninstallation' mod='affinityitems'}
-			<input type="checkbox" name="breakContract"  {if $breakContract == "1"} checked="checked" {/if}></span> 
+		<div class="items-title">
+			{l s='Other' mod='affinityitems'}
 		</div>
-		<a href="#" id="abtestingdetails" class="abtestingdetails" title="{l s='Do not check the box to avoid resynchronization when installing a new version of the module.' mod='affinityitems'}">{l s='More about' mod='affinityitems'}</a>
+
+		<form action='#home' method='POST'/>
+		<div class="items-box">
+			<div class="items-box-title">
+				{l s='Rescind' mod='affinityitems'}
+			</div>
+			<div class="items-box-content">
+				<input id="rescind" type="checkbox" name="breakContract" {if $breakContract == "1"} checked="checked" {/if}>
+				<label for="rescind">{l s='Check this box to have your website data deleted on our platform after the uninstallation' mod='affinityitems'}</label><br>
+			</div>
+		</div>
+		<div class="items-box">
+			<div class="items-box-title">
+				{l s='A/B Testing' mod='affinityitems'}<br>{l s='IP Blacklist' mod='affinityitems'}
+			</div>
+			<div class="items-box-content">
+				<input type="text" name="blacklist" value="{if !empty($blacklist)}{foreach from=$blacklist item=ip}{$ip|escape:'htmlall':'UTF-8'};{/foreach}{/if}">
+			</div>
+			<div class="items-box-footer">
+				<div class="items-detail grow">
+					<a class="items-tooltip" title="" href="#">{l s='More about' mod='affinityitems'}</a>				
+				</div>
+			</div>			
+		</div>
+		<div class="items-box">
+			<div class="items-box-title">
+				{l s='Frequency' mod='affinityitems'}<br>{l s='of the safety synchronization' mod='affinityitems'}
+			</div>
+			<div class="items-box-content">
+				<input type="text" class="items-sync-diff" name="syncDiff" value="{$syncDiff|escape:'htmlall':'UTF-8'}"> {l s='minutes' mod='affinityitems'}
+			</div>
+		</div>
+		<input type="submit" value="{l s='Save' mod='affinityitems'}" class="items-button-submit items-right">
+		<div class="clear"></div>
+		</form>
 	</div>
 
-	<div class="aeblock">
-		<span class="aetitleblock"><div class="aepurple">{l s='A/B Testing' mod='affinityitems'} <br /> <span class="aelittle">{l s='IP Blacklist' mod='affinityitems'}</span></div></span>
-		<div class="aedarkblue"> <span class='blackList'> {l s='IP list' mod='affinityitems'} </span> 
-			<input type="text" name="blacklist" value="{if !empty($blacklist)}{foreach from=$blacklist item=ip}{$ip|escape:'htmlall':'UTF-8'};{/foreach}{/if}">
+	<div id="content-config">
+
+		<div class="items-title">
+			{l s='Recommendation configuration' mod='affinityitems'}			
+			<span class="visit" onclick="javascript:introJs().start();"> {l s='Help' mod='affinityitems'}</span>
 		</div>
-		<a href="#" id="abtestingdetails" class="abtestingdetails" title="{l s='This feature lets you blacklist the IP addresses of your own company, so that the statistics are unbiased.' mod='affinityitems'}<br />{l s='For example, if a call center places orders directly on the site, these commands should not be taken into account in the AB Testing.' mod='affinityitems'}<br />{l s='Blacklisted IP addresses do not receive recommendations' mod='affinityitems'}">{l s='More about' mod='affinityitems'}</a>
-	</div>
 
-	<div class="aeblock">
-		<span class="aetitleblock"><div class="aepurple">{l s='Frequency' mod='affinityitems'} <br /> <span class="aelittle">{l s='of the safety synchronization' mod='affinityitems'}</span></div></span>
-		<div class="aedarkblue"> <span class='syncDiff'> {l s='Duration (minutes)' mod='affinityitems'} </span> 
-			<input type="text" class="aenumber" name="syncDiff" value="{$syncDiff|escape:'htmlall':'UTF-8'}">
+		<div class="zone-config">
+
+		<form action='#config' method='POST'/>
+
+		<input type="hidden" name="configZoneReco" value="1">
+
+		<div class="zone-tabs">
+			{foreach from=$hookList item=hook}
+			{assign var="zone1" value="{$hook}_1"}
+			{assign var="zone2" value="{$hook}_2"}
+			<div class="zone-tab {if $hook=='Home'} zone-tab-selected {/if}" onClick="changeZoneTab('{$hook|lower}')">
+				{$hook}
+				{if $configuration.{$hook}->reco{$zone1} == "1" || $configuration.{$hook}->reco{$zone2} == "1"} 
+				<span class="lightfire on">(on)</span>
+				{else}
+				<span class="lightfire">(off)</span>
+				{/if}
+			</div>
+			{/foreach}
 		</div>
-		<a href="#" id="abtestingdetails" class="abtestingdetails" title="{l s='After the initial synchronization, the new events are synchronized along the way.' mod='affinityitems'} <br />{l s='However, a safety synchronization process regularly takes place to ensure that your system is up to date.' mod='affinityitems'}<br />
-		{l s='Adjust here the frequency of the safety synchronization' mod='affinityitems'}">{l s='More about' mod='affinityitems'}</a>
-	</div>
 
-	<div class="clear clear-margin-thirty"></div>
+		{foreach from=$hookList item=hook}
+		{assign var="zone1" value="{$hook}_1"}
+		{assign var="zone2" value="{$hook}_2"}
 
-	<input type="submit" value="{l s='Save' mod='affinityitems'}" name="submit" class="aebutton aeright submit">
-
-	<div class="clear"></div>
-
-</form>
-
+		<div class="zone" id="zone-{$hook|lower}">
+			<span class="title">
+				{$hook}
+			</span>
+			<span class="description" data-step="1" data-intro="Pour chaque recommandation vous aurez une explication ici.">
+			</span>
+			<div class="one" data-step="2" data-intro="Dans ce formulaire, vous configurez la zone haute de la recommandation">
+				<div class="position">{l s='First recommendation zone' mod='affinityitems'}</div>
+				<div class="position-options">
+					<div class="onoffswitch" data-step="3" data-intro="Un bouton pour activer la zone">
+						<input type="hidden" name="reco{$hook}_1" value="0">
+						<input type="checkbox" name="reco{$hook}_1" class="onoffswitch-checkbox" id="reco{$hook}_1" value="1" {if $configuration.{$hook}->reco{$zone1} == "1"} checked {/if}>
+						<label class="onoffswitch-label" for="reco{$hook}_1">
+							<span class="onoffswitch-inner"></span>
+							<span class="onoffswitch-switch"></span>
+						</label>
+					</div>
+					<label>{l s='Theme' mod='affinityitems'} :</label>
+					<select data-step="4" data-intro="Un champ pour choisir le style graphique de la zone. Par défaut le style utilisera les classes natives Prestashop si votre design a été conçu dans les normes Prestashop." name="recoTheme{$hook}_1">
+						{foreach from=$themeList item=theme}
+						<option {if $theme.id_theme == $configuration.{$hook}->recoTheme{$zone1}} selected {/if} value="{$theme.id_theme}">{$theme.name}</option>
+						{/foreach}
+					</select>
+					<label>{l s='Type' mod='affinityitems'} :</label>
+					<select class="ae-type-recommendation-select" data-step="5" data-intro="Un champ pour choisir le type de recommandation. La recommandation est personnalisée par défaut, mais vous pouvez utiliser la recommandation complémentaire (cross sell) ou [...]" name="recoType{$hook}_1">
+						{if {$hook|lower} == "home" || {$hook|lower} == "left" || {$hook|lower} == "right"}
+						<option {if $configuration.{$hook}->recoType{$zone1} == "recoAll"} selected {/if} value="recoAll">Recommandation personnalisée</option>
+						<option {if $configuration.{$hook}->recoType{$zone1} == "recoAllFiltered"} selected {/if} value="recoAllFiltered">Recommandation personnalisée filtrée</option>
+						<option {if $configuration.{$hook}->recoType{$zone1} == "recoLastSeen"} selected {/if} value="recoLastSeen">Recommandation derniers produits aimés</option>
+						{else if {$hook|lower} == "cart"}
+						<option value="recoCart">Recommandation personnalisée</option>
+						{else if {$hook|lower} == "product"}
+						<option {if $configuration.{$hook}->recoType{$zone1} == "recoSimilar"} selected {/if} value="recoSimilar">Recommandation personnalisée</option>
+						<option {if $configuration.{$hook}->recoType{$zone1} == "recoUpSell"} selected {/if} value="recoUpSell">Up selling</option>
+						<option {if $configuration.{$hook}->recoType{$zone1} == "recoCrossSell"} selected {/if} value="recoCrossSell">Cross selling</option>
+						{else if {$hook|lower} == "category"}
+						<option {if $configuration.{$hook}->recoType{$zone1} == "recoCategory"} selected {/if} value="recoCategory">Recommandation personnalisée</option>
+						{else if {$hook|lower} == "search"}
+						<option {if $configuration.{$hook}->recoType{$zone1} == "recoSearch"} selected {/if} value="recoSearch">Recommandation personnalisée</option>
+						{/if}
+					</select>
+					<br /><br /><br /><br />
+					<label class="items-selectors-label">{l s='Title zone' mod='affinityitems'} :</label>
+					<input class="items-selectors-input" name="recoTitle{$hook}_1" type="text" value="{$configuration.{$hook}->recoTitle{$zone1}}">
+					{if {$hook|lower} == "category" || {$hook|lower} == "search"}
+					<label class="items-selectors-label">{l s='Selector' mod='affinityitems'} :</label>
+					<input class="items-selectors-input" name="recoSelector{$hook}_1" type="text" value="{$configuration.{$hook}->recoSelector{$zone1}}">
+					<br /><br /><br /><br />
+					<label class="items-selectors-position">{l s='Position' mod='affinityitems'} :</label>
+					<select  name="recoSelectorPosition{$hook}_1">
+						<option {if $configuration.{$hook}->recoSelectorPosition{$zone1} == "before"} selected {/if} value="before">Before</option>
+						<option {if $configuration.{$hook}->recoSelectorPosition{$zone1} == "after"} selected {/if} value="after">After</option>
+					</select>
+					{/if}
+					<label class="ae-number-reco-label">{l s='Recommendation number' mod='affinityitems'} :</label>
+					<input class="ae-number-reco-input" type="number" min="1" max="20" name="recoSize{$hook}_1" value="{$configuration.{$hook}->recoSize{$zone1}}">
+				</div>
+				<div class="clear"></div>
+				{if {$hook|lower} == "home" || {$hook|lower} == "left" || {$hook|lower} == "right"}
+				<div class="items-reco-all-filtered {if $configuration.{$hook}->recoType{$zone1} == 'recoAllFiltered'} items-display {/if}">
+					<fieldset>
+						<legend>{l s='Filtered recommendation' mod='affinityitems'}</legend>
+						<select class="items-reco-all-filtered-select" name="recoFilter{$hook}_1">
+							<option {if $configuration.{$hook}->recoFilter{$zone1} == "onSale"} selected {/if} value="onSale">{l s='By product on sale' mod='affinityitems'}</option>
+							<option {if $configuration.{$hook}->recoFilter{$zone1} == "byCategory"} selected {/if} value="byCategory">{l s='By categories' mod='affinityitems'}</option>
+							<option {if $configuration.{$hook}->recoFilter{$zone1} == "byAttribute"} selected {/if} value="byAttribute">{l s='By attributes' mod='affinityitems'}</option>
+							<option {if $configuration.{$hook}->recoFilter{$zone1} == "byFeature"} selected {/if} value="byFeature">{l s='By features' mod='affinityitems'}</option>
+						</select>
+						<div class="categoryIds {if $configuration.{$hook}->recoFilter{$zone1} == 'byCategory'} items-display {/if}">
+							{l s='Filter by category ids (split by semicolon)' mod='affinityitems'} : <input name="categoryIds{$hook}_1" value="{$configuration.{$hook}->categoryIds{$zone1}}" type="text">
+						</div>
+						<div class="attributeIds {if $configuration.{$hook}->recoFilter{$zone1} == 'byAttribute'} items-display {/if}">
+							{l s='Filter by attribute ids (split by semicolon)' mod='affinityitems'} : <input name="attributeIds{$hook}_1" value="{$configuration.{$hook}->attributeIds{$zone1}}" type="text">
+						</div>
+						<div class="featureIds {if $configuration.{$hook}->recoFilter{$zone1} == 'byFeature'} items-display {/if}">
+							{l s='Filter by feature ids (split by semicolon)' mod='affinityitems'} : <input name="featureIds{$hook}_1" value="{$configuration.{$hook}->featureIds{$zone1}}" type="text">
+						</div>
+					</fieldset>
+				</div>
+				{/if}
+			</div>
+			<div class="clear"></div>
+			<div class="items-hr"></div>
+			<div class="two" data-step="6" data-intro="La deuxième zone permet d'afficher une seconde barre de recommandation en dessous de la première.">
+				<div class="position">{l s='Second recommendation zone' mod='affinityitems'}</div>
+				<div class="position-options">
+					<div class="onoffswitch">
+						<input type="hidden" name="reco{$hook}_2" value="0">
+						<input type="checkbox" name="reco{$hook}_2" class="onoffswitch-checkbox" id="reco{$hook}_2" value="1" {if $configuration.{$hook}->reco{$zone2} == "1"} checked {/if}>
+						<label class="onoffswitch-label" for="reco{$hook}_2">
+							<span class="onoffswitch-inner"></span>
+							<span class="onoffswitch-switch"></span>
+						</label>
+					</div>
+					<label>{l s='Theme' mod='affinityitems'} :</label>
+					<select name="recoTheme{$hook}_2">
+						{foreach from=$themeList item=theme}
+						<option {if $theme.id_theme == $configuration.{$hook}->recoTheme{$zone2}} selected {/if} value="{$theme.id_theme}">{$theme.name}</option>
+						{/foreach}
+					</select>
+					<label>{l s='Type' mod='affinityitems'} :</label>
+					<select class="ae-type-recommendation-select" name="recoType{$hook}_2">
+						{if {$hook|lower} == "home" || {$hook|lower} == "left" || {$hook|lower} == "right"}
+						<option {if $configuration.{$hook}->recoType{$zone2} == "recoAll"} selected {/if} value="recoAll">Recommandation personnalisée</option>
+						<option {if $configuration.{$hook}->recoType{$zone2} == "recoAllFiltered"} selected {/if} value="recoAllFiltered">Recommandation personnalisée filtrée</option>
+						<option {if $configuration.{$hook}->recoType{$zone2} == "recoLastSeen"} selected {/if} value="recoLastSeen">Recommandation derniers produits aimés</option>
+						{else if {$hook|lower} == "cart"}
+						<option value="recoCart">Recommandation personnalisée</option>
+						{else if {$hook|lower} == "product"}
+						<option {if $configuration.{$hook}->recoType{$zone2} == "recoSimilar"} selected {/if} value="recoSimilar">Recommandation personnalisée</option>
+						<option {if $configuration.{$hook}->recoType{$zone2} == "recoUpSell"} selected {/if} value="recoUpSell">Up selling</option>
+						<option {if $configuration.{$hook}->recoType{$zone2} == "recoCrossSell"} selected {/if} value="recoCrossSell">Cross selling</option>
+						{else if {$hook|lower} == "category"}
+						<option {if $configuration.{$hook}->recoType{$zone2} == "recoCategory"} selected {/if} value="recoCategory">Recommandation personnalisée</option>
+						{else if {$hook|lower} == "search"}
+						<option {if $configuration.{$hook}->recoType{$zone2} == "recoSearch"} selected {/if} value="recoSearch">Recommandation personnalisée</option>
+						{/if}
+					</select>
+					<br /><br /><br /><br />
+					<label class="items-selectors-label">{l s='Title zone' mod='affinityitems'} :</label>
+					<input class="items-selectors-input" name="recoTitle{$hook}_2" type="text" value="{$configuration.{$hook}->recoTitle{$zone2}}">
+					{if {$hook|lower} == "category" || {$hook|lower} == "search"}
+					<label class="items-selectors-label">{l s='Selector' mod='affinityitems'} :</label>
+					<input class="items-selectors-input" name="recoSelector{$hook}_2" type="text" value="{$configuration.{$hook}->recoSelector{$zone2}}">
+					<br /><br /><br /><br />
+					<label class="items-selectors-position">{l s='Position' mod='affinityitems'} :</label>
+					<select  name="recoSelectorPosition{$hook}_2">
+						<option {if $configuration.{$hook}->recoSelectorPosition{$zone2} == "before"} selected {/if} value="before">Before</option>
+						<option {if $configuration.{$hook}->recoSelectorPosition{$zone2} == "after"} selected {/if} value="after">After</option>
+					</select>
+					{/if}
+					<label class="ae-number-reco-label">{l s='Recommendation number' mod='affinityitems'} :</label>
+					<input class="ae-number-reco-input" type="number" min="1" max="20"  name="recoSize{$hook}_2" value="{$configuration.{$hook}->recoSize{$zone2}}">					
+				</div>
+				<div class="clear"></div>
+				{if {$hook|lower} == "home" || {$hook|lower} == "left" || {$hook|lower} == "right"}
+				<div class="items-reco-all-filtered {if $configuration.{$hook}->recoType{$zone2} == 'recoAllFiltered'} items-display {/if}">
+					<fieldset>
+						<legend>{l s='Filtered recommendation' mod='affinityitems'}</legend>
+						<select class="items-reco-all-filtered-select" name="recoFilter{$hook}_2">
+							<option {if $configuration.{$hook}->recoFilter{$zone2} == "onSale"} selected {/if} value="onSale">Produits en solde</option>
+							<option {if $configuration.{$hook}->recoFilter{$zone2} == "byCategory"} selected {/if} value="byCategory">Par catégorie</option>
+							<option {if $configuration.{$hook}->recoFilter{$zone2} == "byAttribute"} selected {/if} value="byAttribute">Par attribut</option>
+							<option {if $configuration.{$hook}->recoFilter{$zone2} == "byFeature"} selected {/if} value="byFeature">Par caractéritique</option>
+						</select>
+						<div class="categoryIds {if $configuration.{$hook}->recoFilter{$zone2} == 'byCategory'} items-display {/if}">
+							{l s='Filter by category ids (split by semicolon)' mod='affinityitems'} : <input name="categoryIds{$hook}_2" value="{$configuration.{$hook}->categoryIds{$zone2}}" type="text">
+						</div>
+						<div class="attributeIds {if $configuration.{$hook}->recoFilter{$zone2} == 'byAttribute'} items-display {/if}">
+							{l s='Filter by attribute ids (split by semicolon)' mod='affinityitems'} : <input name="attributeIds{$hook}_2" value="{$configuration.{$hook}->attributeIds{$zone2}}" type="text">
+						</div>
+						<div class="featureIds {if $configuration.{$hook}->recoFilter{$zone2} == 'byFeature'} items-display {/if}">
+							{l s='Filter by feature ids (split by semicolon)' mod='affinityitems'} : <input name="featureIds{$hook}_2" value="{$configuration.{$hook}->featureIds{$zone2}}" type="text">
+						</div>
+					</fieldset>
+				</div>
+				{/if}
+			</div>
+		</div>
+		{/foreach}
+		<input type="submit" value="{l s='Save' mod='affinityitems'}" class="items-button-submit items-right">
+		<div class="clear"></div>
+		</form>
+		</div>
 </div>
-
-<div id='account'>
-	<div class="clear clear-margin-thirty"></div>
-	
-	<a class="aebutton account-button" target="_blank" href="http://manager.affinityitems.com/login/{$siteId|escape:'htmlall':'UTF-8'}/{$data->authToken|escape:'htmlall':'UTF-8'}">{l s='Access my account' mod='affinityitems'}</a>
-	
-	<div class="account-description"> 
-		<h2 class='aepurple'>{l s='Account' mod='affinityitems'}</h2>
-		{l s='Manage your payment options and access your invoices in the customer area. Also find all the system messages and more detailed statistics on the impact of your personnalization service.' mod='affinityitems'}
+<div id="content-theme-editor">
+	{include file="./theme-editor.tpl"}
+	<div class="clear"></div>
+	<div class="items-title">
+		{l s='Additional CSS' mod='affinityitems'}
 	</div>
-
-	<div class="support-description">
-		<h2 class='aepurple'>{l s='Support' mod='affinityitems'}</h2>
-		{l s='If you\'re having a problem with your Affinity Items module, please read the' mod='affinityitems'} {l s='FAQ (Tab "Support" in the customer area)' mod='affinityitems'} {l s=' or contact' mod='affinityitems'} <a class="ae-email-color" href="mailto:mathieu@affinity-engine.fr">mathieu@affinity-engine.fr</a>
-	</div>
+	<form action='#config' method='POST'/>
+	<textarea class="items-css-text-area" name="additionalCss">{$additionalCss|escape:'htmlall':'UTF-8'}</textarea>
+	<input type="submit" value="{l s='Save' mod='affinityitems'}" class="items-button-submit items-right">
+	</form>
 	<div class="clear"></div>
 </div>
-
-<div id="logs">
+<div id="content-logs">
 	{foreach from=$logs item=log}
-	<div class="aelog {if $log.severity == '[ERROR]'} aealert {else} aeinfo {/if}"><p>[{$log.date_add|escape:'htmlall':'UTF-8'}] {$log.severity|escape:'htmlall':'UTF-8'} {$log.message|escape:'htmlall':'UTF-8'}</p></div><br />
+	<div class="ae-log {if $log.severity == '[ERROR]'} ae-alert {else} ae-info {/if}"><p>[{$log.date_add|escape:'htmlall':'UTF-8'}] {$log.severity|escape:'htmlall':'UTF-8'} {$log.message|escape:'htmlall':'UTF-8'}</p></div><br />
 	{/foreach}
 </div>
-
+<div id="content-support">
+	<div class="items-support-description">
+		<h2 class="items-title"><i class="fa fa-life-ring"></i>  Support</h2>
+		{l s='If you\'re having a problem with your Affinity Items module, please read the' mod='affinityitems'} {l s='FAQ' mod='affinityitems'} {l s=' or contact' mod='affinityitems'}
+		<br />
+		<br />
+		<ul>
+			<li>{l s='The technical support at' mod='affinityitems'} <span class="ae-email-color">+33 9 54 52 85 12</span> {l s='or contact' mod='affinityitems'} <a class="ae-email-color" href="mailto:mathieu@affinity-engine.fr">mathieu@affinity-engine.fr</a></li>
+			<li>{l s='The commercial service at' mod='affinityitems'} <span class="ae-email-color">+33 9 80 47 24 83</span></li>
+		</ul>
+	</div>
+	<div id="items-wiki"></div>
+	<div class="clear"></div>
+</div>
 </div>

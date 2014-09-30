@@ -16,7 +16,17 @@
 *  International Registered Trademark & Property of Affinity Engine SARL
 */
 
+require_once(dirname(__FILE__).'/../loader.php');
+
 class AEAjaxAdapter {
+
+	public static function stackRead($product_id)
+	{
+		$cookies = AECookie::getInstance();
+		$reco_last_seen = is_array(unserialize($cookies->getCookie()->__get('recoLastSeen'))) ? unserialize($cookies->getCookie()->__get('recoLastSeen')) : array();
+		array_push($reco_last_seen, $product_id);
+		$cookies->getCookie()->__set('recoLastSeen', serialize($reco_last_seen));
+	}
 
 	public static function initHosts()
 	{
@@ -99,7 +109,7 @@ class AEAjaxAdapter {
 	return Tools::jsonEncode($ret);
 }
 
-public static function setAbTestingPercentage()
+public static function setProperty()
 {
 	if (!Tools::getValue('aetoken') || Tools::getValue('aetoken') != AEAdapter::getBackOfficeToken())
 		die('ERROR');
@@ -110,6 +120,17 @@ public static function setAbTestingPercentage()
 	{
 		try {
 			AEAdapter::setAbTestingPercentage(Tools::safeOutput(Tools::getValue('percentage')));
+			$response['_ok'] = true;
+		} catch (Exception $e)
+		{
+			AELogger::log('[ERROR]', $e->getMessage());
+			$response['_ok'] = false;
+		}
+	}
+	else if (Tools::getIsset('activation'))
+	{
+		try {
+			AEAdapter::setActiveRecommendation(Tools::safeOutput(Tools::getValue('activation')));
 			$response['_ok'] = true;
 		} catch (Exception $e)
 		{
@@ -275,6 +296,12 @@ public static function postAction()
 				$repository->insert(AELibrary::castArray($content));
 			}
 		}
+
+		if (AELibrary::equals($action->context, 'read'))
+		{
+			self::stackRead($action->productId);
+		}
+
 		return Tools::jsonEncode((array('_ok' => true)));
 	}
 	else

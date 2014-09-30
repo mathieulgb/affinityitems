@@ -26,3 +26,4 @@ $sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'ae_guest_action_repository`;';
 $sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'ae_notification_lang`;';
 $sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'ae_notification`;';
 $sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'ae_cart_ab_testing`;';
+$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'ae_theme`;';
