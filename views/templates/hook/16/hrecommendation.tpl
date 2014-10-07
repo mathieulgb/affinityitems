@@ -54,7 +54,7 @@
 				<div id="{$reco.theme.productContainerId}" class="{$reco.theme.productContainerClass}" itemscope itemtype="http://schema.org/Product">
 					<div id="{$reco.theme.productLeftBlockId}" class="{$reco.theme.productLeftBlockClass}">
 						<div class="product-image-container">
-							<a class="{$reco.theme.pictureLinkClass}" id="{$reco.theme.pictureLinkId}" href="{$product.link|escape:'html':'UTF-8'}" title="{$product.name|escape:'html':'UTF-8'}" itemprop="url">
+							<a rel="{$product.id_product|escape:'htmlall'}" class="{$reco.theme.pictureLinkClass}" id="{$reco.theme.pictureLinkId}" href="{$product.link|escape:'html':'UTF-8'}" title="{$product.name|escape:'html':'UTF-8'}" itemprop="url">
 								<img id="{$reco.theme.pictureId}" class="{$reco.theme.pictureClass}" {if $reco.theme.pictureDisplayOptions} style="border: {$reco.theme.pictureBorderSize}px solid {$reco.theme.pictureBorderColor}; border-radius: {$reco.theme.pictureBorderRoundedSize}px;" {/if} src="{$link->getImageLink($product.link_rewrite, $product.id_image, $reco.theme.pictureResolution)|escape:'html':'UTF-8'}" alt="{if !empty($product.legend)}{$product.legend|escape:'html':'UTF-8'}{else}{$product.name|escape:'html':'UTF-8'}{/if}" title="{if !empty($product.legend)}{$product.legend|escape:'html':'UTF-8'}{else}{$product.name|escape:'html':'UTF-8'}{/if}" height="{$reco.theme.pictureHeight}" width="{$reco.theme.pictureWidth}" itemprop="image" />
 							</a>
 						</div>
@@ -63,7 +63,7 @@
 						{if $reco.theme.productTitleActivation}
 						<h5 {if $reco.theme.productTitleDisplayOptions} style="height: {$reco.theme.productTitleHeight}px" {/if} class="{$reco.theme.productTitleClass}" id="{$reco.theme.productTitleId}" itemprop="name">
 							{if isset($product.pack_quantity) && $product.pack_quantity}{$product.pack_quantity|intval|cat:' x '}{/if}
-							<a {if $reco.theme.productTitleDisplayOptions} style="color:{$reco.theme.productTitleColor};font-size: {$reco.theme.productTitleSize}px;text-align: {$reco.theme.productTitleAlign}; line-height: {$reco.theme.productTitleLineHeight}px;"{/if} id="{$reco.theme.productLinkTitleId}" class="{$reco.theme.productLinkTitleClass}" href="{$product.link|escape:'html':'UTF-8'}" title="{$product.name|escape:'html':'UTF-8'}" itemprop="url" >
+							<a rel="{$product.id_product|escape:'htmlall'}" {if $reco.theme.productTitleDisplayOptions} style="color:{$reco.theme.productTitleColor};font-size: {$reco.theme.productTitleSize}px;text-align: {$reco.theme.productTitleAlign}; line-height: {$reco.theme.productTitleLineHeight}px;"{/if} id="{$reco.theme.productLinkTitleId}" class="{$reco.theme.productLinkTitleClass}" href="{$product.link|escape:'html':'UTF-8'}" title="{$product.name|escape:'html':'UTF-8'}" itemprop="url" >
 								{$product.name|truncate:45:'...'|escape:'html':'UTF-8'}
 							</a>
 						</h5>
@@ -99,13 +99,13 @@
 							{if ($product.allow_oosp || $product.quantity > 0)}
 							{if isset($static_token)}
 							{if $reco.theme.cartActivation}
-							<a {if $reco.theme.cartDisplayOptions} style="color: {$reco.theme.cartColor}; border-radius: {$reco.theme.cartBorderRoundedSize}px !important; font-size: {$reco.theme.cartSize}px;  text-align: {$reco.theme.cartAlign}; line-height: {$reco.theme.cartLineHeight}px;" {/if} class="{$reco.theme.cartClass}" id="{$reco.theme.cartId}" href="{$link->getPageLink('cart',false, NULL, "add=1&amp;id_product={$product.id_product|intval}&amp;token={$static_token}", false)|escape:'html':'UTF-8'}" rel="nofollow" title="{l s='Add to cart'}" data-id-product="{$product.id_product|intval}">
+							<a rel="{$product.id_product|escape:'htmlall'}" {if $reco.theme.cartDisplayOptions} style="color: {$reco.theme.cartColor}; border-radius: {$reco.theme.cartBorderRoundedSize}px !important; font-size: {$reco.theme.cartSize}px;  text-align: {$reco.theme.cartAlign}; line-height: {$reco.theme.cartLineHeight}px;" {/if} class="{$reco.theme.cartClass}" id="{$reco.theme.cartId}" href="{$link->getPageLink('cart',false, NULL, "add=1&amp;id_product={$product.id_product|intval}&amp;token={$static_token}", false)|escape:'html':'UTF-8'}" rel="nofollow" title="{l s='Add to cart'}" data-id-product="{$product.id_product|intval}">
 								<span {if $reco.theme.cartDisplayOptions} style="color: {$reco.theme.cartColor}; border: {$reco.theme.cartBorderSize}px solid {$reco.theme.cartBorderColor}; border-radius: {$reco.theme.cartBorderRoundedSize}px !important; {if !$reco.theme.cartBackgroundColorTransparent} background: {$reco.theme.cartBackgroundColor};{/if} font-size: {$reco.theme.cartSize}px;  text-align: {$reco.theme.cartAlign}; line-height: {$reco.theme.cartLineHeight}px;" {/if}>{l s='Add to cart'}</span>
 							</a>
 							{/if}
 							{else}
 							{if $reco.theme.cartActivation}
-							<a {if $reco.theme.cartDisplayOptions} style="color: {$reco.theme.cartColor}; border-radius: {$reco.theme.cartBorderRoundedSize}px !important; font-size: {$reco.theme.cartSize}px; text-align: {$reco.theme.cartAlign}; line-height: {$reco.theme.cartLineHeight}px;" {/if} class="{$reco.theme.cartClass}" id="{$reco.theme.cartId}"  href="{$link->getPageLink('cart',false, NULL, 'add=1&amp;id_product={$product.id_product|intval}', false)|escape:'html':'UTF-8'}" rel="nofollow" title="{l s='Add to cart'}" data-id-product="{$product.id_product|intval}">
+							<a rel="{$product.id_product|escape:'htmlall'}" {if $reco.theme.cartDisplayOptions} style="color: {$reco.theme.cartColor}; border-radius: {$reco.theme.cartBorderRoundedSize}px !important; font-size: {$reco.theme.cartSize}px; text-align: {$reco.theme.cartAlign}; line-height: {$reco.theme.cartLineHeight}px;" {/if} class="{$reco.theme.cartClass}" id="{$reco.theme.cartId}"  href="{$link->getPageLink('cart',false, NULL, 'add=1&amp;id_product={$product.id_product|intval}', false)|escape:'html':'UTF-8'}" rel="nofollow" title="{l s='Add to cart'}" data-id-product="{$product.id_product|intval}">
 								<span {if $reco.theme.cartDisplayOptions} style="color: {$reco.theme.cartColor}; border: {$reco.theme.cartBorderSize}px solid {$reco.theme.cartBorderColor}; border-radius: {$reco.theme.cartBorderRoundedSize}px !important;{if !$reco.theme.cartBackgroundColorTransparent} background: {$reco.theme.cartBackgroundColor};{/if} font-size: {$reco.theme.cartSize}px; text-align: {$reco.theme.cartAlign}; line-height: {$reco.theme.cartLineHeight}px;" {/if}>{l s='Add to cart'}</span>
 							</a>
 							{/if}
@@ -119,7 +119,7 @@
 							{/if}
 							{/if}
 							{if $reco.theme.detailActivation}
-							<a itemprop="url" {if $reco.theme.detailDisplayOptions} style="color: {$reco.theme.detailColor}; font-size: {$reco.theme.detailSize}px;" {/if} id="{$reco.theme.detailId}" class="{$reco.theme.detailClass}" href="{$product.link|escape:'html':'UTF-8'}" title="{l s='View'}">
+							<a rel="{$product.id_product|escape:'htmlall'}" itemprop="url" {if $reco.theme.detailDisplayOptions} style="color: {$reco.theme.detailColor}; font-size: {$reco.theme.detailSize}px;" {/if} id="{$reco.theme.detailId}" class="{$reco.theme.detailClass}" href="{$product.link|escape:'html':'UTF-8'}" title="{l s='View'}">
 								<span>{l s='More'}</span>
 							</a>
 							{/if}
