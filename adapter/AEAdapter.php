@@ -85,7 +85,7 @@ class AEAdapter {
 				AND c.id_category = cs.id_category
 				AND cs.id_shop = '.(int)Shop::getContextShopID(true).'
 				ORDER BY c.id_category
-				LIMIT 0,'.intval($bulk).';');
+				LIMIT 0,'.(int)$bulk.';');
 		}
 		else
 		{
@@ -93,7 +93,7 @@ class AEAdapter {
 				FROM `'._DB_PREFIX_.'category` c
 				'.$clause.'
 				ORDER BY c.id_category
-				LIMIT 0,'.intval($bulk).';');
+				LIMIT 0,'.(int)$bulk.';');
 		}
 	}
 
@@ -193,7 +193,7 @@ class AEAdapter {
 				'.$clause.'
 				AND ps.id_shop = '.(int)Shop::getContextShopID(true).'
 				ORDER BY ps.id_product
-				LIMIT 0,'.intval($bulk).';');
+				LIMIT 0,'.(int)$bulk.';');
 		}
 		else
 		{
@@ -201,7 +201,7 @@ class AEAdapter {
 				FROM `'._DB_PREFIX_.'product` p
 				'.$clause.'
 				ORDER BY p.id_product
-				LIMIT 0,'.intval($bulk).';');
+				LIMIT 0,'.(int)$bulk.';');
 		}
 	}
 
@@ -214,7 +214,7 @@ class AEAdapter {
 			LEFT JOIN `'._DB_PREFIX_.'lang` l ON l.id_lang = pl.id_lang
 			LEFT JOIN `'._DB_PREFIX_.'manufacturer` m ON p.id_manufacturer = m.id_manufacturer
 			LEFT JOIN `'._DB_PREFIX_.'supplier` s ON p.id_supplier = s.id_supplier
-			WHERE p.id_product = '.intval($product_id).'
+			WHERE p.id_product = '.(int)$product_id.'
 			'.$active_lang.';');
 	}
 
@@ -280,7 +280,7 @@ class AEAdapter {
 			AND fp.id_feature_value = fv.id_feature_value
 			AND fl.id_feature = fv.id_feature
 			AND fv.id_feature_value = fvl.id_feature_value
-			AND fp.id_product = '.intval($product_id).'
+			AND fp.id_product = '.(int)$product_id.'
 			AND l.iso_code=\''.pSQL($iso_code).'\';');
 	}
 
@@ -289,7 +289,7 @@ class AEAdapter {
 		return Db::getInstance()->ExecuteS('
 			SELECT id_attribute
 			FROM '._DB_PREFIX_.'product_attribute_combination
-			WHERE id_product_attribute = '.intval($product_id_attribute).';');
+			WHERE id_product_attribute = '.(int)$product_id_attribute.';');
 	}
 
 	public static function insertProduct($product)
@@ -341,7 +341,7 @@ class AEAdapter {
 		AND c.id_customer IN (SELECT id_customer FROM '._DB_PREFIX_.'customer)
 		AND c.id_customer <> 0
 		'.$multishop.'
-		LIMIT 0,'.intval($bulk).';';
+		LIMIT 0,'.(int)$bulk.';';
 		return $sql;
 	}
 
@@ -358,7 +358,7 @@ class AEAdapter {
 		AND c.id_customer IN (SELECT id_customer FROM '._DB_PREFIX_.'customer)
 		AND c.id_customer <> 0
 		'.$multishop.'
-		LIMIT 0,'.intval($bulk).';';
+		LIMIT 0,'.(int)$bulk.';';
 		return $sql;
 	}
 
@@ -375,7 +375,7 @@ class AEAdapter {
 		AND c.id_customer IN (SELECT id_customer FROM '._DB_PREFIX_.'customer)
 		AND c.id_customer <> 0
 		'.$multishop.'
-		LIMIT 0,'.intval($bulk).';';
+		LIMIT 0,'.(int)$bulk.';';
 		return $sql;
 	}
 
@@ -430,14 +430,14 @@ class AEAdapter {
 			AND o.id_order IN (SELECT id_order FROM '._DB_PREFIX_.'order_detail)
 			AND id_customer <> 0
 			'.$multishop.'
-			LIMIT 0,'.intval($bulk).';');
+			LIMIT 0,'.(int)$bulk.';');
 	}
 
 	public static function getOrderLines($order_id)
 	{
 		return Db::getInstance()->ExecuteS('SELECT product_id, product_attribute_id, product_quantity
 			FROM '._DB_PREFIX_.'order_detail
-			WHERE id_order = '.intval($order_id).'
+			WHERE id_order = '.(int)$order_id.'
 			AND product_id IN (SELECT p.id_product FROM '._DB_PREFIX_.'product p);');
 	}
 
@@ -457,7 +457,7 @@ class AEAdapter {
 			SELECT id_guest as id, action
 			FROM '._DB_PREFIX_.'ae_guest_action_repository
 			ORDER BY id ASC
-			LIMIT 0,'.intval($bulk).';');
+			LIMIT 0,'.(int)$bulk.';');
 	}
 
 	public static function getGuestActionList($guest_id)
@@ -691,7 +691,7 @@ class AEAdapter {
 		return Db::getInstance()->ExecuteS('SELECT n.id_notification, nl.title, nl.text FROM '._DB_PREFIX_.'ae_notification n,
 			`'._DB_PREFIX_.'ae_notification_lang` nl
 			WHERE nread = 0 and n.id_notification = nl.id_notification
-			AND nl.language = (SELECT iso_code FROM `'._DB_PREFIX_.'lang` WHERE id_lang = '.intval($lang).')');
+			AND nl.language = (SELECT iso_code FROM `'._DB_PREFIX_.'lang` WHERE id_lang = '.(int)$lang.')');
 	}
 
 	public static function log($severity, $message)
@@ -705,7 +705,7 @@ class AEAdapter {
 	public static function getLog()
 	{
 		$multishop = (Context::getContext()->shop->isFeatureActive()) ? Shop::getContextShopID(true) : 1;
-		return Db::getInstance()->ExecuteS('SELECT * FROM '._DB_PREFIX_.'ae_log WHERE id_shop = '.intval($multishop).'
+		return Db::getInstance()->ExecuteS('SELECT * FROM '._DB_PREFIX_.'ae_log WHERE id_shop = '.(int)$multishop.'
 			ORDER BY date_add DESC LIMIT 0, 500');
 	}
 
@@ -713,7 +713,7 @@ class AEAdapter {
 	{
 		$ids = array();
 		$languages = Language::getLanguages();
-		foreach ($languages as $key => $language)
+		foreach ($languages as $language)
 			array_push($ids, $language['id_lang']);
 		return implode(",", $ids);
 	}

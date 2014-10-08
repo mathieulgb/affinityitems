@@ -211,7 +211,7 @@ $(document).ready(function () {
 				<form class="items-login-container">
 					<h3>{l s='Login in' mod='affinityitems'}</h3>
 					<br>
-					<input type="text" class="aeinput" id="lemail" value="{$employee[0].email}" placeholder="{l s='Email' mod='affinityitems'}" />
+					<input type="text" class="aeinput" id="lemail" value="{$employee[0].email|escape:'htmlall':'UTF-8'}" placeholder="{l s='Email' mod='affinityitems'}" />
 					<br>
 					<input type="password" class="aeinput" id="lpassword" placeholder="{l s='Password' mod='affinityitems'}" />
 					<br>
@@ -223,11 +223,11 @@ $(document).ready(function () {
 
 				<form class="items-register-container">
 					<h3>{l s='Register an account' mod='affinityitems'}</h3>					
-					<input type="text" class="aeinput" id="rfirstname" value="{$employee[0].firstname}" placeholder="{l s='Firstname' mod='affinityitems'}" />
+					<input type="text" class="aeinput" id="rfirstname" value="{$employee[0].firstname|escape:'htmlall':'UTF-8'}" placeholder="{l s='Firstname' mod='affinityitems'}" />
 					<br>
-					<input type="text" class="aeinput" id="rlastname" value="{$employee[0].lastname}" placeholder="{l s='Lastname' mod='affinityitems'}" />
+					<input type="text" class="aeinput" id="rlastname" value="{$employee[0].lastname|escape:'htmlall':'UTF-8'}" placeholder="{l s='Lastname' mod='affinityitems'}" />
 					<br>	 
-					<input type="text" class="aeinput" id="remail" value="{$employee[0].email}" placeholder="{l s='Email' mod='affinityitems'}" />
+					<input type="text" class="aeinput" id="remail" value="{$employee[0].email|escape:'htmlall':'UTF-8'}" placeholder="{l s='Email' mod='affinityitems'}" />
 					<br>
 					<input type="password" class="aeinput" id="rpassword" placeholder="{l s='Password' mod='affinityitems'}" />
 					<br>

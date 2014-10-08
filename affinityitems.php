@@ -391,7 +391,7 @@ class AffinityItems extends Module {
 	public function preg_match_count_object_key($pattern, $subject)
 	{
 		$i = 0;
-		foreach ($subject as $key => $value)
+		foreach (array_keys($subject) as $key)
 		{
 			if (preg_match($pattern, $key))
 				$i++;
@@ -451,8 +451,8 @@ class AffinityItems extends Module {
 					{
 						if (!AELibrary::equals($hook_configuration->{'recoFilterHome_'.$i}, 'onSale'))
 						{
-							$aecontext->{strtolower(preg_replace('/by/i', '', $hook_configuration->{'recoFilterHome_'.$i})).'Ids'} =
-							self::splitBySemicolon($hook_configuration->{strtolower(preg_replace('/by/i', '', $hook_configuration->{'recoFilterHome_'.$i})).'IdsHome_'.$i});
+							$aecontext->{Tools::strtolower(preg_replace('/by/i', '', $hook_configuration->{'recoFilterHome_'.$i})).'Ids'} =
+							self::splitBySemicolon($hook_configuration->{Tools::strtolower(preg_replace('/by/i', '', $hook_configuration->{'recoFilterHome_'.$i})).'IdsHome_'.$i});
 						}
 						else
 							$aecontext->{$hook_configuration->{'recoFilterHome_'.$i}} = true;
@@ -489,8 +489,8 @@ class AffinityItems extends Module {
 					{
 						if (!AELibrary::equals($hook_configuration->{'recoFilterLeft_'.$i}, 'onSale'))
 						{
-							$aecontext->{strtolower(preg_replace('/by/i', '', $hook_configuration->{'recoFilterLeft_'.$i})).'Ids'} =
-							self::splitBySemicolon($hook_configuration->{strtolower(preg_replace('/by/i', '', $hook_configuration->{'recoFilterLeft_'.$i})).'IdsLeft_'.$i});
+							$aecontext->{Tools::strtolower(preg_replace('/by/i', '', $hook_configuration->{'recoFilterLeft_'.$i})).'Ids'} =
+							self::splitBySemicolon($hook_configuration->{Tools::strtolower(preg_replace('/by/i', '', $hook_configuration->{'recoFilterLeft_'.$i})).'IdsLeft_'.$i});
 						}
 						else
 							$aecontext->{$hook_configuration->{'recoFilterLeft_'.$i}} = true;
@@ -529,8 +529,8 @@ class AffinityItems extends Module {
 					{
 						if (!AELibrary::equals($hook_configuration->{'recoFilterRight_'.$i}, 'onSale'))
 						{
-							$aecontext->{strtolower(preg_replace('/by/i', '', $hook_configuration->{'recoFilterRight_'.$i})).'Ids'} =
-							self::splitBySemicolon($hook_configuration->{strtolower(preg_replace('/by/i', '', $hook_configuration->{'recoFilterRight_'.$i})).'IdsRight_'.$i});
+							$aecontext->{Tools::strtolower(preg_replace('/by/i', '', $hook_configuration->{'recoFilterRight_'.$i})).'Ids'} =
+							self::splitBySemicolon($hook_configuration->{Tools::strtolower(preg_replace('/by/i', '', $hook_configuration->{'recoFilterRight_'.$i})).'IdsRight_'.$i});
 						}
 						else
 							$aecontext->{$hook_configuration->{'recoFilterRight_'.$i}} = true;
@@ -746,6 +746,7 @@ class AffinityItems extends Module {
 		$theme = AEAdapter::getThemeById($theme_id);
 		$theme_selected = array('themeId' => $theme_id, 'themeConfiguration' => unserialize($theme[0]['configuration']));
 		$theme_list = AEAdapter::getThemeList();
+		$configuration = array();
 
 		foreach (self::$hook_list as $hook)
 		{

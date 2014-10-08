@@ -1,6 +1,22 @@
+{*
+	* 2014 Affinity-Engine
+	*
+	* NOTICE OF LICENSE
+	*
+	* DISCLAIMER
+	*
+	* Do not edit or add to this file if you wish to upgrade AffinityItems to newer
+	* versions in the future. If you wish to customize AffinityItems for your
+	* needs please refer to http://www.affinity-engine.fr for more information.
+	*
+	*  @author    Affinity-Engine SARL <contact@affinity-engine.fr>
+	*  @copyright 2014 Affinity-Engine SARL
+	*  @license   http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL Version 2 (GPLv2)
+	*  International Registered Trademark & Property of Affinity Engine SARL
+	*}
 	<div class="items-title">
 		{l s='Theme editor' mod='affinityitems'}
-		<span class="visit"><a href="{$baseUrl}?aeabtesting=A" target="_blank"><i class="fa fa-eye"></i> {l s='Display recommendation on your shop' mod='affinityitems'}</span></a>
+		<span class="visit"><a href="{$baseUrl|escape:'htmlall':'UTF-8'}?aeabtesting=A" target="_blank"><i class="fa fa-eye"></i> {l s='Display recommendation on your shop' mod='affinityitems'}</span></a>
 	</div>
 	<form action="#theme-editor" method="POST">
 	<div class="items-theme-selector">
@@ -39,7 +55,7 @@
 						</legend>
 						<div class="items-conf items-left">
 							<label>	{l s='Background color' mod='affinityitems'} :</label><br>
-							<input name="backgroundColor" type="color" value="{$themeSelected.themeConfiguration.backgroundColor}"/>
+							<input name="backgroundColor" type="color" value="{$themeSelected.themeConfiguration.backgroundColor|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf items-right">
 							<label>{l s='Transparent' mod='affinityitems'} :</label>
@@ -49,48 +65,48 @@
 						<div class="clear"></div>
 						<div class="items-conf">
 							<label>{l s='Border color' mod='affinityitems'} :</label><br>
-							<input name="backgroundBorderColor" type="color" value="{$themeSelected.themeConfiguration.backgroundBorderColor}"/>
+							<input name="backgroundBorderColor" type="color" value="{$themeSelected.themeConfiguration.backgroundBorderColor|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>{l s='Round border' mod='affinityitems'} :</label><br>
-							<input name="backgroundBorderRoundedSize" type="number" value="{$themeSelected.themeConfiguration.backgroundBorderRoundedSize}"/>
+							<input name="backgroundBorderRoundedSize" type="number" value="{$themeSelected.themeConfiguration.backgroundBorderRoundedSize|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>{l s='Border size' mod='affinityitems'} :</label><br>
-							<input name="backgroundBorderSize" type="number" value="{$themeSelected.themeConfiguration.backgroundBorderSize}"/>
+							<input name="backgroundBorderSize" type="number" value="{$themeSelected.themeConfiguration.backgroundBorderSize|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
 					<fieldset>
 						<legend>CSS products bloc div</legend>
 						<div class="items-conf">
 							<label>id :</label><br>
-							<input name="backgroundProductsBlockId" type="text" value="{$themeSelected.themeConfiguration.backgroundProductsBlockId}"/>
+							<input name="backgroundProductsBlockId" type="text" value="{$themeSelected.themeConfiguration.backgroundProductsBlockId|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>class :</label><br>
-							<input name="backgroundProductsBlockClass" type="text" value="{$themeSelected.themeConfiguration.backgroundProductsBlockClass}"/>
+							<input name="backgroundProductsBlockClass" type="text" value="{$themeSelected.themeConfiguration.backgroundProductsBlockClass|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
 					<fieldset>
 						<legend>CSS content div</legend>
 						<div class="items-conf">
 							<label>id :</label><br>
-							<input name="backgroundContentId" type="text" value="{$themeSelected.themeConfiguration.backgroundContentId}"/>
+							<input name="backgroundContentId" type="text" value="{$themeSelected.themeConfiguration.backgroundContentId|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>class :</label><br>
-							<input name="backgroundContentClass" type="text" value="{$themeSelected.themeConfiguration.backgroundContentClass}"/>
+							<input name="backgroundContentClass" type="text" value="{$themeSelected.themeConfiguration.backgroundContentClass|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
 					<fieldset>				
 						<legend>CSS list div (ul)</legend>
 						<div class="items-conf">
 							<label>id :</label><br>
-							<input name="backgroundListId" type="text" value="{$themeSelected.themeConfiguration.backgroundListId}"/>
+							<input name="backgroundListId" type="text" value="{$themeSelected.themeConfiguration.backgroundListId|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>class :</label><br>
-							<input name="backgroundListClass" type="text" value="{$themeSelected.themeConfiguration.backgroundListClass}"/>
+							<input name="backgroundListClass" type="text" value="{$themeSelected.themeConfiguration.backgroundListClass|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
 				</div>
@@ -109,11 +125,11 @@
 						</legend>					
 						<div class="items-conf">
 							<label>	{l s='Text color' mod='affinityitems'} :</label><br>
-							<input name="titleColor" type="color" value="{$themeSelected.themeConfiguration.titleColor}"/>
+							<input name="titleColor" type="color" value="{$themeSelected.themeConfiguration.titleColor|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf items-left">
 							<label>{l s='Background color' mod='affinityitems'} :</label><br>
-							<input name="titleBackgroundColor" type="color" value="{$themeSelected.themeConfiguration.titleBackgroundColor}"/>
+							<input name="titleBackgroundColor" type="color" value="{$themeSelected.themeConfiguration.titleBackgroundColor|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf items-right">
 							<label>{l s='Transparent' mod='affinityitems'} :</label> 
@@ -123,19 +139,19 @@
 						<div class="clear"></div>
 						<div class="items-conf">
 							<label>{l s='Text size' mod='affinityitems'} (px) :</label><br>
-							<input name="titleSize" type="number" value="{$themeSelected.themeConfiguration.titleSize}"/>
+							<input name="titleSize" type="number" value="{$themeSelected.themeConfiguration.titleSize|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>{l s='Border color' mod='affinityitems'} :</label><br>
-							<input name="titleBorderColor" type="color" value="{$themeSelected.themeConfiguration.titleBorderColor}"/>
+							<input name="titleBorderColor" type="color" value="{$themeSelected.themeConfiguration.titleBorderColor|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>{l s='Round border' mod='affinityitems'} :</label><br>
-							<input name="titleBorderRoundedSize" type="number" value="{$themeSelected.themeConfiguration.titleBorderRoundedSize}"/>
+							<input name="titleBorderRoundedSize" type="number" value="{$themeSelected.themeConfiguration.titleBorderRoundedSize|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>{l s='Border size' mod='affinityitems'} :</label><br>
-							<input name="titleBorderSize" type="number" value="{$themeSelected.themeConfiguration.titleBorderSize}"/>
+							<input name="titleBorderSize" type="number" value="{$themeSelected.themeConfiguration.titleBorderSize|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>{l s='Text align' mod='affinityitems'} :</label><br>
@@ -147,18 +163,18 @@
 						</div>
 						<div class="items-conf">
 							<label>{l s='Text Line height' mod='affinityitems'} (px) :</label><br>
-							<input name="titleLineHeight" type="number" value="{$themeSelected.themeConfiguration.titleLineHeight}"/>
+							<input name="titleLineHeight" type="number" value="{$themeSelected.themeConfiguration.titleLineHeight|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
 					<fieldset>
 						<legend>CSS {l s='Title' mod='affinityitems'} </legend>
 						<div class="items-conf">
 							<label>id :</label><br>
-							<input name="titleId" type="text"  value="{$themeSelected.themeConfiguration.titleId}"/>
+							<input name="titleId" type="text"  value="{$themeSelected.themeConfiguration.titleId|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>class :</label><br>
-							<input name="titleClass" type="text" value="{$themeSelected.themeConfiguration.titleClass}"/>
+							<input name="titleClass" type="text" value="{$themeSelected.themeConfiguration.titleClass|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
 				</div>
@@ -177,7 +193,7 @@
 						</legend>
 						<div class="items-conf items-left">
 							<label>{l s='Background color' mod='affinityitems'} :</label><br>
-							<input name="productBackgroundColor" type="color" value="{$themeSelected.themeConfiguration.productBackgroundColor}"/>
+							<input name="productBackgroundColor" type="color" value="{$themeSelected.themeConfiguration.productBackgroundColor|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf items-right">
 							<label>{l s='Transparent' mod='affinityitems'}</label>
@@ -187,42 +203,42 @@
 						<div class="clear"></div>
 						<div class="items-conf">
 							<label>{l s='Border color' mod='affinityitems'} :</label><br>
-							<input name="productBorderColor" type="color" value="{$themeSelected.themeConfiguration.productBorderColor}"/>
+							<input name="productBorderColor" type="color" value="{$themeSelected.themeConfiguration.productBorderColor|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>{l s='Round border' mod='affinityitems'} :</label><br>
-							<input name="productBorderRoundedSize" type="number" value="{$themeSelected.themeConfiguration.productBorderRoundedSize}"/>
+							<input name="productBorderRoundedSize" type="number" value="{$themeSelected.themeConfiguration.productBorderRoundedSize|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>{l s='Border size' mod='affinityitems'} :</label><br>
-							<input name="productBorderSize" type="number" value="{$themeSelected.themeConfiguration.productBorderSize}"/>
+							<input name="productBorderSize" type="number" value="{$themeSelected.themeConfiguration.productBorderSize|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>{l s='Zone height' mod='affinityitems'} (li) :</label><br>
-							<input name="productHeight" type="number" value="{$themeSelected.themeConfiguration.productHeight}"/>
+							<input name="productHeight" type="number" value="{$themeSelected.themeConfiguration.productHeight|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>{l s='Zone width' mod='affinityitems'} (li) :</label><br>
-							<input name="productWidth" type="number" value="{$themeSelected.themeConfiguration.productWidth}"/>
+							<input name="productWidth" type="number" value="{$themeSelected.themeConfiguration.productWidth|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>{l s='Product number on a line' mod='affinityitems'} :</label><br>
-							<input name="productNumberOnLine" type="number" value="{$themeSelected.themeConfiguration.productNumberOnLine}"/>
+							<input name="productNumberOnLine" type="number" value="{$themeSelected.themeConfiguration.productNumberOnLine|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>{l s='Margin right' mod='affinityitems'} (px) :</label><br>
-							<input name="productMarginRight" type="number" value="{$themeSelected.themeConfiguration.productMarginRight}"/>
+							<input name="productMarginRight" type="number" value="{$themeSelected.themeConfiguration.productMarginRight|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
 					<fieldset>				
 						<legend>{l s='Product element' mod='affinityitems'} (li)</legend>
 						<div class="items-conf">
 							<label>id :</label><br>
-							<input name="productId" type="text"  value="{$themeSelected.themeConfiguration.productId}"/>
+							<input name="productId" type="text"  value="{$themeSelected.themeConfiguration.productId|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>class :</label><br>
-							<input name="productClass" type="text" value="{$themeSelected.themeConfiguration.productClass}"/>
+							<input name="productClass" type="text" value="{$themeSelected.themeConfiguration.productClass|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
 					{if $version >= 16}
@@ -230,33 +246,33 @@
 						<legend>CSS {l s='product container' mod='affinityitems'}</legend>
 						<div class="items-conf">
 							<label>id :</label><br>
-							<input name="productContainerId" type="text"  value="{$themeSelected.themeConfiguration.productContainerId}"/>
+							<input name="productContainerId" type="text"  value="{$themeSelected.themeConfiguration.productContainerId|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>class :</label><br>
-							<input name="productContainerClass" type="text" value="{$themeSelected.themeConfiguration.productContainerClass}"/>
+							<input name="productContainerClass" type="text" value="{$themeSelected.themeConfiguration.productContainerClass|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
 					<fieldset>				
 						<legend>CSS {l s='product left block' mod='affinityitems'}</legend>
 						<div class="items-conf">
 							<label>id :</label><br>
-							<input name="productLeftBlockId" type="text"  value="{$themeSelected.themeConfiguration.productLeftBlockId}"/>
+							<input name="productLeftBlockId" type="text"  value="{$themeSelected.themeConfiguration.productLeftBlockId|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>class :</label><br>
-							<input name="productLeftBlockClass" type="text" value="{$themeSelected.themeConfiguration.productLeftBlockClass}"/>
+							<input name="productLeftBlockClass" type="text" value="{$themeSelected.themeConfiguration.productLeftBlockClass|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
 					<fieldset>				
 						<legend>CSS {l s='product right block' mod='affinityitems'}</legend>
 						<div class="items-conf">
 							<label>id :</label><br>
-							<input name="productRightBlockId" type="text"  value="{$themeSelected.themeConfiguration.productRightBlockId}"/>
+							<input name="productRightBlockId" type="text"  value="{$themeSelected.themeConfiguration.productRightBlockId|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>class :</label><br>
-							<input name="productRightBlockClass" type="text" value="{$themeSelected.themeConfiguration.productRightBlockClass}"/>
+							<input name="productRightBlockClass" type="text" value="{$themeSelected.themeConfiguration.productRightBlockClass|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
 					{/if}
@@ -276,15 +292,15 @@
 						</legend>
 						<div class="items-conf">
 							<label>{l s='Product title color' mod='affinityitems'} :</label><br>
-							<input name="productTitleColor" type="color" value="{$themeSelected.themeConfiguration.productTitleColor}"/>
+							<input name="productTitleColor" type="color" value="{$themeSelected.themeConfiguration.productTitleColor|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>{l s='Product text size' mod='affinityitems'} (px) :</label><br>
-							<input name="productTitleSize" type="number" value="{$themeSelected.themeConfiguration.productTitleSize}"/>
+							<input name="productTitleSize" type="number" value="{$themeSelected.themeConfiguration.productTitleSize|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>{l s='Product title height' mod='affinityitems'} (px) :</label><br>
-							<input name="productTitleHeight" type="number" value="{$themeSelected.themeConfiguration.productTitleHeight}"/>
+							<input name="productTitleHeight" type="number" value="{$themeSelected.themeConfiguration.productTitleHeight|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>{l s='Product title align' mod='affinityitems'} :</label><br>
@@ -296,18 +312,18 @@
 						</div>
 						<div class="items-conf">
 							<label>{l s='Product title Line height' mod='affinityitems'} (px) :</label><br>
-							<input name="productTitleLineHeight" type="number" value="{$themeSelected.themeConfiguration.productTitleLineHeight}"/>
+							<input name="productTitleLineHeight" type="number" value="{$themeSelected.themeConfiguration.productTitleLineHeight|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
 					<fieldset>				
 						<legend>CSS {l s='product title' mod='affinityitems'}</legend>
 						<div class="items-conf">
 							<label>id :</label><br>
-							<input name="productTitleId" type="text"  value="{$themeSelected.themeConfiguration.productTitleId}"/>
+							<input name="productTitleId" type="text"  value="{$themeSelected.themeConfiguration.productTitleId|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>class :</label><br>
-							<input name="productTitleClass" type="text" value="{$themeSelected.themeConfiguration.productTitleClass}"/>
+							<input name="productTitleClass" type="text" value="{$themeSelected.themeConfiguration.productTitleClass|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
 					{if $version >= 16}
@@ -315,11 +331,11 @@
 						<legend>CSS {l s='product link title' mod='affinityitems'}</legend>
 						<div class="items-conf">
 							<label>id :</label><br>
-							<input name="productLinkTitleId" type="text"  value="{$themeSelected.themeConfiguration.productLinkTitleId}"/>
+							<input name="productLinkTitleId" type="text"  value="{$themeSelected.themeConfiguration.productLinkTitleId|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>class :</label><br>
-							<input name="productLinkTitleClass" type="text" value="{$themeSelected.themeConfiguration.productLinkTitleClass}"/>
+							<input name="productLinkTitleClass" type="text" value="{$themeSelected.themeConfiguration.productLinkTitleClass|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
 					{/if}		
@@ -339,15 +355,15 @@
 						</legend>
 						<div class="items-conf">
 							<label>{l s='Text color' mod='affinityitems'} :</label><br>
-							<input name="productDescriptionColor" type="color" value="{$themeSelected.themeConfiguration.productDescriptionColor}"/>
+							<input name="productDescriptionColor" type="color" value="{$themeSelected.themeConfiguration.productDescriptionColor|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>{l s='Text size' mod='affinityitems'} (px) :</label><br>
-							<input name="productDescriptionSize" type="number" value="{$themeSelected.themeConfiguration.productDescriptionSize}"/>
+							<input name="productDescriptionSize" type="number" value="{$themeSelected.themeConfiguration.productDescriptionSize|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>{l s='Zone height' mod='affinityitems'} (px) :</label><br>
-							<input name="productDescriptionHeight" type="number" value="{$themeSelected.themeConfiguration.productDescriptionHeight}"/>
+							<input name="productDescriptionHeight" type="number" value="{$themeSelected.themeConfiguration.productDescriptionHeight|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>{l s='Description title align' mod='affinityitems'} :</label><br>
@@ -359,18 +375,18 @@
 						</div>
 						<div class="items-conf">
 							<label>{l s='Description title Line height' mod='affinityitems'} (px) :</label><br>
-							<input name="productDescriptionLineHeight" type="number" value="{$themeSelected.themeConfiguration.productDescriptionLineHeight}"/>
+							<input name="productDescriptionLineHeight" type="number" value="{$themeSelected.themeConfiguration.productDescriptionLineHeight|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
 					<fieldset>				
 						<legend>CSS {l s='product description' mod='affinityitems'}</legend>
 						<div class="items-conf">
 							<label>id :</label><br>
-							<input name="productDescriptionId" type="text"  value="{$themeSelected.themeConfiguration.productDescriptionId}"/>
+							<input name="productDescriptionId" type="text"  value="{$themeSelected.themeConfiguration.productDescriptionId|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>class :</label><br>
-							<input name="productDescriptionClass" type="text" value="{$themeSelected.themeConfiguration.productDescriptionClass}"/>
+							<input name="productDescriptionClass" type="text" value="{$themeSelected.themeConfiguration.productDescriptionClass|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
 				</div>
@@ -389,23 +405,23 @@
 						</legend>
 						<div class="items-conf">
 							<label>{l s='Border color' mod='affinityitems'} :</label><br>
-							<input name="pictureBorderColor" type="color" value="{$themeSelected.themeConfiguration.pictureBorderColor}"/>
+							<input name="pictureBorderColor" type="color" value="{$themeSelected.themeConfiguration.pictureBorderColor|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>{l s='Round border' mod='affinityitems'} :</label><br>
-							<input name="pictureBorderRoundedSize" type="number" value="{$themeSelected.themeConfiguration.pictureBorderRoundedSize}"/>
+							<input name="pictureBorderRoundedSize" type="number" value="{$themeSelected.themeConfiguration.pictureBorderRoundedSize|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>{l s='Border size' mod='affinityitems'} :</label><br>
-							<input name="pictureBorderSize" type="number" value="{$themeSelected.themeConfiguration.pictureBorderSize}"/>
+							<input name="pictureBorderSize" type="number" value="{$themeSelected.themeConfiguration.pictureBorderSize|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>{l s='Picture height' mod='affinityitems'} :</label><br>
-							<input name="pictureHeight" type="number" value="{$themeSelected.themeConfiguration.pictureHeight}"/>
+							<input name="pictureHeight" type="number" value="{$themeSelected.themeConfiguration.pictureHeight|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>{l s='Picture width' mod='affinityitems'} :</label><br>
-							<input name="pictureWidth" type="number" value="{$themeSelected.themeConfiguration.pictureWidth}"/>
+							<input name="pictureWidth" type="number" value="{$themeSelected.themeConfiguration.pictureWidth|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>{l s='Picture resolution' mod='affinityitems'} :</label><br>
@@ -420,22 +436,22 @@
 						<legend>CSS {l s='picture link' mod='affinityitems'} </legend>
 						<div class="items-conf">
 							<label>id :</label><br>
-							<input name="pictureLinkId" type="text"  value="{$themeSelected.themeConfiguration.pictureLinkId}"/>
+							<input name="pictureLinkId" type="text"  value="{$themeSelected.themeConfiguration.pictureLinkId|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>class :</label><br>
-							<input name="pictureLinkClass" type="text" value="{$themeSelected.themeConfiguration.pictureLinkClass}"/>
+							<input name="pictureLinkClass" type="text" value="{$themeSelected.themeConfiguration.pictureLinkClass|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
 					<fieldset>
 						<legend>CSS {l s='picture' mod='affinityitems'}</legend>
 						<div class="items-conf">
 							<label>id :</label><br>
-							<input name="pictureId" type="text"  value="{$themeSelected.themeConfiguration.pictureId}"/>
+							<input name="pictureId" type="text"  value="{$themeSelected.themeConfiguration.pictureId|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>class :</label><br>
-							<input name="pictureClass" type="text" value="{$themeSelected.themeConfiguration.pictureClass}"/>
+							<input name="pictureClass" type="text" value="{$themeSelected.themeConfiguration.pictureClass|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
 				</div>
@@ -454,15 +470,15 @@
 						</legend>
 						<div class="items-conf">
 							<label>{l s='Text color' mod='affinityitems'} :</label><br>
-							<input name="priceColor" type="color" value="{$themeSelected.themeConfiguration.priceColor}"/>
+							<input name="priceColor" type="color" value="{$themeSelected.themeConfiguration.priceColor|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>{l s='Text size' mod='affinityitems'} (px) :</label><br>
-							<input name="priceSize" type="number" value="{$themeSelected.themeConfiguration.priceSize}"/>
+							<input name="priceSize" type="number" value="{$themeSelected.themeConfiguration.priceSize|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>{l s='Zone height' mod='affinityitems'} (px) :</label><br>
-							<input name="priceHeight" type="number" value="{$themeSelected.themeConfiguration.priceHeight}"/>
+							<input name="priceHeight" type="number" value="{$themeSelected.themeConfiguration.priceHeight|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
 
@@ -470,22 +486,22 @@
 						<legend>CSS price container</legend>
 						<div class="items-conf">
 							<label>id :</label><br>
-							<input name="priceContainerId" type="text"  value="{$themeSelected.themeConfiguration.priceContainerId}"/>
+							<input name="priceContainerId" type="text"  value="{$themeSelected.themeConfiguration.priceContainerId|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>class :</label><br>
-							<input name="priceContainerClass" type="text" value="{$themeSelected.themeConfiguration.priceContainerClass}"/>
+							<input name="priceContainerClass" type="text" value="{$themeSelected.themeConfiguration.priceContainerClass|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
 					<fieldset>
 						<legend>CSS price</legend>
 						<div class="items-conf">
 							<label>id :</label><br>
-							<input name="priceId" type="text"  value="{$themeSelected.themeConfiguration.priceId}"/>
+							<input name="priceId" type="text"  value="{$themeSelected.themeConfiguration.priceId|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>class :</label><br>
-							<input name="priceClass" type="text" value="{$themeSelected.themeConfiguration.priceClass}"/>
+							<input name="priceClass" type="text" value="{$themeSelected.themeConfiguration.priceClass|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
 					{if $version >= 16}
@@ -493,22 +509,22 @@
 						<legend>CSS old price</legend>
 						<div class="items-conf">
 							<label>id :</label><br>
-							<input name="oldPriceId" type="text"  value="{$themeSelected.themeConfiguration.oldPriceId}"/>
+							<input name="oldPriceId" type="text"  value="{$themeSelected.themeConfiguration.oldPriceId|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>class :</label><br>
-							<input name="oldPriceClass" type="text" value="{$themeSelected.themeConfiguration.oldPriceClass}"/>
+							<input name="oldPriceClass" type="text" value="{$themeSelected.themeConfiguration.oldPriceClass|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
 					<fieldset>				
 						<legend>CSS price percent reduction</legend>
 						<div class="items-conf">
 							<label>id :</label><br>
-							<input name="priceReductionId" type="text"  value="{$themeSelected.themeConfiguration.priceReductionId}"/>
+							<input name="priceReductionId" type="text"  value="{$themeSelected.themeConfiguration.priceReductionId|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>class :</label><br>
-							<input name="priceReductionClass" type="text" value="{$themeSelected.themeConfiguration.priceReductionClass}"/>
+							<input name="priceReductionClass" type="text" value="{$themeSelected.themeConfiguration.priceReductionClass|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
 					{/if}
@@ -527,19 +543,19 @@
 						</legend>
 						<div class="items-conf">
 							<label>{l s='Text color' mod='affinityitems'} :</label><br>
-							<input name="cartColor" type="color" value="{$themeSelected.themeConfiguration.cartColor}"/>
+							<input name="cartColor" type="color" value="{$themeSelected.themeConfiguration.cartColor|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>{l s='Border size' mod='affinityitems'} :</label><br>
-							<input name="cartBorderSize" type="number" value="{$themeSelected.themeConfiguration.cartBorderSize}"/>
+							<input name="cartBorderSize" type="number" value="{$themeSelected.themeConfiguration.cartBorderSize|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>{l s='Text size' mod='affinityitems'} (px) :</label><br>
-							<input name="cartSize" type="number" value="{$themeSelected.themeConfiguration.cartSize}"/>
+							<input name="cartSize" type="number" value="{$themeSelected.themeConfiguration.cartSize|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf items-left">
 							<label>{l s='Background color' mod='affinityitems'} :</label><br>
-							<input name="cartBackgroundColor" type="color" value="{$themeSelected.themeConfiguration.cartBackgroundColor}"/>
+							<input name="cartBackgroundColor" type="color" value="{$themeSelected.themeConfiguration.cartBackgroundColor|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf items-right">
 							<label>{l s='Transparent' mod='affinityitems'} :</label>
@@ -549,11 +565,11 @@
 						<div class="clear"></div>
 						<div class="items-conf">
 							<label>{l s='Border color' mod='affinityitems'} :</label><br>
-							<input name="cartBorderColor" type="color" value="{$themeSelected.themeConfiguration.cartBorderColor}"/>
+							<input name="cartBorderColor" type="color" value="{$themeSelected.themeConfiguration.cartBorderColor|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>{l s='Round border size' mod='affinityitems'} :</label><br>
-							<input name="cartBorderRoundedSize" type="number" value="{$themeSelected.themeConfiguration.cartBorderRoundedSize}"/>
+							<input name="cartBorderRoundedSize" type="number" value="{$themeSelected.themeConfiguration.cartBorderRoundedSize|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>{l s='Cart text align' mod='affinityitems'} :</label><br>
@@ -565,18 +581,18 @@
 						</div>
 						<div class="items-conf">
 							<label>{l s='Cart text line height' mod='affinityitems'} (px) :</label><br>
-							<input name="cartLineHeight" type="number" value="{$themeSelected.themeConfiguration.cartLineHeight}"/>
+							<input name="cartLineHeight" type="number" value="{$themeSelected.themeConfiguration.cartLineHeight|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
 					<fieldset>
 						<legend>CSS price container</legend>
 						<div class="items-conf">
 							<label>id :</label><br>
-							<input name="cartId" type="text" value="{$themeSelected.themeConfiguration.cartId}"/>
+							<input name="cartId" type="text" value="{$themeSelected.themeConfiguration.cartId|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>class :</label><br>
-							<input name="cartClass" type="text" value="{$themeSelected.themeConfiguration.cartClass}"/>
+							<input name="cartClass" type="text" value="{$themeSelected.themeConfiguration.cartClass|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
 				</div>
@@ -594,22 +610,22 @@
 						</legend>
 						<div class="items-conf">
 							<label>{l s='Text color' mod='affinityitems'} :</label><br>
-							<input name="detailColor" type="color" value="{$themeSelected.themeConfiguration.detailColor}"/>
+							<input name="detailColor" type="color" value="{$themeSelected.themeConfiguration.detailColor|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>{l s='Text size' mod='affinityitems'} (px) : (px) :</label><br>
-							<input name="detailSize" type="number" value="{$themeSelected.themeConfiguration.detailSize}"/>
+							<input name="detailSize" type="number" value="{$themeSelected.themeConfiguration.detailSize|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
 					<fieldset>
 						<legend>CSS product detail</legend>
 						<div class="items-conf">
 							<label>id :</label><br>
-							<input name="detailId" type="text"  value="{$themeSelected.themeConfiguration.detailId}"/>
+							<input name="detailId" type="text"  value="{$themeSelected.themeConfiguration.detailId|escape:'htmlall':'UTF-8'}"/>
 						</div>
 						<div class="items-conf">
 							<label>class :</label><br>
-							<input name="detailClass" type="text" value="{$themeSelected.themeConfiguration.detailClass}"/>
+							<input name="detailClass" type="text" value="{$themeSelected.themeConfiguration.detailClass|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
 				</div>

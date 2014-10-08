@@ -508,7 +508,7 @@ $(document).ready(function() {
 			{assign var="zone1" value="{$hook}_1"}
 			{assign var="zone2" value="{$hook}_2"}
 			<div class="zone-tab {if $hook=='Home'} zone-tab-selected {/if}" onClick="changeZoneTab('{$hook|lower}')">
-				{$hook}
+				{$hook|escape:'htmlall':'UTF-8'}
 				{if $configuration.{$hook}->reco{$zone1} == "1" || $configuration.{$hook}->reco{$zone2} == "1"} 
 				<span class="lightfire on">(on)</span>
 				{else}
@@ -524,7 +524,7 @@ $(document).ready(function() {
 
 		<div class="zone" id="zone-{$hook|lower}">
 			<span class="title">
-				{$hook}
+				{$hook|escape:'htmlall':'UTF-8'}
 			</span>
 			<span class="description" data-step="1" data-intro="Pour chaque recommandation vous aurez une explication ici.">
 			</span>
@@ -532,21 +532,21 @@ $(document).ready(function() {
 				<div class="position">{l s='First recommendation zone' mod='affinityitems'}</div>
 				<div class="position-options">
 					<div class="onoffswitch" data-step="3" data-intro="Un bouton pour activer la zone">
-						<input type="hidden" name="reco{$hook}_1" value="0">
-						<input type="checkbox" name="reco{$hook}_1" class="onoffswitch-checkbox" id="reco{$hook}_1" value="1" {if $configuration.{$hook}->reco{$zone1} == "1"} checked {/if}>
-						<label class="onoffswitch-label" for="reco{$hook}_1">
+						<input type="hidden" name="reco{$hook|escape:'htmlall':'UTF-8'}_1" value="0">
+						<input type="checkbox" name="reco{$hook|escape:'htmlall':'UTF-8'}_1" class="onoffswitch-checkbox" id="reco{$hook|escape:'htmlall':'UTF-8'}_1" value="1" {if $configuration.{$hook}->reco{$zone1} == "1"} checked {/if}>
+						<label class="onoffswitch-label" for="reco{$hook|escape:'htmlall':'UTF-8'}_1">
 							<span class="onoffswitch-inner"></span>
 							<span class="onoffswitch-switch"></span>
 						</label>
 					</div>
 					<label>{l s='Theme' mod='affinityitems'} :</label>
-					<select data-step="4" data-intro="Un champ pour choisir le style graphique de la zone. Par défaut le style utilisera les classes natives Prestashop si votre design a été conçu dans les normes Prestashop." name="recoTheme{$hook}_1">
+					<select data-step="4" data-intro="Un champ pour choisir le style graphique de la zone. Par défaut le style utilisera les classes natives Prestashop si votre design a été conçu dans les normes Prestashop." name="recoTheme{$hook|escape:'htmlall':'UTF-8'}_1">
 						{foreach from=$themeList item=theme}
 						<option {if $theme.id_theme == $configuration.{$hook}->recoTheme{$zone1}} selected {/if} value="{$theme.id_theme}">{$theme.name}</option>
 						{/foreach}
 					</select>
 					<label>{l s='Type' mod='affinityitems'} :</label>
-					<select class="ae-type-recommendation-select" data-step="5" data-intro="Un champ pour choisir le type de recommandation. La recommandation est personnalisée par défaut, mais vous pouvez utiliser la recommandation complémentaire (cross sell) ou [...]" name="recoType{$hook}_1">
+					<select class="ae-type-recommendation-select" data-step="5" data-intro="Un champ pour choisir le type de recommandation. La recommandation est personnalisée par défaut, mais vous pouvez utiliser la recommandation complémentaire (cross sell) ou [...]" name="recoType{$hook|escape:'htmlall':'UTF-8'}_1">
 						{if {$hook|lower} == "home" || {$hook|lower} == "left" || {$hook|lower} == "right"}
 						<option {if $configuration.{$hook}->recoType{$zone1} == "recoAll"} selected {/if} value="recoAll">Recommandation personnalisée</option>
 						<option {if $configuration.{$hook}->recoType{$zone1} == "recoAllFiltered"} selected {/if} value="recoAllFiltered">Recommandation personnalisée filtrée</option>
@@ -565,39 +565,39 @@ $(document).ready(function() {
 					</select>
 					<br /><br /><br /><br />
 					<label class="items-selectors-label">{l s='Title zone' mod='affinityitems'} :</label>
-					<input class="items-selectors-input" name="recoTitle{$hook}_1" type="text" value="{$configuration.{$hook}->recoTitle{$zone1}}">
+					<input class="items-selectors-input" name="recoTitle{$hook|escape:'htmlall':'UTF-8'}_1" type="text" value="{$configuration.{$hook|escape:'htmlall':'UTF-8'}->recoTitle{$zone1}}">
 					{if {$hook|lower} == "category" || {$hook|lower} == "search"}
 					<label class="items-selectors-label">{l s='Selector' mod='affinityitems'} :</label>
-					<input class="items-selectors-input" name="recoSelector{$hook}_1" type="text" value="{$configuration.{$hook}->recoSelector{$zone1}}">
+					<input class="items-selectors-input" name="recoSelector{$hook|escape:'htmlall':'UTF-8'}_1" type="text" value="{$configuration.{$hook|escape:'htmlall':'UTF-8'}->recoSelector{$zone1}}">
 					<br /><br /><br /><br />
 					<label class="items-selectors-position">{l s='Position' mod='affinityitems'} :</label>
-					<select  name="recoSelectorPosition{$hook}_1">
+					<select  name="recoSelectorPosition{$hook|escape:'htmlall':'UTF-8'}_1">
 						<option {if $configuration.{$hook}->recoSelectorPosition{$zone1} == "before"} selected {/if} value="before">Before</option>
 						<option {if $configuration.{$hook}->recoSelectorPosition{$zone1} == "after"} selected {/if} value="after">After</option>
 					</select>
 					{/if}
 					<label class="ae-number-reco-label">{l s='Recommendation number' mod='affinityitems'} :</label>
-					<input class="ae-number-reco-input" type="number" min="1" max="20" name="recoSize{$hook}_1" value="{$configuration.{$hook}->recoSize{$zone1}}">
+					<input class="ae-number-reco-input" type="number" min="1" max="20" name="recoSize{$hook|escape:'htmlall':'UTF-8'}_1" value="{$configuration.{$hook|escape:'htmlall':'UTF-8'}->recoSize{$zone1}}">
 				</div>
 				<div class="clear"></div>
 				{if {$hook|lower} == "home" || {$hook|lower} == "left" || {$hook|lower} == "right"}
-				<div class="items-reco-all-filtered {if $configuration.{$hook}->recoType{$zone1} == 'recoAllFiltered'} items-display {/if}">
+				<div class="items-reco-all-filtered {if $configuration.{$hook|escape:'htmlall':'UTF-8'}->recoType{$zone1} == 'recoAllFiltered'} items-display {/if}">
 					<fieldset>
 						<legend>{l s='Filtered recommendation' mod='affinityitems'}</legend>
-						<select class="items-reco-all-filtered-select" name="recoFilter{$hook}_1">
+						<select class="items-reco-all-filtered-select" name="recoFilter{$hook|escape:'htmlall':'UTF-8'}_1">
 							<option {if $configuration.{$hook}->recoFilter{$zone1} == "onSale"} selected {/if} value="onSale">{l s='By product on sale' mod='affinityitems'}</option>
 							<option {if $configuration.{$hook}->recoFilter{$zone1} == "byCategory"} selected {/if} value="byCategory">{l s='By categories' mod='affinityitems'}</option>
 							<option {if $configuration.{$hook}->recoFilter{$zone1} == "byAttribute"} selected {/if} value="byAttribute">{l s='By attributes' mod='affinityitems'}</option>
 							<option {if $configuration.{$hook}->recoFilter{$zone1} == "byFeature"} selected {/if} value="byFeature">{l s='By features' mod='affinityitems'}</option>
 						</select>
-						<div class="categoryIds {if $configuration.{$hook}->recoFilter{$zone1} == 'byCategory'} items-display {/if}">
-							{l s='Filter by category ids (split by semicolon)' mod='affinityitems'} : <input name="categoryIds{$hook}_1" value="{$configuration.{$hook}->categoryIds{$zone1}}" type="text">
+						<div class="categoryIds {if $configuration.{$hook|escape:'htmlall':'UTF-8'}->recoFilter{$zone1} == 'byCategory'} items-display {/if}">
+							{l s='Filter by category ids (split by semicolon)' mod='affinityitems'} : <input name="categoryIds{$hook|escape:'htmlall':'UTF-8'}_1" value="{$configuration.{$hook|escape:'htmlall':'UTF-8'}->categoryIds{$zone1}}" type="text">
 						</div>
-						<div class="attributeIds {if $configuration.{$hook}->recoFilter{$zone1} == 'byAttribute'} items-display {/if}">
-							{l s='Filter by attribute ids (split by semicolon)' mod='affinityitems'} : <input name="attributeIds{$hook}_1" value="{$configuration.{$hook}->attributeIds{$zone1}}" type="text">
+						<div class="attributeIds {if $configuration.{$hook|escape:'htmlall':'UTF-8'}->recoFilter{$zone1} == 'byAttribute'} items-display {/if}">
+							{l s='Filter by attribute ids (split by semicolon)' mod='affinityitems'} : <input name="attributeIds{$hook|escape:'htmlall':'UTF-8'}_1" value="{$configuration.{$hook|escape:'htmlall':'UTF-8'}->attributeIds{$zone1}}" type="text">
 						</div>
-						<div class="featureIds {if $configuration.{$hook}->recoFilter{$zone1} == 'byFeature'} items-display {/if}">
-							{l s='Filter by feature ids (split by semicolon)' mod='affinityitems'} : <input name="featureIds{$hook}_1" value="{$configuration.{$hook}->featureIds{$zone1}}" type="text">
+						<div class="featureIds {if $configuration.{$hook|escape:'htmlall':'UTF-8'}->recoFilter{$zone1} == 'byFeature'} items-display {/if}">
+							{l s='Filter by feature ids (split by semicolon)' mod='affinityitems'} : <input name="featureIds{$hook|escape:'htmlall':'UTF-8'}_1" value="{$configuration.{$hook|escape:'htmlall':'UTF-8'}->featureIds{$zone1}}" type="text">
 						</div>
 					</fieldset>
 				</div>
@@ -609,21 +609,21 @@ $(document).ready(function() {
 				<div class="position">{l s='Second recommendation zone' mod='affinityitems'}</div>
 				<div class="position-options">
 					<div class="onoffswitch">
-						<input type="hidden" name="reco{$hook}_2" value="0">
-						<input type="checkbox" name="reco{$hook}_2" class="onoffswitch-checkbox" id="reco{$hook}_2" value="1" {if $configuration.{$hook}->reco{$zone2} == "1"} checked {/if}>
-						<label class="onoffswitch-label" for="reco{$hook}_2">
+						<input type="hidden" name="reco{$hook|escape:'htmlall':'UTF-8'}_2" value="0">
+						<input type="checkbox" name="reco{$hook|escape:'htmlall':'UTF-8'}_2" class="onoffswitch-checkbox" id="reco{$hook|escape:'htmlall':'UTF-8'}_2" value="1" {if $configuration.{$hook}->reco{$zone2} == "1"} checked {/if}>
+						<label class="onoffswitch-label" for="reco{$hook|escape:'htmlall':'UTF-8'}_2">
 							<span class="onoffswitch-inner"></span>
 							<span class="onoffswitch-switch"></span>
 						</label>
 					</div>
 					<label>{l s='Theme' mod='affinityitems'} :</label>
-					<select name="recoTheme{$hook}_2">
+					<select name="recoTheme{$hook|escape:'htmlall':'UTF-8'}_2">
 						{foreach from=$themeList item=theme}
 						<option {if $theme.id_theme == $configuration.{$hook}->recoTheme{$zone2}} selected {/if} value="{$theme.id_theme}">{$theme.name}</option>
 						{/foreach}
 					</select>
 					<label>{l s='Type' mod='affinityitems'} :</label>
-					<select class="ae-type-recommendation-select" name="recoType{$hook}_2">
+					<select class="ae-type-recommendation-select" name="recoType{$hook|escape:'htmlall':'UTF-8'}_2">
 						{if {$hook|lower} == "home" || {$hook|lower} == "left" || {$hook|lower} == "right"}
 						<option {if $configuration.{$hook}->recoType{$zone2} == "recoAll"} selected {/if} value="recoAll">Recommandation personnalisée</option>
 						<option {if $configuration.{$hook}->recoType{$zone2} == "recoAllFiltered"} selected {/if} value="recoAllFiltered">Recommandation personnalisée filtrée</option>
@@ -642,39 +642,39 @@ $(document).ready(function() {
 					</select>
 					<br /><br /><br /><br />
 					<label class="items-selectors-label">{l s='Title zone' mod='affinityitems'} :</label>
-					<input class="items-selectors-input" name="recoTitle{$hook}_2" type="text" value="{$configuration.{$hook}->recoTitle{$zone2}}">
+					<input class="items-selectors-input" name="recoTitle{$hook|escape:'htmlall':'UTF-8'}_2" type="text" value="{$configuration.{$hook|escape:'htmlall':'UTF-8'}->recoTitle{$zone2}}">
 					{if {$hook|lower} == "category" || {$hook|lower} == "search"}
 					<label class="items-selectors-label">{l s='Selector' mod='affinityitems'} :</label>
-					<input class="items-selectors-input" name="recoSelector{$hook}_2" type="text" value="{$configuration.{$hook}->recoSelector{$zone2}}">
+					<input class="items-selectors-input" name="recoSelector{$hook|escape:'htmlall':'UTF-8'}_2" type="text" value="{$configuration.{$hook|escape:'htmlall':'UTF-8'}->recoSelector{$zone2}}">
 					<br /><br /><br /><br />
 					<label class="items-selectors-position">{l s='Position' mod='affinityitems'} :</label>
-					<select  name="recoSelectorPosition{$hook}_2">
+					<select  name="recoSelectorPosition{$hook|escape:'htmlall':'UTF-8'}_2">
 						<option {if $configuration.{$hook}->recoSelectorPosition{$zone2} == "before"} selected {/if} value="before">Before</option>
 						<option {if $configuration.{$hook}->recoSelectorPosition{$zone2} == "after"} selected {/if} value="after">After</option>
 					</select>
 					{/if}
 					<label class="ae-number-reco-label">{l s='Recommendation number' mod='affinityitems'} :</label>
-					<input class="ae-number-reco-input" type="number" min="1" max="20"  name="recoSize{$hook}_2" value="{$configuration.{$hook}->recoSize{$zone2}}">					
+					<input class="ae-number-reco-input" type="number" min="1" max="20"  name="recoSize{$hook|escape:'htmlall':'UTF-8'}_2" value="{$configuration.{$hook|escape:'htmlall':'UTF-8'}->recoSize{$zone2}}">					
 				</div>
 				<div class="clear"></div>
 				{if {$hook|lower} == "home" || {$hook|lower} == "left" || {$hook|lower} == "right"}
-				<div class="items-reco-all-filtered {if $configuration.{$hook}->recoType{$zone2} == 'recoAllFiltered'} items-display {/if}">
+				<div class="items-reco-all-filtered {if $configuration.{$hook|escape:'htmlall':'UTF-8'}->recoType{$zone2} == 'recoAllFiltered'} items-display {/if}">
 					<fieldset>
 						<legend>{l s='Filtered recommendation' mod='affinityitems'}</legend>
-						<select class="items-reco-all-filtered-select" name="recoFilter{$hook}_2">
+						<select class="items-reco-all-filtered-select" name="recoFilter{$hook|escape:'htmlall':'UTF-8'}_2">
 							<option {if $configuration.{$hook}->recoFilter{$zone2} == "onSale"} selected {/if} value="onSale">Produits en solde</option>
 							<option {if $configuration.{$hook}->recoFilter{$zone2} == "byCategory"} selected {/if} value="byCategory">Par catégorie</option>
 							<option {if $configuration.{$hook}->recoFilter{$zone2} == "byAttribute"} selected {/if} value="byAttribute">Par attribut</option>
 							<option {if $configuration.{$hook}->recoFilter{$zone2} == "byFeature"} selected {/if} value="byFeature">Par caractéritique</option>
 						</select>
-						<div class="categoryIds {if $configuration.{$hook}->recoFilter{$zone2} == 'byCategory'} items-display {/if}">
-							{l s='Filter by category ids (split by semicolon)' mod='affinityitems'} : <input name="categoryIds{$hook}_2" value="{$configuration.{$hook}->categoryIds{$zone2}}" type="text">
+						<div class="categoryIds {if $configuration.{$hook|escape:'htmlall':'UTF-8'}->recoFilter{$zone2} == 'byCategory'} items-display {/if}">
+							{l s='Filter by category ids (split by semicolon)' mod='affinityitems'} : <input name="categoryIds{$hook|escape:'htmlall':'UTF-8'}_2" value="{$configuration.{$hook|escape:'htmlall':'UTF-8'}->categoryIds{$zone2}}" type="text">
 						</div>
-						<div class="attributeIds {if $configuration.{$hook}->recoFilter{$zone2} == 'byAttribute'} items-display {/if}">
-							{l s='Filter by attribute ids (split by semicolon)' mod='affinityitems'} : <input name="attributeIds{$hook}_2" value="{$configuration.{$hook}->attributeIds{$zone2}}" type="text">
+						<div class="attributeIds {if $configuration.{$hook|escape:'htmlall':'UTF-8'}->recoFilter{$zone2} == 'byAttribute'} items-display {/if}">
+							{l s='Filter by attribute ids (split by semicolon)' mod='affinityitems'} : <input name="attributeIds{$hook|escape:'htmlall':'UTF-8'}_2" value="{$configuration.{$hook|escape:'htmlall':'UTF-8'}->attributeIds{$zone2}}" type="text">
 						</div>
-						<div class="featureIds {if $configuration.{$hook}->recoFilter{$zone2} == 'byFeature'} items-display {/if}">
-							{l s='Filter by feature ids (split by semicolon)' mod='affinityitems'} : <input name="featureIds{$hook}_2" value="{$configuration.{$hook}->featureIds{$zone2}}" type="text">
+						<div class="featureIds {if $configuration.{$hook|escape:'htmlall':'UTF-8'}->recoFilter{$zone2} == 'byFeature'} items-display {/if}">
+							{l s='Filter by feature ids (split by semicolon)' mod='affinityitems'} : <input name="featureIds{$hook|escape:'htmlall':'UTF-8'}_2" value="{$configuration.{$hook|escape:'htmlall':'UTF-8'}->featureIds{$zone2}}" type="text">
 						</div>
 					</fieldset>
 				</div>
