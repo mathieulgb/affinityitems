@@ -298,9 +298,7 @@ public static function postAction()
 		}
 
 		if (AELibrary::equals($action->context, 'read'))
-		{
 			self::stackRead($action->productId);
-		}
 
 		return Tools::jsonEncode((array('_ok' => true)));
 	}

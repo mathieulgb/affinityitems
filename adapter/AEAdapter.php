@@ -586,12 +586,12 @@ class AEAdapter {
 			LEFT JOIN '._DB_PREFIX_.'image_lang il ON (il.id_image = i.id_image)
 			LEFT JOIN '._DB_PREFIX_.'category_lang cl ON (cl.id_category = p.id_category_default)
 			'.$tax.'
-			WHERE p.id_product IN ('.implode("," , array_map('intval', $product_pool)).')
+			WHERE p.id_product IN ('.implode(',', array_map('intval', $product_pool)).')
 			AND pl.id_lang = '.(int)$lang_id.'
 			AND cl.id_lang = '.(int)$lang_id.'
 			AND p.active = 1
 			GROUP BY p.id_product
-			ORDER BY FIELD(p.id_product,'.implode("," , array_map('intval', $product_pool)).')');
+			ORDER BY FIELD(p.id_product,'.implode(',', array_map('intval', $product_pool)).')');
 
 		$products = Product::getProductsProperties((int)$lang_id, $products);
 
@@ -626,9 +626,7 @@ class AEAdapter {
 	public static function getEmployeesByProfile($id_employee)
 	{
 		if (version_compare(_PS_VERSION_, '1.5', '>='))
-		{
 			return EmployeeCore::getEmployeesByProfile((int)$id_employee);
-		}
 		else
 		{
 			return Db::getInstance()->executeS('
@@ -715,7 +713,7 @@ class AEAdapter {
 		$languages = Language::getLanguages();
 		foreach ($languages as $language)
 			array_push($ids, $language['id_lang']);
-		return implode(",", $ids);
+		return implode(',', $ids);
 	}
 
 	public static function getHost()

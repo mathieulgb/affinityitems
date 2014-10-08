@@ -405,9 +405,7 @@ class AffinityItems extends Module {
 		if ($exp = explode(';', $field))
 		{
 			foreach ($exp as $expr)
-			{
 				array_push($response, $expr);
-			}
 		}
 		return $response;
 	}
@@ -441,7 +439,7 @@ class AffinityItems extends Module {
 		{
 			$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_HOME'));
 			$recommendations = array();
-			for($i = 1; $i <= ($this->preg_match_count_object_key('/recoHome/i', $hook_configuration)); $i++)
+			for ($i = 1; $i <= ($this->preg_match_count_object_key('/recoHome/i', $hook_configuration)); $i++)
 			{
 				$aecontext = new stdClass();
 				if ((bool)$hook_configuration->{'recoHome_'.$i})
@@ -479,7 +477,7 @@ class AffinityItems extends Module {
 		{
 			$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_LEFT'));
 			$recommendations = array();
-			for($i = 1; $i <= ($this->preg_match_count_object_key('/recoLeft/i', $hook_configuration)); $i++)
+			for ($i = 1; $i <= ($this->preg_match_count_object_key('/recoLeft/i', $hook_configuration)); $i++)
 			{
 				$aecontext = new stdClass();
 				if ((bool)$hook_configuration->{'recoLeft_'.$i})
@@ -518,7 +516,7 @@ class AffinityItems extends Module {
 		{
 			$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_RIGHT'));
 			$recommendations = array();
-			for($i = 1; $i <= ($this->preg_match_count_object_key('/recoRight/i', $hook_configuration)); $i++)
+			for ($i = 1; $i <= ($this->preg_match_count_object_key('/recoRight/i', $hook_configuration)); $i++)
 			{
 				$aecontext = new stdClass();
 				if ((bool)$hook_configuration->{'recoRight_'.$i})
@@ -558,7 +556,7 @@ class AffinityItems extends Module {
 		{
 			$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_PRODUCT'));
 			$recommendations = array();
-			for($i = 1; $i <= ($this->preg_match_count_object_key('/recoProduct/i', $hook_configuration)); $i++)
+			for ($i = 1; $i <= ($this->preg_match_count_object_key('/recoProduct/i', $hook_configuration)); $i++)
 			{
 				$aecontext = new stdClass();
 				if ((bool)$hook_configuration->{'recoProduct_'.$i})
@@ -588,7 +586,7 @@ class AffinityItems extends Module {
 		{
 			$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_CART'));
 			$recommendations = array();
-			for($i = 1; $i <= ($this->preg_match_count_object_key('/recoCart/i', $hook_configuration)); $i++)
+			for ($i = 1; $i <= ($this->preg_match_count_object_key('/recoCart/i', $hook_configuration)); $i++)
 			{
 				$aecontext = new stdClass();
 				if ((bool)$hook_configuration->{'recoCart_'.$i})
@@ -616,7 +614,7 @@ class AffinityItems extends Module {
 		if (self::isConfig() && self::isLastSync() && (bool)Configuration::get('AE_RECOMMENDATION'))
 		{
 			$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_CATEGORY'));
-			for($i = 1; $i <= ($this->preg_match_count_object_key('/recoCategory/i', $hook_configuration)); $i++)
+			for ($i = 1; $i <= ($this->preg_match_count_object_key('/recoCategory/i', $hook_configuration)); $i++)
 			{
 				$recommendations = array();
 				$aecontext = new stdClass();
@@ -648,7 +646,7 @@ class AffinityItems extends Module {
 		if (self::isConfig() && self::isLastSync() && (bool)Configuration::get('AE_RECOMMENDATION'))
 		{
 			$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_SEARCH'));
-			for($i = 1; $i <= ($this->preg_match_count_object_key('/recoSearch/i', $hook_configuration)); $i++)
+			for ($i = 1; $i <= ($this->preg_match_count_object_key('/recoSearch/i', $hook_configuration)); $i++)
 			{
 				$recommendations = array();
 				$aecontext = new stdClass();
@@ -695,7 +693,7 @@ class AffinityItems extends Module {
 		$html = '';
 		if (_PS_VERSION_ < '1.5')
 		{
-			$html .= "<link rel='stylesheet' type='text/css' href='".($this->_path)."resources/css/".Tools::substr(str_replace('.', '', _PS_VERSION_), 0, 2)."/aefront.css' />";
+			$html .= "<link rel='stylesheet' type='text/css' href='".($this->_path).'resources/css/'.Tools::substr(str_replace('.', '', _PS_VERSION_), 0, 2)."/aefront.css' />";
 			$html .= "<link rel='stylesheet' type='text/css' href='".($this->_path)."resources/css/main.css' />";
 			$html .= "<link rel='stylesheet' type='text/css' href='".($this->_path)."resources/css/font-awesome.min.css' />";
 			$html .= "<link rel='stylesheet' type='text/css' href='".($this->_path)."resources/css/jquery.nouislider.css' />";
@@ -833,9 +831,7 @@ public function postProcess()
 		foreach ($_POST as $key => $value)
 		{
 			if (preg_match('/background|title|product|picture|price|cart|detail/i', $key))
-			{
 				$configuration[$key] = $value;
-			}
 		}
 
 		if (!AELibrary::isEmpty(Tools::getValue('themeName')))
@@ -852,9 +848,7 @@ public function postProcess()
 		return true;
 	}
 	else if (Tools::isSubmit('additionalCss'))
-	{
 		Configuration::updateValue('AE_ADDITIONAL_CSS', Tools::getValue('additionalCss'));
-	}
 }
 
 	/*
