@@ -379,77 +379,10 @@ $(document).ready(function() {
 				{l s='Sales impact' mod='affinityitems'}
 			</div>
 			<div class="items-box-content">
-				<div class="items-main-stat">
-					{if !empty($statistics)} {if $statistics->salesImpactByPercentage > 0} + {/if} 
-					{$statistics->salesImpactByPercentage|string_format:"%.2f"} % 
-					{else} 
-					{l s='Impact statistics under construction' mod='affinityitems'}
-					{/if}
-				</div>
-			</div>
-			<div class="items-box-footer">
-				<div class="items-detail grow">
-					<a class="items-tooltip"  title="{l s='The outcome measurement becomes significant after an observation period of 2-6 weeks, depending on the frequency of the customers orders on your site and the impact of the personnalization' mod='affinityitems'} <br> {l s='The outcome measurement is automatically displayed when the significance test is conclusive.' mod='affinityitems'}<br>{l s='The percentage value shows the turnover increase by website visitor benefiting from the recommandation, compared to those without recommandation.' mod='affinityitems'}<br>{l s='This AB Testing method gives an unbiased measurement: the external factors like seasonal sales and weather, as well as your marketing activities, SEO or traffic acquisition, have no influence on the measure.' mod='affinityitems'}<br>{l s='It only quantifies the global impact of the personnalization offered by Affinity Items.' mod='affinityitems'}"href="#">{l s='More about' mod='affinityitems'}</a>				
-				</div>
+				<span class="items-stat-message">{l s='Find your statistics every month on your registration email' mod='affinityitems'}</span>
 			</div>
 		</div>
-		{if !empty($statistics)}
-		<div class="items-box items-line">
-			<div class="items-box-title">
-				<strong>{l s='Detailed statistics.' mod='affinityitems'}</strong> {l s='Recommendation effect on the website performance' mod='affinityitems'}
-			</div>
-			<div class="items-line-item">
-				<div class="items-box-title">
-					{l s='Turnover' mod='affinityitems'}
-				</div>
-				<div class="items-box-content">
-					<div class="items-third-stat">
-						{$statistics->sales|string_format:"%.2f"} €
-					</div>
-					<div class="items-main-stat">
-						{if $statistics->salesImpactByPercentage > 0} + {/if} {$statistics->salesImpactByPercentage|string_format:"%.2f"} %
-					</div>
-					<div class="items-second-stat">
-						{if $statistics->salesImpact > 0} + {/if} {$statistics->salesImpact|string_format:"%.2f"} €
-					</div>
-				</div>
-			</div>
-			<div class="items-line-item">
-				<div class="items-box-title">
-					{l s='Conversion rate' mod='affinityitems'}
-				</div>
-				<div class="items-box-content">
-					<div class="items-third-stat">
-						{$statistics->conversionRate|string_format:"%.2f"} %
-					</div>
-					<div class="items-main-stat">
-						{if $statistics->conversionRateImpactByPercentage > 0} + {/if} {$statistics->conversionRateImpactByPercentage|string_format:"%.2f"} %
-					</div>
-					<div class="items-second-stat">
-						{if $statistics->orderImpact > 0} + {/if} {$statistics->orderImpact|string_format:"%.2f"} {l s='paniers' mod='affinityitems'}
-					</div>
-				</div>
-			</div>
-			<div class="items-line-item">
-				<div class="items-box-title">
-					{l s='Average invoice' mod='affinityitems'}
-				</div>
-				<div class="items-box-content">
-					<div class="items-third-stat">
-						{$statistics->averageOrderImpact|string_format:"%.2f"} €
-					</div>
-					<div class="items-main-stat">
-						{if $statistics->averageOrderImpactByPercentage > 0} + {/if} {$statistics->averageOrderImpactByPercentage|string_format:"%.2f"} %
-					</div>
-					<div class="items-second-stat">
-						{if $statistics->averageOrderImpactByAmount > 0} + {/if} {$statistics->averageOrderImpactByAmount|string_format:"%.2f"} {l s='€/panier' mod='affinityitems'}
-					</div>
-				</div>
-			</div>
-		</div>
-		{/if}
 		<div class="clear"></div>
-	
 		<div class="items-title">
 			{l s='Other' mod='affinityitems'}
 		</div>

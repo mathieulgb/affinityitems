@@ -391,7 +391,7 @@ class AffinityItems extends Module {
 	public function preg_match_count_object_key($pattern, $subject)
 	{
 		$i = 0;
-		foreach (array_keys($subject) as $key)
+		foreach ($subject as $key => $value)
 		{
 			if (preg_match($pattern, $key))
 				$i++;
@@ -401,13 +401,8 @@ class AffinityItems extends Module {
 
 	public static function splitBySemicolon($field)
 	{
-		$response = array();
-		if ($exp = explode(';', $field))
-		{
-			foreach ($exp as $expr)
-				array_push($response, $expr);
-		}
-		return $response;
+		$response = explode(';', $field);
+		return !$response ? array() : $response;
 	}
 
 	public function getCartOrderLines($params)
@@ -419,7 +414,7 @@ class AffinityItems extends Module {
 			$order_line->productId = $value['id_product'];
 			$order_line->attributeIds = $this->getCartsProductAttributes($value['id_product_attribute']);
 			$order_line->quantity = $value['cart_quantity'];
-			array_push($order_lines, $order_line);
+			$order_lines[] = $order_line;
 		}
 		return $order_lines;
 	}
@@ -429,7 +424,7 @@ class AffinityItems extends Module {
 		$attribute_ids = array();
 		$attributes = AEAdapter::getCartsProductAttributes($product_attribute_id);
 		foreach ($attributes as $attribute)
-			array_push($attribute_ids, $attribute['id_attribute']);
+			$attribute_ids[] = $attribute['id_attribute'];
 		return $attribute_ids;
 	}
 
@@ -438,8 +433,9 @@ class AffinityItems extends Module {
 		if (self::isConfig() && self::isLastSync() && (bool)Configuration::get('AE_RECOMMENDATION'))
 		{
 			$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_HOME'));
+			$occurrence = $this->preg_match_count_object_key('/recoHome/i', $hook_configuration);
 			$recommendations = array();
-			for ($i = 1; $i <= ($this->preg_match_count_object_key('/recoHome/i', $hook_configuration)); $i++)
+			for ($i = 1; $i <= $occurrence; $i++)
 			{
 				$aecontext = new stdClass();
 				if ((bool)$hook_configuration->{'recoHome_'.$i})
@@ -476,8 +472,9 @@ class AffinityItems extends Module {
 		if (self::isConfig() && self::isLastSync() && (bool)Configuration::get('AE_RECOMMENDATION'))
 		{
 			$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_LEFT'));
+			$occurrence = $this->preg_match_count_object_key('/recoLeft/i', $hook_configuration);
 			$recommendations = array();
-			for ($i = 1; $i <= ($this->preg_match_count_object_key('/recoLeft/i', $hook_configuration)); $i++)
+			for ($i = 1; $i <= $occurrence; $i++)
 			{
 				$aecontext = new stdClass();
 				if ((bool)$hook_configuration->{'recoLeft_'.$i})
@@ -515,8 +512,9 @@ class AffinityItems extends Module {
 		if (self::isConfig() && self::isLastSync() && (bool)Configuration::get('AE_RECOMMENDATION'))
 		{
 			$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_RIGHT'));
+			$occurrence = $this->preg_match_count_object_key('/recoRight/i', $hook_configuration);
 			$recommendations = array();
-			for ($i = 1; $i <= ($this->preg_match_count_object_key('/recoRight/i', $hook_configuration)); $i++)
+			for ($i = 1; $i <= $occurrence; $i++)
 			{
 				$aecontext = new stdClass();
 				if ((bool)$hook_configuration->{'recoRight_'.$i})
@@ -555,8 +553,9 @@ class AffinityItems extends Module {
 		if (self::isConfig() && self::isLastSync() && (bool)Configuration::get('AE_RECOMMENDATION'))
 		{
 			$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_PRODUCT'));
+			$occurrence = $this->preg_match_count_object_key('/recoProduct/i', $hook_configuration);
 			$recommendations = array();
-			for ($i = 1; $i <= ($this->preg_match_count_object_key('/recoProduct/i', $hook_configuration)); $i++)
+			for ($i = 1; $i <= $occurrence; $i++)
 			{
 				$aecontext = new stdClass();
 				if ((bool)$hook_configuration->{'recoProduct_'.$i})
@@ -585,8 +584,9 @@ class AffinityItems extends Module {
 		if (self::isConfig() && self::isLastSync() && (bool)Configuration::get('AE_RECOMMENDATION'))
 		{
 			$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_CART'));
+			$occurrence = $this->preg_match_count_object_key('/recoCart/i', $hook_configuration);
 			$recommendations = array();
-			for ($i = 1; $i <= ($this->preg_match_count_object_key('/recoCart/i', $hook_configuration)); $i++)
+			for ($i = 1; $i <= $occurrence; $i++)
 			{
 				$aecontext = new stdClass();
 				if ((bool)$hook_configuration->{'recoCart_'.$i})
@@ -614,7 +614,8 @@ class AffinityItems extends Module {
 		if (self::isConfig() && self::isLastSync() && (bool)Configuration::get('AE_RECOMMENDATION'))
 		{
 			$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_CATEGORY'));
-			for ($i = 1; $i <= ($this->preg_match_count_object_key('/recoCategory/i', $hook_configuration)); $i++)
+			$occurrence = $this->preg_match_count_object_key('/recoCategory/i', $hook_configuration);
+			for ($i = 1; $i <= $occurrence; $i++)
 			{
 				$recommendations = array();
 				$aecontext = new stdClass();
@@ -646,7 +647,8 @@ class AffinityItems extends Module {
 		if (self::isConfig() && self::isLastSync() && (bool)Configuration::get('AE_RECOMMENDATION'))
 		{
 			$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_SEARCH'));
-			for ($i = 1; $i <= ($this->preg_match_count_object_key('/recoSearch/i', $hook_configuration)); $i++)
+			$occurrence = $this->preg_match_count_object_key('/recoSearch/i', $hook_configuration);
+			for ($i = 1; $i <= $occurrence; $i++)
 			{
 				$recommendations = array();
 				$aecontext = new stdClass();
@@ -724,8 +726,6 @@ class AffinityItems extends Module {
 	public function getDashboard()
 	{
 		$html = '';
-
-		AEAdapter::getActiveLanguageIds();
 
 		if ($this->postProcess())
 			$html .= Module::displayConfirmation($this->l('Settings updated.'));
@@ -915,7 +915,7 @@ public function postProcess()
 				foreach ($exp as $ip)
 				{
 					if (preg_match(AELibrary::$check_ip, $ip))
-						array_push($black_list, $ip);
+						$black_list[] = $ip;
 				}
 				Configuration::updateValue('AE_AB_TESTING_BLACKLIST', serialize($black_list));
 			}

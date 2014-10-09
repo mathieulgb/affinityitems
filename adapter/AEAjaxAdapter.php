@@ -23,7 +23,8 @@ class AEAjaxAdapter {
 	public static function stackRead($product_id)
 	{
 		$cookies = AECookie::getInstance();
-		$reco_last_seen = is_array(unserialize($cookies->getCookie()->__get('recoLastSeen'))) ? unserialize($cookies->getCookie()->__get('recoLastSeen')) : array();
+		$cookie_reco_last_seen = unserialize($cookies->getCookie()->__get('recoLastSeen'));
+		$reco_last_seen = is_array($cookie_reco_last_seen) ? $cookie_reco_last_seen : array();
 		array_push($reco_last_seen, $product_id);
 		$cookies->getCookie()->__set('recoLastSeen', serialize($reco_last_seen));
 	}

@@ -140,5 +140,5 @@ function upgrade_module_1_1_0($module)
 	if (!updateConfiguration())
 		return false;
 
-	return ($object->registerHook('createAccount'));
+	return ($module->registerHook('createAccount'));
 }

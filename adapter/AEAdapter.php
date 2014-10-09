@@ -611,13 +611,13 @@ class AEAdapter {
 			LEFT JOIN '._DB_PREFIX_.'image_lang il ON (il.id_image = i.id_image)
 			LEFT JOIN '._DB_PREFIX_.'category_lang cl ON (cl.id_category = p.id_category_default)
 			'.self::getRecommendationTax().'
-			WHERE pl.id_lang = 1
-			AND cl.id_lang = 1
+			AND pl.id_lang = '.(int)$lang_id.'
+			AND cl.id_lang = '.(int)$lang_id.'
 			AND p.active = 1
 			GROUP BY p.id_product
 			LIMIT 0,'.$product_number.'');
 
-		$products = Product::getProductsProperties(1, $products);
+		$products = Product::getProductsProperties((int)$lang_id, $products);
 
 		return $products;
 	}

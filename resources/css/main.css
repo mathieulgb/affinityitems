@@ -306,6 +306,13 @@
 	height: 54px;
 }
 
+.items-stat-message {
+	color: #1f497d;
+	font-size: 1.9em;
+	line-height: 2em;
+	font-weight: bold;
+}
+
 .items-box-title {
 	padding: 20px 10px 10px 10px;
 	font-size: 1.5em;
