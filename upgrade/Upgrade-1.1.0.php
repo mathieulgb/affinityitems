@@ -64,6 +64,13 @@ foreach ($sql as $s)
 return true;
 }
 
+function countTheme() 
+{
+		$count = Db::getInstance()->executeS('SELECT count(*) as count FROM '._DB_PREFIX_.'ae_theme');
+		return $count[0]['count'];
+}
+
+
 function retrieveConfiguration()
 {
 	$sql = array();
@@ -73,21 +80,37 @@ function retrieveConfiguration()
 		$configuration = formatConfiguration(unserialize(Configuration::get('AE_CONFIGURATION_'.Tools::strtoupper($hook).'')), $hook);
 		$theme_serialized = AEAdapter::getThemeById(1);
 		$theme = unserialize($theme_serialized[0]['configuration']);
-		$theme['backgroundProductsBlockId'] = $configuration->parentId;
-		$theme['backgroundProductsBlockClass'] = $configuration->classParent;
-		$theme['backgroundContentId'] = $configuration->contentId;
-		$theme['backgroundContentClass'] = $configuration->classContent;
-		$theme['backgroundListId'] = $configuration->listId;
-		$theme['backgroundListClass'] = $configuration->classList;
-		$theme['titleClass'] = $configuration->classTitle;
-		$theme['productId'] = $configuration->elementListId;
-		$theme['productClass'] = $configuration->classElementList;
-		$theme['productTitleClass'] = $configuration->classElementName;
-		$theme['productDescriptionClass'] = $configuration->classElementDescription;
-		$theme['pictureClass'] = $configuration->classElementImage;
-		$theme['priceContainerClass'] = $configuration->classPriceContainer;
-		$theme['priceClass'] = $configuration->classPrice;
-		$sql[] = 'INSERT INTO '._DB_PREFIX_.'ae_theme(name, configuration) VALUES("'.$hook.'", \''.serialize($theme).'\')';
+		
+		if(isset($configuration->parentId))
+			$theme['backgroundProductsBlockId'] = $configuration->parentId;
+		if(isset($configuration->classParent))
+			$theme['backgroundProductsBlockClass'] = $configuration->classParent;
+		if(isset($configuration->contentId))
+			$theme['backgroundContentId'] = $configuration->contentId;
+		if(isset($configuration->classContent))
+			$theme['backgroundContentClass'] = $configuration->classContent;
+		if(isset($configuration->listId))
+			$theme['backgroundListId'] = $configuration->listId;
+		if(isset($configuration->classList))
+			$theme['backgroundListClass'] = $configuration->classList;
+		if(isset($configuration->classTitle))
+			$theme['titleClass'] = $configuration->classTitle;
+		if(isset($configuration->elementListId))
+			$theme['productId'] = $configuration->elementListId;
+		if(isset($configuration->classElementList))
+			$theme['productClass'] = $configuration->classElementList;
+		if(isset($configuration->classElementName))
+			$theme['productTitleClass'] = $configuration->classElementName;
+		if(isset($configuration->classElementDescription))
+			$theme['productDescriptionClass'] = $configuration->classElementDescription;
+		if(isset($configuration->classElementImage))
+			$theme['pictureClass'] = $configuration->classElementImage;
+		if(isset($configuration->classPriceContainer))
+			$theme['priceContainerClass'] = $configuration->classPriceContainer;
+		if(isset($configuration->classPrice))
+			$theme['priceClass'] = $configuration->classPrice;
+		if(countTheme() < 8)
+			$sql[] = 'INSERT INTO '._DB_PREFIX_.'ae_theme(name, configuration) VALUES("'.$hook.'", \''.serialize($theme).'\')';
 	}
 
 	foreach ($sql as $s)
@@ -139,6 +162,6 @@ function upgrade_module_1_1_0($module)
 
 	if (!updateConfiguration())
 		return false;
-
+	Configuration::updateValue('AE_VERSION', '1.1.0');
 	return ($module->registerHook('createAccount'));
 }

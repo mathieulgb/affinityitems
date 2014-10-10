@@ -598,7 +598,7 @@ class AEAdapter {
 		return $products;
 	}
 
-	public static function renderPreviewRecommendation()
+	public static function renderPreviewRecommendation($lang_id)
 	{
 		$product_number = version_compare(_PS_VERSION_, '1.6', '>=') ? 1 : 4;
 		$products = Db::getInstance()->ExecuteS('

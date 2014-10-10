@@ -762,7 +762,7 @@ class AffinityItems extends Module {
 			'notifications' => $this->getNotification($data),
 			'abtestingPercentage' => Configuration::get('AE_A_TESTING'),
 			'recommendation' => Configuration::get('AE_RECOMMENDATION'),
-			'recommendations' => array(array('aeproducts' => AEAdapter::renderPreviewRecommendation(), 'theme' => $theme_selected['themeConfiguration'])),
+			'recommendations' => array(array('aeproducts' => AEAdapter::renderPreviewRecommendation((int)$this->context->cookie->id_lang), 'theme' => $theme_selected['themeConfiguration'])),
 			'link' => new Link($protocol_link, $protocol_content),
 			'priceDisplay' => Product::getTaxCalculationMethod((int)$this->context->cookie->id_customer),
 			'PS_CATALOG_MODE' => (bool)Configuration::get('PS_CATALOG_MODE'),
