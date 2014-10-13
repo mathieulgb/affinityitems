@@ -77,7 +77,7 @@ class AffinityItems extends Module {
 		$this->displayName = $this->l('Affinity Items');
 		$this->description = $this->l('Improve your sales by 10 to 60% with a personalized merchandizing: offer the appropriate products to each visitor.');
 		$this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
-		//$this->checkForUpdates();
+		$this->checkForUpdates();
 	}
 
 
@@ -963,11 +963,11 @@ public function postProcess()
 			foreach (array('1.1.0') as $version)
 			{
 				$file = dirname(__FILE__).'/upgrade/Upgrade-'.$version.'.php';
-				//if (Configuration::get('AE_VERSION') < $version && file_exists($file))
-				//{
+				if (Configuration::get('AE_VERSION') < $version && file_exists($file))
+				{
 				include_once($file);
 				call_user_func('upgrade_module_'.str_replace('.', '_', $version), $this);
-				//}
+				}
 			}
 	}
 
