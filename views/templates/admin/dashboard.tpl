@@ -60,7 +60,7 @@ function changeZoneTab(name) {
 
 $(document).ready(function() {
 	synchronize();
- 	$("#items-wiki").load("http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/fr-page-faq .wiki-holder", function(response, status, xhr) {
+ 	$("#items-wiki").load("http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/v1.1/fr-page-faq .wiki-holder", function(response, status, xhr) {
     	var html = $("#items-wiki").html();
     	var result = html.replace(/<a href="/g, '<a target="_blank" class="ae-email-color" href="http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/');
     	$("#items-wiki").html(result);
@@ -411,7 +411,7 @@ $(document).ready(function() {
 			</div>
 			<div class="items-box-content">
 				<div class="items-main-stat">
-					{if isset($data->recommendation)}{$data->recommendation} recos{else} <img src="{$module_dir|escape:'htmlall':'UTF-8'}/resources/img/error.png"> {/if}
+					{if isset($data->recommendation)}{$data->recommendation} recos{else} <img src="{$module_dir|escape:'htmlall':'UTF-8'}img/error.png"> {/if}
 				</div>
 			</div>
 		</div>
@@ -575,7 +575,7 @@ $(document).ready(function() {
 					<span class="items-right">
 						<div class="onoffswitch" data-step="3" data-intro="Un bouton pour activer la zone">
 						<input type="hidden" name="reco{$hook|escape:'htmlall':'UTF-8'}_1" value="0">
-						<input type="checkbox" name="reco{$hook}_1" class="onoffswitch-checkbox" id="reco{$hook}_1" value="1" {if $configuration.{$hook}->reco{$zone1} == "1"} checked {/if}>						<input type="checkbox" name="reco{$hook|escape:'htmlall':'UTF-8'}_1" class="onoffswitch-checkbox" id="reco{$hook|escape:'htmlall':'UTF-8'}_1" value="1" {if $configuration.{$hook}->reco{$zone1} == "1"} checked {/if}>
+						<input type="checkbox" name="reco{$hook|escape:'htmlall':'UTF-8'}_1" class="onoffswitch-checkbox" id="reco{$hook|escape:'htmlall':'UTF-8'}_1" value="1" {if $configuration.{$hook}->reco{$zone1} == "1"} checked {/if}>
 							<label class="onoffswitch-label" for="reco{$hook|escape:'htmlall':'UTF-8'}_1">
 							<span class="onoffswitch-inner"></span>
 							<span class="onoffswitch-switch"></span>
@@ -788,7 +788,7 @@ $(document).ready(function() {
 			<b>{l s='Max execution time' mod='affinityitems'}:</b> {$configInfo.version.max_execution_time|escape:'htmlall':'UTF-8'}
 		</p>
 		{if $configInfo.apache_instaweb}
-			<p style="color:red;font-weight:700">{l s='PageSpeed module for Apache installed (mod_instaweb) mod='affinityitems''}</p>
+			<p style="color:red;font-weight:700">{l s='PageSpeed module for Apache installed (mod_instaweb)' mod='affinityitems'}</p>
 		{/if}
 
 		<hr />

@@ -225,8 +225,8 @@ class AffinityItems extends Module {
 
 	public function hookheader()
 	{
-		$this->context->controller->addJS(($this->_path).'resources/js/affinityitems.js');
-		$this->context->controller->addCSS(($this->_path).'resources/css/'.Tools::substr(str_replace('.', '', _PS_VERSION_), 0, 2).'/aefront.css', 'all');
+		$this->context->controller->addJS(($this->_path).'js/affinityitems.js');
+		$this->context->controller->addCSS(($this->_path).'css/'.Tools::substr(str_replace('.', '', _PS_VERSION_), 0, 2).'/aefront.css', 'all');
 		if (isset($_SERVER['HTTP_USER_AGENT']))
 		{
 			if (!preg_match('/'.self::$crawler_list.'/i', $_SERVER['HTTP_USER_AGENT']) > 0)
@@ -707,27 +707,27 @@ class AffinityItems extends Module {
 		$html = '';
 		if (_PS_VERSION_ < '1.5')
 		{
-			$html .= "<link rel='stylesheet' type='text/css' href='".($this->_path).'resources/css/'.Tools::substr(str_replace('.', '', _PS_VERSION_), 0, 2)."/aefront.css' />";
-			$html .= "<link rel='stylesheet' type='text/css' href='".($this->_path)."resources/css/main.css' />";
-			$html .= "<link rel='stylesheet' type='text/css' href='".($this->_path)."resources/css/font-awesome.min.css' />";
-			$html .= "<link rel='stylesheet' type='text/css' href='".($this->_path)."resources/css/jquery.nouislider.css' />";
-			$html .= "<link rel='stylesheet' type='text/css' href='".($this->_path)."resources/css/jquery.powertip.min.css' />";
-			$html .= "<link rel='stylesheet' type='text/css' href='".($this->_path)."resources/css/introjs.min.css' />";
-			$html .= "<script type='text/javascript' src='".($this->_path)."resources/js/intro.min.js'></script>";
-			$html .= "<script type='text/javascript' src='".($this->_path)."resources/js/jquery.nouislider.min.js'></script>";
-			$html .= "<script type='text/javascript' src='".($this->_path)."resources/js/jquery.powertip.min.js'></script>";
+			$html .= "<link rel='stylesheet' type='text/css' href='".($this->_path).'css/'.Tools::substr(str_replace('.', '', _PS_VERSION_), 0, 2)."/aefront.css' />";
+			$html .= "<link rel='stylesheet' type='text/css' href='".($this->_path)."css/main.css' />";
+			$html .= "<link rel='stylesheet' type='text/css' href='".($this->_path)."css/font-awesome.min.css' />";
+			$html .= "<link rel='stylesheet' type='text/css' href='".($this->_path)."css/jquery.nouislider.css' />";
+			$html .= "<link rel='stylesheet' type='text/css' href='".($this->_path)."css/jquery.powertip.min.css' />";
+			$html .= "<link rel='stylesheet' type='text/css' href='".($this->_path)."css/introjs.min.css' />";
+			$html .= "<script type='text/javascript' src='".($this->_path)."js/intro.min.js'></script>";
+			$html .= "<script type='text/javascript' src='".($this->_path)."js/jquery.nouislider.min.js'></script>";
+			$html .= "<script type='text/javascript' src='".($this->_path)."js/jquery.powertip.min.js'></script>";
 		}
 		else
 		{
-			$this->context->controller->addCSS(($this->_path).'resources/css/'.Tools::substr(str_replace('.', '', _PS_VERSION_), 0, 2).'/aefront.css', 'all');
-			$this->context->controller->addCSS(($this->_path).'resources/css/main.css', 'all');
-			$this->context->controller->addCSS(($this->_path).'resources/css/font-awesome.min.css', 'all');
-			$this->context->controller->addCSS(($this->_path).'resources/css/jquery.nouislider.css', 'all');
-			$this->context->controller->addCSS(($this->_path).'resources/css/jquery.powertip.min.css', 'all');
-			$this->context->controller->addCSS(($this->_path).'resources/css/introjs.min.css', 'all');
-			$this->context->controller->addJS(($this->_path).'resources/js/intro.min.js');
-			$this->context->controller->addJS(($this->_path).'resources/js/jquery.nouislider.min.js');
-			$this->context->controller->addJS(($this->_path).'resources/js/jquery.powertip.min.js');
+			$this->context->controller->addCSS(($this->_path).'css/'.Tools::substr(str_replace('.', '', _PS_VERSION_), 0, 2).'/aefront.css', 'all');
+			$this->context->controller->addCSS(($this->_path).'css/main.css', 'all');
+			$this->context->controller->addCSS(($this->_path).'css/font-awesome.min.css', 'all');
+			$this->context->controller->addCSS(($this->_path).'css/jquery.nouislider.css', 'all');
+			$this->context->controller->addCSS(($this->_path).'css/jquery.powertip.min.css', 'all');
+			$this->context->controller->addCSS(($this->_path).'css/introjs.min.css', 'all');
+			$this->context->controller->addJS(($this->_path).'js/intro.min.js');
+			$this->context->controller->addJS(($this->_path).'js/jquery.nouislider.min.js');
+			$this->context->controller->addJS(($this->_path).'js/jquery.powertip.min.js');
 		}
 		if (self::isConfig())
 			return $html.$this->getDashboard();

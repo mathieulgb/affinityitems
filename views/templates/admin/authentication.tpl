@@ -304,7 +304,7 @@ $(document).ready(function () {
 				<div class='ae-auth-desc aecontent'>
 					<div class="items-auth-presentation-block">
 					<h3>{l s='Unmatched performance through real-time semantics' mod='affinityitems'}</h3>
-					<img src="{$module_dir|escape:'htmlall':'UTF-8'}resources/img/aeboard.jpg">
+					<img src="{$module_dir|escape:'htmlall':'UTF-8'}img/aeboard.jpg">
 					<ul>
 						<li>{l s='Detailed understanding of the needs and expectations of visitors by giving meaning to their actions' mod='affinityitems'}</li>
 						<li>{l s='Recommendations tailored to each visitor' mod='affinityitems'}</li>
@@ -314,7 +314,7 @@ $(document).ready(function () {
 					<div class="clear"></div>
 					<div class="items-auth-presentation-block">
 					<h3>{l s='A solution easy to install and to configure' mod='affinityitems'}</h3>
-					<img src="{$module_dir|escape:'htmlall':'UTF-8'}resources/img/aestart.jpg">
+					<img src="{$module_dir|escape:'htmlall':'UTF-8'}img/aestart.jpg">
 					<ul>
 						<li>{l s='Fully automatic installation' mod='affinityitems'}</li>
 						<li>{l s='Simple and flexible settings (10-15 minutes) for seamless integration into your site' mod='affinityitems'}</li>
@@ -324,7 +324,7 @@ $(document).ready(function () {
 					<div class="clear"></div>
 					<div class="items-auth-presentation-block">
 					<h3>{l s='A very profitable, without commitment, and accessible to all department sites, large or small' mod='affinityitems'}</h3>
-					<img src="{$module_dir|escape:'htmlall':'UTF-8'}resources/img/aemoney.jpg">
+					<img src="{$module_dir|escape:'htmlall':'UTF-8'}img/aemoney.jpg">
 					<ul>
 						<li>{l s='No setup costs, no monthly fixed cost' mod='affinityitems'}</li>
 						<li>{l s='Pay per use only, at a cost widely covered by the additional margin generated.' mod='affinityitems'} <a class="ae-link-color" href="http://www.affinity-engine.fr/simulateur-de-rentabilite">{l s='Simulate cost and profitability of service for your website' mod='affinityitems'}</a></li>
