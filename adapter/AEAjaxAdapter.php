@@ -135,6 +135,8 @@ public static function setProperty()
 	{
 		try {
 			AEAdapter::setActiveRecommendation(Tools::safeOutput(Tools::getValue('activation')));
+			if((int)Tools::getValue('activation') === 1)
+				Configuration::updateValue('AFFINITYITEMS_CONFIGURATION_OK', true);
 			AELogger::log('[INFO]', 'Recommendation Activation : '.Tools::safeOutput(Tools::getValue('activation')));
 			$response['_ok'] = true;
 		} catch (Exception $e)
