@@ -283,7 +283,7 @@ class AffinityItems extends Module {
 					$data = new stdClass();
 					$data->guestId = (String)$this->aecookie->getCookie()->__get('aeguest');
 					$data->memberId = (String)$member_id;
-					if($group = $person->getGroup())
+					if ($group = $person->getGroup())
 						$data->group = (String)$group;
 					$request = new LinkGuestToMemberRequest($data);
 					$request->post();
@@ -379,9 +379,9 @@ class AffinityItems extends Module {
 	{
 		if (Tools::getValue('aehidden'))
 			$aecontext->aehidden = true;
-		if(!AELibrary::isEmpty(Tools::getRemoteAddr()))
+		if (!AELibrary::isEmpty(Tools::getRemoteAddr()))
 			$aecontext->ip = Tools::getRemoteAddr();
-		if(!AELibrary::isEmpty(Context::getContext()->language->iso_code))
+		if (!AELibrary::isEmpty(Context::getContext()->language->iso_code))
 			$aecontext->language = Context::getContext()->language->iso_code;
 		$recommendation = new Recommendation($aecontext, $this->context, $stack, true);
 		$products = $recommendation->getRecommendation();
@@ -979,7 +979,7 @@ public function postProcess()
 		$employee = AEAdapter::getEmployeesByProfile($this->context->cookie->id_employee);
 		$contact = array('lastname' => $employee[0]['lastname'], 'firstname' =>  $employee[0]['lastname'] , 'email' => $employee[0]['email']);
 		$install_request_array = array('phpInfo' => $php_info, 'storeList' => $store_list, 'contact' => $contact);
-		if($php_info['cUrl'] && $php_info['allow_url_fopen']) 
+		if ($php_info['cUrl'] && $php_info['allow_url_fopen']) 
 		{
 			try {
 				$install_request = new InstallRequest($install_request_array);
@@ -996,7 +996,7 @@ public function postProcess()
 		$php_info = array(
 			'version' => array(
 				'php' => phpversion(),
-				'compatibility' => version_compare(phpversion(), "5.1.0", ">="),
+				'compatibility' => version_compare(phpversion(), '5.1.0', '>='),
 				'server' => $_SERVER['SERVER_SOFTWARE'],
 				'memory_limit' => ini_get('memory_limit'),
 				'max_execution_time' => ini_get('max_execution_time')

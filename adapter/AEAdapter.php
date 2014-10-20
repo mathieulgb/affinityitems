@@ -318,7 +318,7 @@ class AEAdapter {
 		return Db::getInstance()->executeS('SELECT DISTINCT count(*) as cmember
 			FROM '._DB_PREFIX_.'customer c
 			LEFT JOIN '._DB_PREFIX_.'guest g ON c.id_customer = g.id_customer
-			' . $clause . ';');
+			'.$clause.';');
 	}
 
 	public static function newMemberClause() 
@@ -337,7 +337,7 @@ class AEAdapter {
 			FROM '._DB_PREFIX_.'customer c 
 			LEFT JOIN '._DB_PREFIX_.'guest g ON c.id_customer = g.id_customer
 			'.$clause.' 
-			LIMIT 0,' . (int)$bulk . ';');
+			LIMIT 0,'.(int)$bulk.';');
 	}
 
 	public static function insertMember($member) 

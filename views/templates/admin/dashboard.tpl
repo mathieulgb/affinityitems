@@ -768,8 +768,8 @@ $(document).ready(function() {
 	<div id="items-wiki"></div>
 	<div class="clear"></div>
 	<fieldset class="phpinfo">
-		<legend><img src="../img/t/AdminInformation.gif" alt="" /> {l s='Information about your configuration.'}</legend>
-		<h3>{l s='Server information'}</h3>	
+		<legend><img src="../img/t/AdminInformation.gif" alt="" /> {l s='Information about your configuration.' mod='affinityitems'}</legend>
+		<h3>{l s='Server information' mod='affinityitems'}</h3>	
 		{if count($configInfo.uname)}
 		<p>
 			<b>{l s='Server information' mod='affinityitems'}:</b> {$configInfo.uname|escape:'htmlall':'UTF-8'}
