@@ -20,6 +20,7 @@ $sql = array();
 $sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'ae_log`;';
 $sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'ae_product_repository`;';
 $sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'ae_category_repository`;';
+$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'ae_member_repository`;';
 $sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'ae_order_repository`;';
 $sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'ae_cart_repository`;';
 $sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'ae_guest_action_repository`;';

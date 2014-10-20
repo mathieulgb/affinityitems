@@ -17,7 +17,7 @@
 
 <script>
 {literal}
-var step = ['Categories', 'Products', 'Carts', 'Orders', 'Actions'];
+var step = ['Categories', 'Products', 'Members', 'Carts', 'Orders', 'Actions'];
 function synchronize() {
 	$.ajax({
 		{/literal}{if $ajaxController}{literal}
@@ -44,6 +44,13 @@ function synchronize() {
 	setTimeout("synchronize()", 10000);
 }
 
+function overlay() {
+	var overlay = document.getElementById("items-overlay");
+	var content = document.getElementById("items-overlay-content");
+	overlay.style.visibility = (overlay.style.visibility == "visible") ? "hidden" : "visible";
+	content.style.visibility = (content.style.visibility == "visible") ? "hidden" : "visible";
+}
+
 function changeZoneTab(name) {
 	{/literal}{foreach from=$hookList item=hook}{literal}
 	$('#zone-{/literal}{$hook|lower}{literal}').hide();
@@ -53,12 +60,31 @@ function changeZoneTab(name) {
 
 $(document).ready(function() {
 	synchronize();
-
  	$("#items-wiki").load("http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/fr-page-faq .wiki-holder", function(response, status, xhr) {
     	var html = $("#items-wiki").html();
     	var result = html.replace(/<a href="/g, '<a target="_blank" class="ae-email-color" href="http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/');
     	$("#items-wiki").html(result);
     });
+
+ 	$( ".items-set-notification-read" ).click(function() {
+ 		var parent = $(this).parent();
+ 		$.ajax({
+ 			{/literal}{if $ajaxController}{literal}
+ 			url: "index.php?controller=AEAjax&configure=affinityitems&ajax",
+ 			{/literal}{else}{literal}
+ 			url: "{/literal}{$module_dir|escape:'htmlall':'UTF-8'}{literal}ajax/notification.php",
+ 			{/literal}{/if}{literal}
+ 			type: "POST",
+ 			data : {"notificationId" : $(this).val(), "token" : "{/literal}{$prestashopToken|escape:'htmlall':'UTF-8'}{literal}", "aetoken" : '{/literal}{$aetoken}{literal}'},
+ 			async: false,
+ 			success: function (e, t, n) {
+ 				var response = jQuery.parseJSON(e);
+ 				if(response._ok == true) {
+ 					parent.fadeOut();
+ 				}
+ 			}
+ 		});
+ 	});
 
 	$('#zone-home').show();
 	var slider = $('#slider'),
@@ -121,8 +147,12 @@ $(document).ready(function() {
 	}
 
 	$('#registerTheme').click(function() {
-		$('.items-register-theme').slideDown();
+		overlay();
 		return false;
+	});
+
+	$('#items-overlay').click(function() {
+		overlay();
 	});
 
 	$('.zone-tab').click(function() {
@@ -289,6 +319,17 @@ $(document).ready(function() {
 				<li>{l s='The commercial service at' mod='affinityitems'} <span class="ae-email-color">+33 9 80 47 24 83</span></li>
 			</ul>
 		</div>
+
+		<div class="clear"></div>
+		<div class="items-notification">
+			{foreach from=$notifications item=notification}
+			<div class="items-notice">
+				<button type="button" class="items-set-notification-read" data-dismiss="alert" value="{$notification.id_notification|escape:'htmlall':'UTF-8'}" aria-hidden="true">×</button>
+				<strong>{$notification.title|escape:'htmlall':'UTF-8'}</strong><br />
+				<p>{$notification.text|escape:'htmlall':'UTF-8'}</p>
+			</div>
+			{/foreach}
+		</div>
 		<div class="clear"></div>
 		<div class="items-title">
 			{l s='Général' mod='affinityitems'}
@@ -379,10 +420,77 @@ $(document).ready(function() {
 				{l s='Sales impact' mod='affinityitems'}
 			</div>
 			<div class="items-box-content">
-				<span class="items-stat-message">{l s='Find your statistics every month on your registration email' mod='affinityitems'}</span>
+				<div class="items-main-stat">
+					{if !empty($statistics)} {if $statistics->salesImpactByPercentage > 0} + {/if} 
+					{$statistics->salesImpactByPercentage|string_format:"%.2f"} % 
+					{else} 
+					{l s='Impact statistics under construction' mod='affinityitems'}
+					{/if}
+				</div>
+			</div>
+			<div class="items-box-footer">
+				<div class="items-detail grow">
+					<a class="items-tooltip"  title="{l s='The outcome measurement becomes significant after an observation period of 2-6 weeks, depending on the frequency of the customers orders on your site and the impact of the personnalization' mod='affinityitems'} <br> {l s='The outcome measurement is automatically displayed when the significance test is conclusive.' mod='affinityitems'}<br>{l s='The percentage value shows the turnover increase by website visitor benefiting from the recommandation, compared to those without recommandation.' mod='affinityitems'}<br>{l s='This AB Testing method gives an unbiased measurement: the external factors like seasonal sales and weather, as well as your marketing activities, SEO or traffic acquisition, have no influence on the measure.' mod='affinityitems'}<br>{l s='It only quantifies the global impact of the personnalization offered by Affinity Items.' mod='affinityitems'}"href="#">{l s='More about' mod='affinityitems'}</a>				
+				</div>
 			</div>
 		</div>
+		{if !empty($statistics)}
+		<div class="items-box items-line">
+			<div class="items-box-title">
+				<strong>{l s='Detailed statistics.' mod='affinityitems'}</strong> {l s='Recommendation effect on the website performance' mod='affinityitems'}
+			</div>
+			<div class="items-line-item">
+				<div class="items-box-title">
+					{l s='Turnover' mod='affinityitems'}
+				</div>
+				<div class="items-box-content">
+					<div class="items-third-stat">
+						{$statistics->sales|string_format:"%.2f"} €
+					</div>
+					<div class="items-main-stat">
+						{if $statistics->salesImpactByPercentage > 0} + {/if} {$statistics->salesImpactByPercentage|string_format:"%.2f"} %
+					</div>
+					<div class="items-second-stat">
+						{if $statistics->salesImpact > 0} + {/if} {$statistics->salesImpact|string_format:"%.2f"} €
+					</div>
+				</div>
+			</div>
+			<div class="items-line-item">
+				<div class="items-box-title">
+					{l s='Conversion rate' mod='affinityitems'}
+				</div>
+				<div class="items-box-content">
+					<div class="items-third-stat">
+						{$statistics->conversionRate|string_format:"%.2f"} %
+					</div>
+					<div class="items-main-stat">
+						{if $statistics->conversionRateImpactByPercentage > 0} + {/if} {$statistics->conversionRateImpactByPercentage|string_format:"%.2f"} %
+					</div>
+					<div class="items-second-stat">
+						{if $statistics->orderImpact > 0} + {/if} {$statistics->orderImpact|string_format:"%.2f"} {l s='paniers' mod='affinityitems'}
+					</div>
+				</div>
+			</div>
+			<div class="items-line-item">
+				<div class="items-box-title">
+					{l s='Average invoice' mod='affinityitems'}
+				</div>
+				<div class="items-box-content">
+					<div class="items-third-stat">
+						{$statistics->averageOrderImpact|string_format:"%.2f"} €
+					</div>
+					<div class="items-main-stat">
+						{if $statistics->averageOrderImpactByPercentage > 0} + {/if} {$statistics->averageOrderImpactByPercentage|string_format:"%.2f"} %
+					</div>
+					<div class="items-second-stat">
+						{if $statistics->averageOrderImpactByAmount > 0} + {/if} {$statistics->averageOrderImpactByAmount|string_format:"%.2f"} {l s='€/panier' mod='affinityitems'}
+					</div>
+				</div>
+			</div>
+		</div>
+		{/if}
 		<div class="clear"></div>
+	
 		<div class="items-title">
 			{l s='Other' mod='affinityitems'}
 		</div>
@@ -462,16 +570,22 @@ $(document).ready(function() {
 			<span class="description" data-step="1" data-intro="Pour chaque recommandation vous aurez une explication ici.">
 			</span>
 			<div class="one" data-step="2" data-intro="Dans ce formulaire, vous configurez la zone haute de la recommandation">
-				<div class="position">{l s='First recommendation zone' mod='affinityitems'}</div>
-				<div class="position-options">
-					<div class="onoffswitch" data-step="3" data-intro="Un bouton pour activer la zone">
+				<div class="position">
+					<span class="items-left">{l s='First recommendation zone' mod='affinityitems'}</span>
+					<span class="items-right">
+						<div class="onoffswitch" data-step="3" data-intro="Un bouton pour activer la zone">
 						<input type="hidden" name="reco{$hook|escape:'htmlall':'UTF-8'}_1" value="0">
-						<input type="checkbox" name="reco{$hook|escape:'htmlall':'UTF-8'}_1" class="onoffswitch-checkbox" id="reco{$hook|escape:'htmlall':'UTF-8'}_1" value="1" {if $configuration.{$hook}->reco{$zone1} == "1"} checked {/if}>
-						<label class="onoffswitch-label" for="reco{$hook|escape:'htmlall':'UTF-8'}_1">
+						<input type="checkbox" name="reco{$hook}_1" class="onoffswitch-checkbox" id="reco{$hook}_1" value="1" {if $configuration.{$hook}->reco{$zone1} == "1"} checked {/if}>						<input type="checkbox" name="reco{$hook|escape:'htmlall':'UTF-8'}_1" class="onoffswitch-checkbox" id="reco{$hook|escape:'htmlall':'UTF-8'}_1" value="1" {if $configuration.{$hook}->reco{$zone1} == "1"} checked {/if}>
+							<label class="onoffswitch-label" for="reco{$hook|escape:'htmlall':'UTF-8'}_1">
 							<span class="onoffswitch-inner"></span>
 							<span class="onoffswitch-switch"></span>
 						</label>
-					</div>
+						</div>
+					</span>
+				</div>
+				<div id="clear"></div>
+				<div class="position-options">
+					
 					<label>{l s='Theme' mod='affinityitems'} :</label>
 					<select data-step="4" data-intro="Un champ pour choisir le style graphique de la zone. Par défaut le style utilisera les classes natives Prestashop si votre design a été conçu dans les normes Prestashop." name="recoTheme{$hook|escape:'htmlall':'UTF-8'}_1">
 						{foreach from=$themeList item=theme}
@@ -539,9 +653,9 @@ $(document).ready(function() {
 			<div class="clear"></div>
 			<div class="items-hr"></div>
 			<div class="two" data-step="6" data-intro="La deuxième zone permet d'afficher une seconde barre de recommandation en dessous de la première.">
-				<div class="position">{l s='Second recommendation zone' mod='affinityitems'}</div>
-				<div class="position-options">
-					<div class="onoffswitch">
+				<div class="position">
+					<span class="items-left">{l s='Second recommendation zone' mod='affinityitems'}</span>
+					<span class="items-right"><div class="onoffswitch">
 						<input type="hidden" name="reco{$hook|escape:'htmlall':'UTF-8'}_2" value="0">
 						<input type="checkbox" name="reco{$hook|escape:'htmlall':'UTF-8'}_2" class="onoffswitch-checkbox" id="reco{$hook|escape:'htmlall':'UTF-8'}_2" value="1" {if $configuration.{$hook}->reco{$zone2} == "1"} checked {/if}>
 						<label class="onoffswitch-label" for="reco{$hook|escape:'htmlall':'UTF-8'}_2">
@@ -549,6 +663,10 @@ $(document).ready(function() {
 							<span class="onoffswitch-switch"></span>
 						</label>
 					</div>
+				</span>
+				</div>
+				<div id="clear"></div>
+				<div class="position-options">
 					<label>{l s='Theme' mod='affinityitems'} :</label>
 					<select name="recoTheme{$hook|escape:'htmlall':'UTF-8'}_2">
 						{foreach from=$themeList item=theme}
@@ -640,9 +758,8 @@ $(document).ready(function() {
 <div id="content-support">
 	<div class="items-support-description">
 		<h2 class="items-title"><i class="fa fa-life-ring"></i>  Support</h2>
-		{l s='If you\'re having a problem with your Affinity Items module, please read the' mod='affinityitems'} {l s='FAQ' mod='affinityitems'} {l s=' or contact' mod='affinityitems'}
-		<br />
-		<br />
+		<div class="items-support-h3">{l s='If you have any questions please read the' mod='affinityitems'} {l s='FAQ' mod='affinityitems'} {l s=' or contact' mod='affinityitems'}</div>
+		<br />		
 		<ul>
 			<li>{l s='The technical support at' mod='affinityitems'} <span class="ae-email-color">+33 9 54 52 85 12</span> {l s='or contact' mod='affinityitems'} <a class="ae-email-color" href="mailto:mathieu@affinity-engine.fr">mathieu@affinity-engine.fr</a></li>
 			<li>{l s='The commercial service at' mod='affinityitems'} <span class="ae-email-color">+33 9 80 47 24 83</span></li>
@@ -650,5 +767,91 @@ $(document).ready(function() {
 	</div>
 	<div id="items-wiki"></div>
 	<div class="clear"></div>
+	<fieldset class="phpinfo">
+		<legend><img src="../img/t/AdminInformation.gif" alt="" /> {l s='Information about your configuration.'}</legend>
+		<h3>{l s='Server information'}</h3>	
+		{if count($configInfo.uname)}
+		<p>
+			<b>{l s='Server information'}:</b> {$configInfo.uname|escape:'htmlall':'UTF-8'}
+		</p>
+		{/if}
+		<p>
+			<b>{l s='Server software version'}:</b> {$configInfo.version.server|escape:'htmlall':'UTF-8'}
+		</p>
+		<p>
+			<b>{l s='PHP version'}:</b> {$configInfo.version.php|escape:'htmlall':'UTF-8'}
+		</p>
+		<p>
+			<b>{l s='Memory limit'}:</b> {$configInfo.version.memory_limit|escape:'htmlall':'UTF-8'}
+		</p>
+		<p>
+			<b>{l s='Max execution time'}:</b> {$configInfo.version.max_execution_time|escape:'htmlall':'UTF-8'}
+		</p>
+		{if $configInfo.apache_instaweb}
+		<p style="color:red;font-weight:700">{l s='PageSpeed module for Apache installed (mod_instaweb)'}</p>
+		{/if}
+
+		<hr />
+		<h3>{l s='Database information'}</h3>
+		<p>
+			<b>{l s='MySQL version'}:</b> {$configInfo.database.version|escape:'htmlall':'UTF-8'}
+		</p>
+		<p>
+			<b>{l s='MySQL engine'}:</b> {$configInfo.database.engine|escape:'htmlall':'UTF-8'}
+		</p>
+		<p>
+			<b>{l s='Tables prefix'}:</b> {$configInfo.database.prefix|escape:'htmlall':'UTF-8'}
+		</p>
+	
+		<hr />
+		<h3>{l s='Store information'}</h3>
+		<p>
+			<b>{l s='PrestaShop version'}:</b> {$configInfo.shop.ps|escape:'htmlall':'UTF-8'}
+		</p>
+		<p>
+			<b>{l s='Shop URL'}:</b> {$configInfo.shop.url|escape:'htmlall':'UTF-8'}
+		</p>
+		<p>
+			<b>{l s='Current theme in use'}:</b> {$configInfo.shop.theme|escape:'htmlall':'UTF-8'}
+		</p>
+		<hr />
+		<h3>{l s='Mail configuration'}</h3>
+		<p>
+			<b>{l s='Mail method'}:</b>
+	
+	{if $configInfo.mail}
+		{l s='You are using the PHP mail function.'}</p>
+	{else}
+		{l s='You are using your own SMTP parameters.'}</p>
+		<p>
+			<b>{l s='SMTP server'}:</b> {$configInfo.smtp.server|escape:'htmlall':'UTF-8'}
+		</p>
+		<p>
+			<b>{l s='SMTP user'}:</b>
+			{if $configInfo.smtp.user neq ''}
+				{l s='Defined'}
+			{else}
+				<span style="color:red;">{l s='Not defined'}</span>
+			{/if}
+		</p>
+		<p>
+			<b>{l s='SMTP password'}:</b>
+			{if $configInfo.smtp.password neq ''}
+				{l s='Defined'}
+			{else}
+				<span style="color:red;">{l s='Not defined'}</span>
+			{/if}
+		</p>
+		<p>
+			<b>{l s='Encryption'}:</b> {$configInfo.smtp.encryption|escape:'htmlall':'UTF-8'}
+		</p>
+		<p>
+			<b>{l s='Port'}:</b> {$configInfo.smtp.port|escape:'htmlall':'UTF-8'}
+		</p>
+	{/if}
+	<span style="font-weight:bold; color:{if $configInfo.cUrl} green {else} red {/if};">{l s='cUrl'}</span>
+	<br />
+	<span style="font-weight:bold; color:{if $configInfo.allow_url_fopen} green {else} red {/if};">{l s='allow_url_fopen'}</span>	
+	</fieldset>
 </div>
 </div>

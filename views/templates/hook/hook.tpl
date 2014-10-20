@@ -59,8 +59,11 @@
         $('.ae-area a').on('click', function() {
             aenow = new Date().getTime();
             createCookie('aelastreco', (aenow+"."+$(this).parents(".ae-area").attr("class").split(" ")[1].split("-")[1]+"."+$(this).attr("rel")), 1);
-        });        
+        });
     });
+    {/literal}{if isset($categoryId) && $categoryId != ''}{literal}
+    var categoryId = {/literal}{$categoryId}{literal};
+    {/literal}{/if}{literal}
 </script>
 <style type="text/css">
       {/literal}{$additionalCss|escape:"htmlall":"UTF-8"}{literal}

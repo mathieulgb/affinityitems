@@ -18,7 +18,7 @@
 
 class CartSynchronize extends AbstractModuleSynchronize {
 
-	const ORDER = 2;
+	const ORDER = 3;
 
 	public function __construct() { 
 		parent::__construct(new ActionRepository());
@@ -134,6 +134,14 @@ class CartSynchronize extends AbstractModuleSynchronize {
 				}
 			}
 
+			if(!AELibrary::isEmpty(Tools::getRemoteAddr()) && !(bool)Synchronize::getLock())
+				$aecart->ip = Tools::getRemoteAddr();
+
+
+			if(!AELibrary::isEmpty(Context::getContext()->language->iso_code) && !(bool)Synchronize::getLock())
+				$aecart->language = Context::getContext()->language->iso_code;
+
+
 	 		array_push($aecarts, $aecart);
 		}
 
@@ -221,6 +229,12 @@ class CartSynchronize extends AbstractModuleSynchronize {
 					}
 					unset($person);
 				}
+				
+				if(!AELibrary::isEmpty(Tools::getRemoteAddr()) && !(bool)Synchronize::getLock())
+					$aecart->ip = Tools::getRemoteAddr();
+
+				if(!AELibrary::isEmpty(Context::getContext()->language->iso_code) && !(bool)Synchronize::getLock())
+					$aecart->language = Context::getContext()->language->iso_code;
 
 				array_push($aecarts, $aecart);
 			}

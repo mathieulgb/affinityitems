@@ -32,6 +32,7 @@ class Synchronize {
 
 	public function syncElement() {
 		$instances = array();
+		$this->resynElement();
 		try {
 			foreach(get_declared_classes() as $class){
 				$pclass = new ReflectionClass($class);
@@ -52,6 +53,26 @@ class Synchronize {
 			self::setStep($i);
 			AELogger::log("[INFO]", "Synchronize step  : " . $i . " [" . time() . "]");
 			$instances[$i]->syncElement();
+		}
+	}
+
+	public function resynElement() {
+		try {
+			$resyncRequest = new ResynchronizeRequest(array());
+			$elementList = $resyncRequest->get();
+			if(isset($elementList->synchro)) {
+				if(is_array($elementList->synchro)) {
+					foreach ($elementList->synchro as $element) {
+						$method = 'delete'.ucfirst(strtolower($element)).'Sync';
+						$pclass = new ReflectionClass('AEAdapter');
+						if($pclass->hasMethod($method)) {
+							call_user_func(array('AEAdapter', $method));
+						}
+					}
+				}
+			}
+		} catch(Exception $e) {
+			AELogger::log('[INFO]', $e->getMessage());
 		}
 	}
 

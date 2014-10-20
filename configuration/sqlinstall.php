@@ -41,6 +41,12 @@ $sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'ae_category_repository` (
 	PRIMARY KEY  (`id_category`, `id_shop`)
 	) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8;';
 
+$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'ae_member_repository` (
+	`id_member` int(16) NOT NULL AUTO_INCREMENT,
+	`date_upd` DATETIME,
+	PRIMARY KEY  (`id_member`)
+	) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8;';
+
 $sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'ae_order_repository` (
 	`id_order` int(16) NOT NULL,
 	`date_add` DATETIME,

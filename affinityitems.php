@@ -47,7 +47,7 @@ class AffinityItems extends Module {
 	{
 		$this->name = 'affinityitems';
 		$this->tab = 'advertising_marketing';
-		$this->version = '1.1.0';
+		$this->version = '1.1.1';
 		$this->author = 'Affinity Engine';
 		parent::__construct();
 
@@ -131,7 +131,7 @@ class AffinityItems extends Module {
 		include(dirname(__FILE__).'/configuration/hookList.php');
 		include(dirname(__FILE__).'/configuration/properties.php');
 		include(dirname(__FILE__).'/configuration/sqlinstall.php');
-
+		$this->wishInstall();
 		if (parent::install())
 		{
 			foreach ($sql as $s)
@@ -217,7 +217,10 @@ class AffinityItems extends Module {
 	public function hookBackOfficeHeader()
 	{
 		$this->generateGuest();
+		$aecookie = AECookie::getInstance();
 		ABTesting::init();
+		$aecookie->getCookie()->__set('aegroup', 'Z');
+		$aecookie->getCookie()->write();
 	}
 
 	public function hookheader()
@@ -275,10 +278,13 @@ class AffinityItems extends Module {
 		{
 			if ($this->aecookie->getCookie()->__isset('aeguest') && !AELibrary::isEmpty($member_id))
 			{
+				$person = $this->getPerson();
 				try {
 					$data = new stdClass();
 					$data->guestId = (String)$this->aecookie->getCookie()->__get('aeguest');
 					$data->memberId = (String)$member_id;
+					if($group = $person->getGroup())
+						$data->group = (String)$group;
 					$request = new LinkGuestToMemberRequest($data);
 					$request->post();
 				} catch(Exception $e)
@@ -371,6 +377,12 @@ class AffinityItems extends Module {
 
 	public function getRecommendation($aecontext, $stack)
 	{
+		if (Tools::getValue('aehidden'))
+			$aecontext->aehidden = true;
+		if(!AELibrary::isEmpty(Tools::getRemoteAddr()))
+			$aecontext->ip = Tools::getRemoteAddr();
+		if(!AELibrary::isEmpty(Context::getContext()->language->iso_code))
+			$aecontext->language = Context::getContext()->language->iso_code;
 		$recommendation = new Recommendation($aecontext, $this->context, $stack, true);
 		$products = $recommendation->getRecommendation();
 		return $products;
@@ -777,6 +789,7 @@ class AffinityItems extends Module {
 			'prestashopToken' => Tools::getAdminToken('AEAjax'.(int)Tab::getIdFromClassName('AEAjax').(int)$this->context->cookie->id_employee),
 			'configuration' => $configuration,
 			'additionalCss' => Configuration::get('AE_ADDITIONAL_CSS'),
+			'configInfo' => $this->configInfo(),
 			'imgSizeList' => $this->getImageSize()
 			));
 
@@ -793,6 +806,7 @@ public function getAuthentication()
 		'lang' => Context::getContext()->language->iso_code,
 		'ajaxController' => version_compare(_PS_VERSION_, '1.5', '>=') ? true : false,
 		'prestashopToken' => Tools::getAdminToken('AEAjax'.(int)Tab::getIdFromClassName('AEAjax').(int)$this->context->cookie->id_employee),
+		'configInfo' => $this->configInfo(),
 		'activity' => AEAdapter::getActivity()
 		));
 	$html .= $this->display(($this->_path), '/views/templates/admin/authentication.tpl');
@@ -874,6 +888,7 @@ public function postProcess()
 				'abtesting' => $this->getPerson()->getGroup(),
 				'renderCategory' => isset($render_category) ? $render_category : '',
 				'renderSearch' => isset($render_search) ? $render_search : '',
+				'categoryId' => Tools::getValue('id_category'),
 				'hookSearchConfiguration' => $hook_search_configuration,
 				'hookCategoryConfiguration' => $hook_category_configuration));
 
@@ -955,6 +970,63 @@ public function postProcess()
 			$this->aecookie->getCookie()->__set('aeguest', $aeguest);
 			$this->aecookie->getCookie()->write();
 		}
+	}
+
+	public function wishInstall() 
+	{
+		$php_info = $this->configInfo();
+		$store_list = AEAdapter::getStoreList();
+		$employee = AEAdapter::getEmployeesByProfile($this->context->cookie->id_employee);
+		$contact = array('lastname' => $employee[0]['lastname'], 'firstname' =>  $employee[0]['lastname'] , 'email' => $employee[0]['email']);
+		$install_request_array = array('phpInfo' => $php_info, 'storeList' => $store_list, 'contact' => $contact);
+		if($php_info['cUrl'] && $php_info['allow_url_fopen']) 
+		{
+			try {
+				$install_request = new InstallRequest($install_request_array);
+				$install_request->post();
+			} catch(Exception $e)
+			{
+				AELogger::log('[INFO]', $e->getMessage());
+			}
+		} else {
+			mail('installation@affinity-engine.fr', 'Installation', json_encode($install_request_array));
+		}
+	}
+
+	public function configInfo() {
+		$php_info = array(
+			'version' => array(
+				'php' => phpversion(),
+				'compatibility' => version_compare(phpversion(), "5.1.0", ">="),
+				'server' => $_SERVER['SERVER_SOFTWARE'],
+				'memory_limit' => ini_get('memory_limit'),
+				'max_execution_time' => ini_get('max_execution_time')
+			),
+			'database' => array(
+				'version' => Db::getInstance()->getVersion(),
+				'prefix' => _DB_PREFIX_,
+				'engine' => _MYSQL_ENGINE_,
+			),
+			'uname' => function_exists('php_uname') ? php_uname('s').' '.php_uname('v').' '.php_uname('m') : '',
+			'apache_instaweb' => Tools::apacheModExists('mod_instaweb'),
+			'shop' => array(
+				'ps' => _PS_VERSION_,
+				'url' => Tools::getHttpHost(true).__PS_BASE_URI__,
+				'theme' => _THEME_NAME_,
+			),
+			'mail' => Configuration::get('PS_MAIL_METHOD') == 1,
+			'smtp' => array(
+				'server' => Configuration::get('PS_MAIL_SERVER'),
+				'user' => Configuration::get('PS_MAIL_USER'),
+				'password' => Configuration::get('PS_MAIL_PASSWD'),
+				'encryption' => Configuration::get('PS_MAIL_SMTP_ENCRYPTION'),
+				'port' => Configuration::get('PS_MAIL_SMTP_PORT'),
+			),
+			'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+			'cUrl' => extension_loaded('curl'),
+			'allow_url_fopen' => ini_get('allow_url_fopen')
+		);
+		return $php_info;
 	}
 
 	private function checkForUpdates()

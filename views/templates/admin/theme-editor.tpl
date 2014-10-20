@@ -20,8 +20,8 @@
 	</div>
 	<form action="#theme-editor" method="POST">
 	<div class="items-theme-selector">
-			<div class="items-register-theme items-left">
-				<input type="text" class="items-new-theme-input" name="themeName" placeholder="Nom du thème">
+			<div id="items-overlay"></div>
+			<div id="items-overlay-content"><input type="text" class="items-new-theme-input" name="themeName" placeholder="Nom du thème">
 				<input type="submit" value="Valider" class="items-button-plus">
 			</div>
 			<div class="items-theme-selector-content">
@@ -33,9 +33,9 @@
 						<option value="{$theme.id_theme}" {if $theme.id_theme == $themeSelected.themeId} selected {/if}>{$theme.name}</option>
 						{/foreach}
 					</select>
-					<input type="submit" class="items-button-submit items-theme-cancel" onClick="location.reload();return false;" value="{l s='Cancel' mod='affinityitems'}">
-					<input type="submit" value="{l s='Save' mod='affinityitems'}" class="items-button-submit">
-					<input type="submit" id="registerTheme" value="{l s='Save as' mod='affinityitems'}" class="items-button-submit">
+						<input type="submit" class="items-button-submit items-theme-cancel" onClick="location.reload();return false;" value="{l s='Cancel' mod='affinityitems'}">
+						<input type="submit" value="{l s='Save' mod='affinityitems'}" class="items-button-submit">
+						<input type="submit" id="registerTheme" value="{l s='Save as' mod='affinityitems'}" class="items-button-submit">
 			</div>
 			<div class="clear"></div>
 		</div>
@@ -631,7 +631,7 @@
 				</div>
 				<div class="default-toolbox toolboxarea" style="display:inherit">
 					<div class="title">
-						{l s='General' mod='affinityitems'}
+						{l s='Template settings' mod='affinityitems'}
 						<hr>
 					</div>
 					<div class="items-conf">
@@ -652,7 +652,13 @@
 						<div class="onoffswitch">
 							<input type="checkbox" name="productActivation" checked="true" disabled="true">
 						</div>
-						<button class="toolbox-button" toolbox="product" type="button">{l s='Product' mod='affinityitems'} <span class="arrow">></span></button>
+						<button class="toolbox-button" toolbox="product" type="button">{l s='Product area' mod='affinityitems'} <span class="arrow">></span></button>
+					</div>
+					<div class="items-conf">
+						<div class="onoffswitch">
+							<input type="checkbox" name="pictureActivation" checked="true" disabled="true">
+						</div>
+						<button class="toolbox-button" toolbox="image" type="button">{l s='Picture' mod='affinityitems'} <span class="arrow">></span></button>
 					</div>
 					<div class="items-conf">
 						<div class="onoffswitch">
@@ -672,12 +678,6 @@
 					</div>
 					<div class="items-conf">
 						<div class="onoffswitch">
-							<input type="checkbox" name="pictureActivation" checked="true" disabled="true">
-						</div>
-						<button class="toolbox-button" toolbox="image" type="button">{l s='Picture' mod='affinityitems'} <span class="arrow">></span></button>
-					</div>
-					<div class="items-conf">
-						<div class="onoffswitch">
 							<input type='hidden' value='0' name='priceActivation'>
 							<input type="checkbox" name="priceActivation" value="1"  
 							{if $themeSelected.themeConfiguration.priceActivation == "1"} checked="true" {/if}>
@@ -686,25 +686,27 @@
 					</div>
 					<div class="items-conf">
 						<div class="onoffswitch">
-							<input type='hidden' value='0' name='cartActivation'>
-							<input type="checkbox" name="cartActivation" value="1" 
-							{if $themeSelected.themeConfiguration.cartActivation == "1"} checked="true" {/if}>
-						</div>
-						<button class="toolbox-button" toolbox="cart" type="button">{l s='Cart' mod='affinityitems'} <span class="arrow">></span></button>
-					</div>
-					<div class="items-conf">
-						<div class="onoffswitch">
 							<input type='hidden' value='0' name='detailActivation'>
 							<input type="checkbox" name="detailActivation" value="1"
 							{if $themeSelected.themeConfiguration.detailActivation == "1"} checked="true" {/if}>
 						</div>
-						<button class="toolbox-button" toolbox="detail" type="button">{l s='Detail' mod='affinityitems'} <span class="arrow">></span></button>
+						<button class="toolbox-button" toolbox="detail" type="button">{l s='Product link' mod='affinityitems'} <span class="arrow">></span></button>
+					</div>
+					<div class="items-conf">
+						<div class="onoffswitch">
+							<input type='hidden' value='0' name='cartActivation'>
+							<input type="checkbox" name="cartActivation" value="1" 
+							{if $themeSelected.themeConfiguration.cartActivation == "1"} checked="true" {/if}>
+						</div>
+						<button class="toolbox-button" toolbox="cart" type="button">{l s='Add to cart' mod='affinityitems'} <span class="arrow">></span></button>
 					</div>
 				</div>
 			</div>
 			<div class="preview-area">
+				<div class="preview-title-zone"><h3>{l s='PREVIEW AREA' mod='affinityitems'}</h3></div>
 				{include file="../hook/{$version}/hrecommendation.tpl"}
 			</div>
 		</div>
 	<div class="clear"></div>
 </form>
+

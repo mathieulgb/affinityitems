@@ -74,10 +74,12 @@ class AEAjaxAdapter {
 
 			if (Tools::safeOutput(Tools::getValue('action')) == 'register' && Tools::getIsset('confirmPassword') && Tools::getIsset('activity')
 				&& Tools::getIsset('firstname') && Tools::getIsset('lastname'))
-				{
+			{
 				$customer->firstname = Tools::safeOutput(Tools::getValue('firstname'));
 				$customer->lastname = Tools::safeOutput(Tools::getValue('lastname'));
 				$customer->activity = Tools::safeOutput(Tools::getValue('activity'));
+				if(Tools::getIsset('discountCode') && !AELibrary::isEmpty(Tools::getValue('discountCode')))
+					$customer->code = Tools::safeOutput(Tools::getValue('discountCode'));
 				if (Tools::safeOutput(Tools::getValue('password')) == Tools::safeOutput(Tools::getValue('confirmPassword')))
 				{
 					$request = new CustomerRequest($customer);
@@ -121,6 +123,7 @@ public static function setProperty()
 	{
 		try {
 			AEAdapter::setAbTestingPercentage(Tools::safeOutput(Tools::getValue('percentage')));
+			AELogger::log('[INFO]', 'A/B Testing percentage has changed : ' . Tools::safeOutput(Tools::getValue('percentage')) . '%');
 			$response['_ok'] = true;
 		} catch (Exception $e)
 		{
@@ -132,6 +135,7 @@ public static function setProperty()
 	{
 		try {
 			AEAdapter::setActiveRecommendation(Tools::safeOutput(Tools::getValue('activation')));
+			AELogger::log('[INFO]', 'Recommendation Activation : ' . Tools::safeOutput(Tools::getValue('activation')));
 			$response['_ok'] = true;
 		} catch (Exception $e)
 		{
@@ -257,7 +261,7 @@ public static function synchronize()
 		$response['_step'] = ((int)Synchronize::getStep() + 1);
 		$response['_lock'] = (bool)Synchronize::getLock();
 		$response['_lastStart'] = Synchronize::getStartDate();
-		$response['_percentage'] = (((int)Synchronize::getStep() + 1) * (100 / 5));
+		$response['_percentage'] = (((int)Synchronize::getStep() + 1) * (100 / 6));
 	}
 
 	return Tools::jsonEncode($response);
@@ -265,14 +269,16 @@ public static function synchronize()
 
 public static function postAction()
 {
-	if (Tools::getIsset('productId') && Tools::getIsset('action'))
+	if ((Tools::getIsset('productId') || Tools::getIsset('categoryId')) && Tools::getIsset('action'))
 	{
-
 		$instance = new AffinityItems();
 		$person = $instance->getPerson();
 
 		$action = new stdClass();
-		$action->productId = (int)Tools::getValue('productId');
+		if(Tools::getValue('productId'))
+			$action->productId = (int)Tools::getValue('productId');
+		if(Tools::getValue('categoryId'))
+			$action->categoryId = (int)Tools::getValue('categoryId');
 		if (Tools::getIsset('recoType'))
 			$action->recoType = Tools::safeOutput(Tools::strtoupper(Tools::getValue('recoType')));
 		$action->context = Tools::safeOutput(Tools::getValue('action'));
@@ -284,6 +290,12 @@ public static function postAction()
 
 		if ($group = $person->getGroup())
 			$action->group = $group;
+
+		if(!AELibrary::isEmpty(Tools::getRemoteAddr()))
+			$action->ip = Tools::getRemoteAddr();
+		
+		if(!AELibrary::isEmpty(Context::getContext()->language->iso_code))
+			$action->language = Context::getContext()->language->iso_code;
 
 		$content = $action;
 		$request = new ActionRequest($content);
@@ -298,7 +310,7 @@ public static function postAction()
 			}
 		}
 
-		if (AELibrary::equals($action->context, 'read'))
+		if (AELibrary::equals($action->context, 'read') && Tools::getValue('productId'))
 			self::stackRead($action->productId);
 
 		return Tools::jsonEncode((array('_ok' => true)));

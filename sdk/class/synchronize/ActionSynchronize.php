@@ -18,7 +18,7 @@
 
 class ActionSynchronize extends AbstractModuleSynchronize {
 
-	const ORDER = 4;
+	const ORDER = 5;
 
 	public function __construct() {
 		parent::__construct(new ActionRepository());

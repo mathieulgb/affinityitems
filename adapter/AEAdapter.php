@@ -313,6 +313,42 @@ class AEAdapter {
 			AND id_shop = '.(int)$multishop.';');
 	}
 
+	public static function countMember($clause) {
+		return Db::getInstance()->executeS("SELECT DISTINCT count(*) as cmember
+			FROM "._DB_PREFIX_."customer c
+			LEFT JOIN "._DB_PREFIX_."guest g ON c.id_customer = g.id_customer
+			" . $clause . ";");
+	}
+
+	public static function newMemberClause() 
+	{
+		return 'WHERE c.id_customer NOT IN (SELECT id_member FROM '._DB_PREFIX_.'ae_member_repository)';
+	}
+
+	public static function updateMemberClause() 
+	{
+		return 'WHERE c.date_upd > (SELECT mr.date_upd FROM '._DB_PREFIX_.'ae_member_repository mr WHERE mr.id_member = c.id_customer)';
+	}
+
+	public static function getMemberList($clause, $bulk) 
+	{
+		return Db::getInstance()->executeS("SELECT DISTINCT c.id_customer, c.firstname, c.lastname, c.email, c.birthday, c.date_upd, g.accept_language
+			FROM "._DB_PREFIX_."customer c 
+			LEFT JOIN "._DB_PREFIX_."guest g ON c.id_customer = g.id_customer
+			".$clause." 
+			LIMIT 0," . (int)$bulk . ";");
+	}
+
+	public static function insertMember($member) 
+	{
+		Db::getInstance()->execute("INSERT INTO `"._DB_PREFIX_."ae_member_repository` VALUES(".$member->memberId.", '".$member->updateDate."');");
+	}
+
+	public static function updateMember($member) 
+	{
+		Db::getInstance()->execute("UPDATE `"._DB_PREFIX_."ae_member_repository` SET date_upd = '".$member->updateDate."' WHERE id_member = ".$member->memberId.";");
+	}
+
 	public static function countCart($clause)
 	{
 		return Db::getInstance()->executeS('SELECT DISTINCT count(*) as celement '.$clause);
@@ -406,26 +442,37 @@ class AEAdapter {
 		return $sql;
 	}
 
-	public static function countOrder()
+	public static function newOrderClause()
+	{
+		return 'WHERE o.id_order NOT IN (SELECT id_order FROM '._DB_PREFIX_.'ae_order_repository)';
+	}
+
+	public static function updateOrderClause()
+	{
+		return 'WHERE o.date_upd > (SELECT aeor.date_upd FROM '._DB_PREFIX_.'ae_order_repository aeor WHERE o.id_order = aeor.id_order)';
+	}
+
+	public static function countOrder($clause)
 	{
 		$multishop = Context::getContext()->shop->isFeatureActive() ? 'AND o.id_shop = '.Shop::getContextShopID(true) : '';
 		return Db::getInstance()->executeS('SELECT count(*) as corder
 			FROM '._DB_PREFIX_.'orders o
-			WHERE o.id_order NOT IN (SELECT id_order FROM '._DB_PREFIX_.'ae_order_repository)
+			'.$clause.'
 			AND o.id_customer IN (SELECT id_customer FROM '._DB_PREFIX_.'customer)
 			AND o.id_order IN (SELECT id_order FROM '._DB_PREFIX_.'order_detail)
 			AND id_customer <> 0
 			'.$multishop);
 	}
 
-	public static function getOrderList($bulk)
+	public static function getOrderList($clause, $bulk)
 	{
 		$multishop = Context::getContext()->shop->isFeatureActive() ? 'AND o.id_shop = '.Shop::getContextShopID(true) : '';
 		$total_paid = (_PS_VERSION_) >= '1.5' ? 'o.total_paid_tax_excl' : 'o.total_products as total_paid_tax_excl';
 		return Db::getInstance()->ExecuteS('
-			SELECT o.id_order, o.date_add, o.date_upd, o.id_cart, o.id_customer, '.$total_paid.'
-			FROM '._DB_PREFIX_.'orders o
-			WHERE o.id_order NOT IN (SELECT id_order FROM '._DB_PREFIX_.'ae_order_repository)
+			SELECT o.id_order, o.date_add, o.date_upd, o.current_state, osl.name as statusMessage, o.id_cart, o.id_customer, '.$total_paid.'
+			FROM '._DB_PREFIX_.'orders o, '._DB_PREFIX_.'order_state_lang osl
+			'.$clause.'
+			AND o.current_state = osl.id_order_state
 			AND o.id_customer IN (SELECT id_customer FROM '._DB_PREFIX_.'customer)
 			AND o.id_order IN (SELECT id_order FROM '._DB_PREFIX_.'order_detail)
 			AND id_customer <> 0
@@ -499,8 +546,15 @@ class AEAdapter {
 
 	public static function insertOrder($order)
 	{
-		Db::getInstance()->execute('INSERT INTO `'._DB_PREFIX_.'ae_order_repository` VALUES('.(int)$order->id.', \''.pSQL($order->addDate).'\'
+		Db::getInstance()->execute('INSERT INTO `'._DB_PREFIX_.'ae_order_repository` VALUES('.(int)$order->orderId.', \''.pSQL($order->addDate).'\'
 			, \''.pSQL($order->updateDate).'\');');
+	}
+
+
+	public static function updateOrder($order)
+	{
+		Db::getInstance()->execute('UPDATE `'._DB_PREFIX_.'ae_order_repository` SET date_upd = \''.pSQL($order->updateDate).'\' 
+			WHERE id_order = '.(int)$order->orderId.';');
 	}
 
 	public static function insertCart($cart)
@@ -659,13 +713,16 @@ class AEAdapter {
 			WHERE id_theme = '.$theme_id.';');
 	}
 
-
 	public static function getLastCreatedTheme()
 	{
 		return Db::getInstance()->getValue('SELECT DISTINCT MAX(id_theme) as id_theme
 			FROM `'._DB_PREFIX_.'ae_theme`;');
 	}
 
+	public static function getStoreList() {
+		return Db::getInstance()->executeS('SELECT name, address1, city, email, phone
+			FROM `'._DB_PREFIX_.'store`;');
+	}
 
 	public static function insertNotification($notification)
 	{
@@ -714,6 +771,31 @@ class AEAdapter {
 		foreach ($languages as $language)
 			array_push($ids, $language['id_lang']);
 		return implode(',', $ids);
+	}
+
+	public static function deleteCategorySync() 
+	{
+		Db::getInstance()->execute('TRUNCATE `'._DB_PREFIX_.'ae_category_repository`;');
+	}
+
+	public static function deleteProductSync() 
+	{
+		Db::getInstance()->execute('TRUNCATE `'._DB_PREFIX_.'ae_product_repository`;');
+	}
+
+	public static function deleteCartSync() 
+	{
+		Db::getInstance()->execute('TRUNCATE `'._DB_PREFIX_.'ae_cart_repository`;');
+	}
+
+	public static function deleteOrderSync() 
+	{
+		Db::getInstance()->execute('TRUNCATE `'._DB_PREFIX_.'ae_order_repository`;');
+	}
+
+	public static function deleteActionSync() 
+	{
+		Db::getInstance()->execute('TRUNCATE `'._DB_PREFIX_.'ae_guest_action_repository`;');
 	}
 
 	public static function getHost()

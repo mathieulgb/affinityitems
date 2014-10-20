@@ -42,14 +42,25 @@ function readCookie(name) {
 
 function postAction(action, object) {
 	if(!object.recoType) {
-		$.ajax({
-			type: 'POST',
-			url: baseDir + 'modules/affinityitems/ajax/action.php',
-			data: {productId: object.productId, action: action },
-			async:true,
-			dataType: 'json',
-			complete: function(e,t,n) {}
-		});
+		if(object.productId) {
+			$.ajax({
+				type: 'POST',
+				url: baseDir + 'modules/affinityitems/ajax/action.php',
+				data: {productId: object.productId, action: action },
+				async:true,
+				dataType: 'json',
+				complete: function(e,t,n) {}
+			});
+		} else if(object.categoryId) {
+			$.ajax({
+				type: 'POST',
+				url: baseDir + 'modules/affinityitems/ajax/action.php',
+				data: {categoryId: object.categoryId, action: action },
+				async:true,
+				dataType: 'json',
+				complete: function(e,t,n) {}
+			});
+		}
 	} else {
 		$.ajax({
 			type: 'POST',
@@ -80,8 +91,11 @@ $(document).ready(function() {
 		Read && Rebound
 	*/
 
-	var aetimestamp = readCookie('aetimestamp');
+	var paetimestamp = readCookie('paetimestamp');
+	var caetimestamp = readCookie('caetimestamp');
+
 	var aelastreco = readCookie('aelastreco');
+
 	var aenow = new Date().getTime();
 
 	if($('#product_page_product_id').val()){
@@ -89,14 +103,30 @@ $(document).ready(function() {
 			clearInterval(aetimer);
 			postAction("read", {productId : $('#product_page_product_id').val()});
 		}), 4000);
-		createCookie('aetimestamp', (aenow+"."+$('#product_page_product_id').val()), 1);
+		createCookie('paetimestamp', (aenow+"."+$('#product_page_product_id').val()), 1);
 	}
 
-	if(aetimestamp){
-		aetimestamp = aetimestamp.split('.');
-		var diff = aenow - aetimestamp[0];
+	if(paetimestamp){
+		paetimestamp = paetimestamp.split('.');
+		var diff = aenow - paetimestamp[0];
 		if(diff < 4000) {
-			postAction("rebound", {productId : aetimestamp[1]});
+			postAction("rebound", {productId : paetimestamp[1]});
+		}
+	}
+
+	if(document.body.id == "category") {
+		var aetimer = setInterval((function(){
+			clearInterval(aetimer);
+			postAction("readCategory", {categoryId : categoryId});
+		}), 4000);
+		createCookie('caetimestamp', (aenow+"."+categoryId), 1);
+	}
+
+	if(caetimestamp) {
+		caetimestamp = caetimestamp.split('.');
+		var diff = aenow - caetimestamp[0];
+		if(diff < 4000) {
+			postAction("reboundCategory", {categoryId : caetimestamp[1]});
 		}
 	}
 

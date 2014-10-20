@@ -40,6 +40,25 @@ function error(e) {
 	$(".items-alert").slideDown();
 }
 
+function yswitch() {
+	var promotion = $('.items-video-promotion');
+	var installation = $('.items-video-installation');
+	var promotionText = $('.items-video-promotion-text');
+	var installationText = $('.items-video-installation-text');
+	if(promotion.is(':visible')) {
+		promotion.hide();
+		installation.show();
+		promotionText.hide();
+		installationText.show();
+	} else {
+		promotion.show();
+		installation.hide();
+		promotionText.show();
+		installationText.hide();
+	}
+	return false;
+}
+
 $(document).ready(function () {
 	$('.items-auth-switch').click(function() {
 		if($('.items-register-container').is(':visible')) {
@@ -90,6 +109,7 @@ $(document).ready(function () {
 					email: $("#remail").val(),
 					password: $("#rpassword").val(),
 					confirmPassword: $("#rconfirmPassword").val(),
+					discountCode: $("#rdiscount").val(),
 					activity: $("#ractivity").val(),
 					token : "{/literal}{$prestashopToken|escape:'htmlall':'UTF-8'}{literal}",
 					aetoken : '{/literal}{$aetoken}{literal}'
@@ -180,28 +200,40 @@ $(document).ready(function () {
 			<strong>{l s='And a free trial offer for 1 month.' mod='affinityitems'}</strong><br><br>
 			<p>{l s='Take no risks try and see !' mod='affinityitems'}</p>
 		</div>
-		<div class="items-explain-image">
-			<object type="text/html" data="http://www.youtube.com/embed/rxn3fHYNL3s" width="400" height="236"></object>
+		<div class="items-video">
+			<span class="items-video-promotion"><object type="text/html" data="http://www.youtube.com/embed/rxn3fHYNL3s" width="400" height="236"></object></span>
+			<span class="items-video-installation"><object type="text/html" data="http://www.youtube.com/embed/AIEfj2UV-qU" width="400" height="236"></object></span>
+			<a href="#" class='items-video-promotion-text' onClick='yswitch();'>{l s='how to install ?' mod='affinityitems'}</a>
+			<a href="#" class='items-video-installation-text' onClick='yswitch();'>{l s='your customer\'s benefits' mod='affinityitems'}</a>
 		</div>
 	</div>
 	<div class="clear"></div>
+	{if !$configInfo.cUrl || !$configInfo.allow_url_fopen || !$configInfo.version.compatibility}
+		<div class="items-alert">
+			{l s='Warning : it seems that your server doesn\'t have all requirements for this module' mod='affinityitems'} :
+			<ul>
+				{if !$configInfo.cUrl}<li>{l s='You need cUrl library' mod='affinityitems'}</li>{/if}
+				{if !$configInfo.allow_url_fopen}<li>{l s='You need enable allow_url_fopen' mod='affinityitems'}</li>{/if}
+				{if !$configInfo.version.compatibility}<li>{l s='You need at least php 5.1.0' mod='affinityitems'} ({$configInfo.version.php})</li>{/if}
+			</ul>
+		</div>
+	{/if}
 	<div class="ae-info-auth"> 
-		{l s='If you have any problems with your Affinity Items module, please access to the ' mod='affinityitems'} 
-		{if $lang=="fr"}
-		<a class="ae-email-color" target="_blank" href="http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/fr-home">{l s='documentation' mod='affinityitems'}</a>
-		/ <a class="ae-email-color" target="_blank" href="http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/fr-page-faq">{l s='FAQ' mod='affinityitems'}</a>
-		/ <a class="ae-email-color" target="_blank" href="http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/fr-page-installation">{l s='installation guide' mod='affinityitems'}</a>
-		{else}
-		<a class="ae-email-color" target="_blank" href="http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/en-home">{l s='documentation' mod='affinityitems'}</a>
-		/ <a class="ae-email-color" target="_blank" href="http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/en-page-installation">{l s='installation guide' mod='affinityitems'}</a>
-		{/if}
-		<br />
-		{l s='We can install and configure the Affinity Items module for your website at no extra cost' mod='affinityitems'}
-		<br>
-		{l s='Do not hesitate to contact us for any questions :' mod='affinityitems'}
+		{l s='SUPPORT - Let our team install your module for free' mod='affinityitems'}
 		<ul>
 			<li>{l s='The technical support at' mod='affinityitems'} <span class="ae-email-color">+33 9 54 52 85 12</span> {l s='or contact' mod='affinityitems'} <a class="ae-email-color" href="mailto:mathieu@affinity-engine.fr">mathieu@affinity-engine.fr</a></li>
 			<li>{l s='The commercial service at' mod='affinityitems'} <span class="ae-email-color">+33 9 80 47 24 83</span></li>
+		</ul>
+		{l s='DOCUMENTATION - If you have any questions do not hesitate to consult : ' mod='affinityitems'}
+		<ul>	
+			{if $lang=="fr"}
+			<li><a class="ae-email-color" target="_blank" href="http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/fr-home">{l s='documentation' mod='affinityitems'}</a></li>
+			<li><a class="ae-email-color" target="_blank" href="http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/fr-page-faq">{l s='FAQ' mod='affinityitems'}</a></li>
+			<li><a class="ae-email-color" target="_blank" href="http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/fr-page-installation">{l s='installation guide' mod='affinityitems'}</a></li>
+			{else}
+			<li><a class="ae-email-color" target="_blank" href="http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/en-home">{l s='documentation' mod='affinityitems'}</a></li>
+			<li><a class="ae-email-color" target="_blank" href="http://developer.affinity-engine.fr/affinityitems/prestashop/wikis/en-page-installation">{l s='installation guide' mod='affinityitems'}</a></li>
+			{/if}
 		</ul>
 	</div>
 	<div class="items-alert" style="display:none;"></div>
@@ -233,6 +265,8 @@ $(document).ready(function () {
 					<br>
 					<input type="password" class="aeinput" id="rconfirmPassword" placeholder="{l s='Confirm your password' mod='affinityitems'}" />
 					<br>
+					<input type="text" class="aeinput" id="rdiscount" placeholder="{l s='Discount code' mod='affinityitems'}" />
+					<br>
 					<select name="ractivity" id="ractivity">
 						<option value="0" {if $activity == 0} selected {/if}>{l s='Activity' mod='affinityitems'}</option>
 						<option value="1" {if $activity == 1} selected {/if}>{l s='Adult' mod='affinityitems'}</option>
@@ -257,21 +291,15 @@ $(document).ready(function () {
 						<option value="20" {if $activity == 20} selected {/if}>{l s='Travel' mod='affinityitems'}</option>
 					</select>
 					<br>
-
 					<p class="ae-cgv"><input type="checkbox" id="rcgv">
 						{l s='I accept the' mod='affinityitems'} <a target='_blank' href="{$module_dir|escape:'htmlall':'UTF-8'}resources/pdf/contract.pdf" >{l s='terms and conditions of use.' mod='affinityitems'}</a> {l s='and I have read the Affinity Engine confidentiality policy.' mod='affinityitems'}
 					</p>
-
 					<input id="aeregister" class="items-auth-button" type="submit" value="{l s='Register' mod='affinityitems'}" />
 					<br>
-					<input class="items-auth-switch" type="submit" value="{l s='Login in' mod='affinityitems'}" />
-
+					<input class="items-auth-switch" type="submit" value="{l s='You already have an account' mod='affinityitems'} ?" />
 				</form>
-
 				<div class="clear"></div>
-
 			</div>
-
 			<div class="items-auth-presentation items-right">
 				<div class='ae-auth-desc aecontent'>
 					<div class="items-auth-presentation-block">

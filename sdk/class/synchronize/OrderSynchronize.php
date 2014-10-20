@@ -18,16 +18,15 @@
 
 class OrderSynchronize extends AbstractModuleSynchronize {
 
-	const ORDER = 3;
+	const ORDER = 4;
 
 	public function __construct() { 
-		parent::__construct(new ActionRepository());
+		parent::__construct(new OrderRepository());
 	}
 
 	public function getCountElementToSynchronize($clause) {
-		unset($clause);
 		$countElement = 0;
-		if($tmp = AEAdapter::countOrder()) {
+		if($tmp = AEAdapter::countOrder($clause)) {
 			$countElement = (int)$tmp[0]['corder'];
 		}
 		return $countElement;
@@ -36,29 +35,44 @@ class OrderSynchronize extends AbstractModuleSynchronize {
 	public function updateNumberElementSynchronized() { }
 
 	public function syncNewElement() {
-		$countOrder = $this->getCountElementToSynchronize('');
+		$clause = AEAdapter::newOrderClause();
+		$countOrder = $this->getCountElementToSynchronize($clause);
 		if(!AELibrary::isNull($countOrder)) {
 			$countPage = ceil($countOrder/parent::BULK_PACKAGE);
 			for($cPage = 0; $cPage <= ($countPage - 1); $cPage++) {
-				$content = $this->syncOrder();
-				$request = new ActionRequest($content);
+				$content = $this->syncOrder($clause);
+				$request = new OrderRequest($content);
 				if($request->post()) {
 					$content = AELibrary::castArray($content);
-					$this->getRepository()->insertOrder($content);
+					$this->getRepository()->insert($content);
 				}
 			}
 		}
 	}
 
-	public function syncUpdateElement() { /* There is not update for orders */ }
+	public function syncUpdateElement() {
+		$clause = AEAdapter::updateOrderClause();
+		$countOrder = $this->getCountElementToSynchronize($clause);
+		if(!AELibrary::isNull($countOrder)) {
+			$countPage = ceil($countOrder/parent::BULK_PACKAGE);
+			for($cPage = 0; $cPage <= ($countPage - 1); $cPage++) {
+				$content = $this->syncOrder($clause);
+				$request = new OrderRequest($content);
+				if($request->put()) {
+					$content = AELibrary::castArray($content);
+					$this->getRepository()->update($content);
+				}
+			}
+		}
+	}
 
 	public function syncDeleteElement() { /* There is not delete for orders */ }
 
-	public function syncOrder() {
+	public function syncOrder($clause) {
 			
 		$aeorders = array();
 
-		if (!$orders = AEAdapter::getOrderList(parent::BULK_PACKAGE)) {
+		if (!$orders = AEAdapter::getOrderList($clause, parent::BULK_PACKAGE)) {
 			return array();
 		}
 
@@ -67,42 +81,28 @@ class OrderSynchronize extends AbstractModuleSynchronize {
 			$orderLines = $this->getOrderLines($order['id_order']);
 
 			$aeorder = new stdClass();
-			$aeorder->id = $order['id_order'];
+			$aeorder->orderId = $order['id_order'];
 			$aeorder->addDate = $order['date_add'];
 			$aeorder->updateDate = $order['date_upd'];
+			$aeorder->statusId = $order['current_state'];
+			$aeorder->statusMessage = $order['statusMessage'];
 			$aeorder->memberId = $order['id_customer'];
 			$aeorder->amount = $order['total_paid_tax_excl'];
-			$aeorder->context = "order";
 			$aeorder->orderLines = $orderLines;
 
 			if(AEAdapter::isLastSync()) {
-				/*
-				v1 :
-				$person = new AEMember($aeorder->memberId);
-				if($group = $person->getGroup()) {
-					$aeorder->group = $group;
-				}
-				unset($person);*/
-				
-				/*
-				v2 :
-				$person = new stdClass();
-				$person->personId = $order['id_customer'];
-				$group = AEAdapter::getMemberGroup($person);
-				if(!AELibrary::isNull($group)) {
-					$aeorder->group = $group;
-				}*/
-
-				/*
-				v3 :
-				*/
 				if($group = AEAdapter::getCartGroup($order['id_cart'])) {
-					$aeorder->group = $group;
+						$aeorder->group = $group;
 				}
 			}
 			
-			array_push($aeorders, $aeorder);
+			if(!AELibrary::isEmpty(Tools::getRemoteAddr()) && !(bool)Synchronize::getLock())
+				$aeorder->ip = Tools::getRemoteAddr();
 
+			if(!AELibrary::isEmpty(Context::getContext()->language->iso_code) && !(bool)Synchronize::getLock())
+				$aeorder->language = Context::getContext()->language->iso_code;
+
+			array_push($aeorders, $aeorder);
 		}
 
 		if(sizeof($aeorders) > 1) {
