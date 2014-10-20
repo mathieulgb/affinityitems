@@ -78,7 +78,7 @@ class AEAjaxAdapter {
 				$customer->firstname = Tools::safeOutput(Tools::getValue('firstname'));
 				$customer->lastname = Tools::safeOutput(Tools::getValue('lastname'));
 				$customer->activity = Tools::safeOutput(Tools::getValue('activity'));
-				if(Tools::getIsset('discountCode') && !AELibrary::isEmpty(Tools::getValue('discountCode')))
+				if (Tools::getIsset('discountCode') && !AELibrary::isEmpty(Tools::getValue('discountCode')))
 					$customer->code = Tools::safeOutput(Tools::getValue('discountCode'));
 				if (Tools::safeOutput(Tools::getValue('password')) == Tools::safeOutput(Tools::getValue('confirmPassword')))
 				{
@@ -123,7 +123,7 @@ public static function setProperty()
 	{
 		try {
 			AEAdapter::setAbTestingPercentage(Tools::safeOutput(Tools::getValue('percentage')));
-			AELogger::log('[INFO]', 'A/B Testing percentage has changed : ' . Tools::safeOutput(Tools::getValue('percentage')) . '%');
+			AELogger::log('[INFO]', 'A/B Testing percentage has changed : '.Tools::safeOutput(Tools::getValue('percentage')).'%');
 			$response['_ok'] = true;
 		} catch (Exception $e)
 		{
@@ -135,7 +135,7 @@ public static function setProperty()
 	{
 		try {
 			AEAdapter::setActiveRecommendation(Tools::safeOutput(Tools::getValue('activation')));
-			AELogger::log('[INFO]', 'Recommendation Activation : ' . Tools::safeOutput(Tools::getValue('activation')));
+			AELogger::log('[INFO]', 'Recommendation Activation : '.Tools::safeOutput(Tools::getValue('activation')));
 			$response['_ok'] = true;
 		} catch (Exception $e)
 		{
@@ -275,9 +275,9 @@ public static function postAction()
 		$person = $instance->getPerson();
 
 		$action = new stdClass();
-		if(Tools::getValue('productId'))
+		if (Tools::getValue('productId'))
 			$action->productId = (int)Tools::getValue('productId');
-		if(Tools::getValue('categoryId'))
+		if (Tools::getValue('categoryId'))
 			$action->categoryId = (int)Tools::getValue('categoryId');
 		if (Tools::getIsset('recoType'))
 			$action->recoType = Tools::safeOutput(Tools::strtoupper(Tools::getValue('recoType')));
@@ -291,10 +291,10 @@ public static function postAction()
 		if ($group = $person->getGroup())
 			$action->group = $group;
 
-		if(!AELibrary::isEmpty(Tools::getRemoteAddr()))
+		if (!AELibrary::isEmpty(Tools::getRemoteAddr()))
 			$action->ip = Tools::getRemoteAddr();
 		
-		if(!AELibrary::isEmpty(Context::getContext()->language->iso_code))
+		if (!AELibrary::isEmpty(Context::getContext()->language->iso_code))
 			$action->language = Context::getContext()->language->iso_code;
 
 		$content = $action;

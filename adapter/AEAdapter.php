@@ -313,11 +313,12 @@ class AEAdapter {
 			AND id_shop = '.(int)$multishop.';');
 	}
 
-	public static function countMember($clause) {
-		return Db::getInstance()->executeS("SELECT DISTINCT count(*) as cmember
-			FROM "._DB_PREFIX_."customer c
-			LEFT JOIN "._DB_PREFIX_."guest g ON c.id_customer = g.id_customer
-			" . $clause . ";");
+	public static function countMember($clause) 
+	{
+		return Db::getInstance()->executeS('SELECT DISTINCT count(*) as cmember
+			FROM '._DB_PREFIX_.'customer c
+			LEFT JOIN '._DB_PREFIX_.'guest g ON c.id_customer = g.id_customer
+			' . $clause . ';');
 	}
 
 	public static function newMemberClause() 
@@ -332,21 +333,21 @@ class AEAdapter {
 
 	public static function getMemberList($clause, $bulk) 
 	{
-		return Db::getInstance()->executeS("SELECT DISTINCT c.id_customer, c.firstname, c.lastname, c.email, c.birthday, c.date_upd, g.accept_language
-			FROM "._DB_PREFIX_."customer c 
-			LEFT JOIN "._DB_PREFIX_."guest g ON c.id_customer = g.id_customer
-			".$clause." 
-			LIMIT 0," . (int)$bulk . ";");
+		return Db::getInstance()->executeS('SELECT DISTINCT c.id_customer, c.firstname, c.lastname, c.email, c.birthday, c.date_upd, g.accept_language
+			FROM '._DB_PREFIX_.'customer c 
+			LEFT JOIN '._DB_PREFIX_.'guest g ON c.id_customer = g.id_customer
+			'.$clause.' 
+			LIMIT 0,' . (int)$bulk . ';');
 	}
 
 	public static function insertMember($member) 
 	{
-		Db::getInstance()->execute("INSERT INTO `"._DB_PREFIX_."ae_member_repository` VALUES(".$member->memberId.", '".$member->updateDate."');");
+		Db::getInstance()->execute('INSERT INTO `'._DB_PREFIX_.'ae_member_repository` VALUES('.$member->memberId.', \''.$member->updateDate.'\');');
 	}
 
 	public static function updateMember($member) 
 	{
-		Db::getInstance()->execute("UPDATE `"._DB_PREFIX_."ae_member_repository` SET date_upd = '".$member->updateDate."' WHERE id_member = ".$member->memberId.";");
+		Db::getInstance()->execute('UPDATE `'._DB_PREFIX_.'ae_member_repository` SET date_upd = \''.$member->updateDate.'\' WHERE id_member = '.$member->memberId.';');
 	}
 
 	public static function countCart($clause)
@@ -719,7 +720,8 @@ class AEAdapter {
 			FROM `'._DB_PREFIX_.'ae_theme`;');
 	}
 
-	public static function getStoreList() {
+	public static function getStoreList() 
+	{
 		return Db::getInstance()->executeS('SELECT name, address1, city, email, phone
 			FROM `'._DB_PREFIX_.'store`;');
 	}

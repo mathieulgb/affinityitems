@@ -81,35 +81,35 @@ function retrieveConfiguration()
 		$theme_serialized = AEAdapter::getThemeById(1);
 		$theme = unserialize($theme_serialized[0]['configuration']);
 		
-		if(isset($configuration->parentId))
+		if (isset($configuration->parentId))
 			$theme['backgroundProductsBlockId'] = $configuration->parentId;
-		if(isset($configuration->classParent))
+		if (isset($configuration->classParent))
 			$theme['backgroundProductsBlockClass'] = $configuration->classParent;
-		if(isset($configuration->contentId))
+		if (isset($configuration->contentId))
 			$theme['backgroundContentId'] = $configuration->contentId;
-		if(isset($configuration->classContent))
+		if (isset($configuration->classContent))
 			$theme['backgroundContentClass'] = $configuration->classContent;
-		if(isset($configuration->listId))
+		if (isset($configuration->listId))
 			$theme['backgroundListId'] = $configuration->listId;
-		if(isset($configuration->classList))
+		if (isset($configuration->classList))
 			$theme['backgroundListClass'] = $configuration->classList;
-		if(isset($configuration->classTitle))
+		if (isset($configuration->classTitle))
 			$theme['titleClass'] = $configuration->classTitle;
-		if(isset($configuration->elementListId))
+		if (isset($configuration->elementListId))
 			$theme['productId'] = $configuration->elementListId;
-		if(isset($configuration->classElementList))
+		if (isset($configuration->classElementList))
 			$theme['productClass'] = $configuration->classElementList;
-		if(isset($configuration->classElementName))
+		if (isset($configuration->classElementName))
 			$theme['productTitleClass'] = $configuration->classElementName;
-		if(isset($configuration->classElementDescription))
+		if (isset($configuration->classElementDescription))
 			$theme['productDescriptionClass'] = $configuration->classElementDescription;
-		if(isset($configuration->classElementImage))
+		if (isset($configuration->classElementImage))
 			$theme['pictureClass'] = $configuration->classElementImage;
-		if(isset($configuration->classPriceContainer))
+		if (isset($configuration->classPriceContainer))
 			$theme['priceContainerClass'] = $configuration->classPriceContainer;
-		if(isset($configuration->classPrice))
+		if (isset($configuration->classPrice))
 			$theme['priceClass'] = $configuration->classPrice;
-		if(countTheme() < 8)
+		if (countTheme() < 8)
 			$sql[] = 'INSERT INTO '._DB_PREFIX_.'ae_theme(name, configuration) VALUES("'.$hook.'", \''.serialize($theme).'\')';
 	}
 

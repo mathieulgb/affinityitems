@@ -988,12 +988,11 @@ public function postProcess()
 			{
 				AELogger::log('[INFO]', $e->getMessage());
 			}
-		} else {
-			mail('installation@affinity-engine.fr', 'Installation', json_encode($install_request_array));
 		}
 	}
 
-	public function configInfo() {
+	public function configInfo() 
+	{
 		$php_info = array(
 			'version' => array(
 				'php' => phpversion(),
