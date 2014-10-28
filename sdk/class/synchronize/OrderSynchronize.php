@@ -86,6 +86,7 @@ class OrderSynchronize extends AbstractModuleSynchronize {
 			$aeorder->updateDate = $order['date_upd'];
 			$aeorder->statusId = $order['current_state'];
 			$aeorder->statusMessage = $order['statusMessage'];
+			$aeorder->language = $order['language'];
 			$aeorder->memberId = $order['id_customer'];
 			$aeorder->amount = $order['total_paid_tax_excl'];
 			$aeorder->orderLines = $orderLines;

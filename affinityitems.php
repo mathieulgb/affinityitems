@@ -1013,14 +1013,7 @@ public function postProcess()
 				'url' => Tools::getHttpHost(true).__PS_BASE_URI__,
 				'theme' => _THEME_NAME_,
 			),
-			'mail' => Configuration::get('PS_MAIL_METHOD') == 1,
-			'smtp' => array(
-				'server' => Configuration::get('PS_MAIL_SERVER'),
-				'user' => Configuration::get('PS_MAIL_USER'),
-				'password' => Configuration::get('PS_MAIL_PASSWD'),
-				'encryption' => Configuration::get('PS_MAIL_SMTP_ENCRYPTION'),
-				'port' => Configuration::get('PS_MAIL_SMTP_PORT'),
-			),
+			'module_version' => $this->version,			
 			'user_agent' => $_SERVER['HTTP_USER_AGENT'],
 			'cUrl' => extension_loaded('curl'),
 			'allow_url_fopen' => ini_get('allow_url_fopen')

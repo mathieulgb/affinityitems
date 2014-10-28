@@ -420,75 +420,10 @@ $(document).ready(function() {
 				{l s='Sales impact' mod='affinityitems'}
 			</div>
 			<div class="items-box-content">
-				<div class="items-main-stat">
-					{if !empty($statistics)} {if $statistics->salesImpactByPercentage > 0} + {/if} 
-					{$statistics->salesImpactByPercentage|string_format:"%.2f"} % 
-					{else} 
-					{l s='Impact statistics under construction' mod='affinityitems'}
-					{/if}
-				</div>
-			</div>
-			<div class="items-box-footer">
-				<div class="items-detail grow">
-					<a class="items-tooltip"  title="{l s='The outcome measurement becomes significant after an observation period of 2-6 weeks, depending on the frequency of the customers orders on your site and the impact of the personnalization' mod='affinityitems'} <br> {l s='The outcome measurement is automatically displayed when the significance test is conclusive.' mod='affinityitems'}<br>{l s='The percentage value shows the turnover increase by website visitor benefiting from the recommandation, compared to those without recommandation.' mod='affinityitems'}<br>{l s='This AB Testing method gives an unbiased measurement: the external factors like seasonal sales and weather, as well as your marketing activities, SEO or traffic acquisition, have no influence on the measure.' mod='affinityitems'}<br>{l s='It only quantifies the global impact of the personnalization offered by Affinity Items.' mod='affinityitems'}"href="#">{l s='More about' mod='affinityitems'}</a>				
-				</div>
+				<span class="items-stat-message">{l s='Find your statistics every month on your registration email' mod='affinityitems'}</span>
 			</div>
 		</div>
-		{if !empty($statistics)}
-		<div class="items-box items-line">
-			<div class="items-box-title">
-				<strong>{l s='Detailed statistics.' mod='affinityitems'}</strong> {l s='Recommendation effect on the website performance' mod='affinityitems'}
-			</div>
-			<div class="items-line-item">
-				<div class="items-box-title">
-					{l s='Turnover' mod='affinityitems'}
-				</div>
-				<div class="items-box-content">
-					<div class="items-third-stat">
-						{$statistics->sales|string_format:"%.2f"} €
-					</div>
-					<div class="items-main-stat">
-						{if $statistics->salesImpactByPercentage > 0} + {/if} {$statistics->salesImpactByPercentage|string_format:"%.2f"} %
-					</div>
-					<div class="items-second-stat">
-						{if $statistics->salesImpact > 0} + {/if} {$statistics->salesImpact|string_format:"%.2f"} €
-					</div>
-				</div>
-			</div>
-			<div class="items-line-item">
-				<div class="items-box-title">
-					{l s='Conversion rate' mod='affinityitems'}
-				</div>
-				<div class="items-box-content">
-					<div class="items-third-stat">
-						{$statistics->conversionRate|string_format:"%.2f"} %
-					</div>
-					<div class="items-main-stat">
-						{if $statistics->conversionRateImpactByPercentage > 0} + {/if} {$statistics->conversionRateImpactByPercentage|string_format:"%.2f"} %
-					</div>
-					<div class="items-second-stat">
-						{if $statistics->orderImpact > 0} + {/if} {$statistics->orderImpact|string_format:"%.2f"} {l s='paniers' mod='affinityitems'}
-					</div>
-				</div>
-			</div>
-			<div class="items-line-item">
-				<div class="items-box-title">
-					{l s='Average invoice' mod='affinityitems'}
-				</div>
-				<div class="items-box-content">
-					<div class="items-third-stat">
-						{$statistics->averageOrderImpact|string_format:"%.2f"} €
-					</div>
-					<div class="items-main-stat">
-						{if $statistics->averageOrderImpactByPercentage > 0} + {/if} {$statistics->averageOrderImpactByPercentage|string_format:"%.2f"} %
-					</div>
-					<div class="items-second-stat">
-						{if $statistics->averageOrderImpactByAmount > 0} + {/if} {$statistics->averageOrderImpactByAmount|string_format:"%.2f"} {l s='€/panier' mod='affinityitems'}
-					</div>
-				</div>
-			</div>
-		</div>
-		{/if}
+	
 		<div class="clear"></div>
 	
 		<div class="items-title">
@@ -790,7 +725,6 @@ $(document).ready(function() {
 		{if $configInfo.apache_instaweb}
 			<p style="color:red;font-weight:700">{l s='PageSpeed module for Apache installed (mod_instaweb)' mod='affinityitems'}</p>
 		{/if}
-
 		<hr />
 		<h3>{l s='Database information' mod='affinityitems'}</h3>
 		<p>
@@ -802,7 +736,6 @@ $(document).ready(function() {
 		<p>
 			<b>{l s='Tables prefix' mod='affinityitems'}:</b> {$configInfo.database.prefix|escape:'htmlall':'UTF-8'}
 		</p>
-	
 		<hr />
 		<h3>{l s='Store information' mod='affinityitems'}</h3>
 		<p>
@@ -815,43 +748,11 @@ $(document).ready(function() {
 			<b>{l s='Current theme in use' mod='affinityitems'}:</b> {$configInfo.shop.theme|escape:'htmlall':'UTF-8'}
 		</p>
 		<hr />
-		<h3>{l s='Mail configuration' mod='affinityitems'}</h3>
-		<p>
-			<b>{l s='Mail method' mod='affinityitems'}:</b>
-	
-	{if $configInfo.mail}
-		{l s='You are using the PHP mail function.' mod='affinityitems'}</p>
-	{else}
-		{l s='You are using your own SMTP parameters.' mod='affinityitems'}</p>
-		<p>
-			<b>{l s='SMTP server' mod='affinityitems'}:</b> {$configInfo.smtp.server|escape:'htmlall':'UTF-8'}
-		</p>
-		<p>
-			<b>{l s='SMTP user' mod='affinityitems'}:</b>
-			{if $configInfo.smtp.user neq ''}
-				{l s='Defined' mod='affinityitems' mod='affinityitems'}
-			{else}
-				<span style="color:red;">{l s='Not defined' mod='affinityitems'}</span>
-			{/if}
-		</p>
-		<p>
-			<b>{l s='SMTP password' mod='affinityitems'}:</b>
-			{if $configInfo.smtp.password neq ''}
-				{l s='Defined' mod='affinityitems'}
-			{else}
-				<span style="color:red;">{l s='Not defined' mod='affinityitems'}</span>
-			{/if}
-		</p>
-		<p>
-			<b>{l s='Encryption' mod='affinityitems'}:</b> {$configInfo.smtp.encryption|escape:'htmlall':'UTF-8'}
-		</p>
-		<p>
-			<b>{l s='Port' mod='affinityitems'}:</b> {$configInfo.smtp.port|escape:'htmlall':'UTF-8'}
-		</p>
-	{/if}
-	<span style="font-weight:bold; color:{if $configInfo.cUrl} green {else} red {/if};">{l s='cUrl' mod='affinityitems'}</span>
-	<br />
-	<span style="font-weight:bold; color:{if $configInfo.allow_url_fopen} green {else} red {/if};">{l s='allow_url_fopen' mod='affinityitems'}</span>	
+		<span style="font-weight:bold; color:{if $configInfo.cUrl} green {else} red {/if};">{l s='cUrl' mod='affinityitems'}</span>
+		<br />
+		<span style="font-weight:bold; color:{if $configInfo.allow_url_fopen} green {else} red {/if};">{l s='allow_url_fopen' mod='affinityitems'}</span>
+		<br />
+		<span>{l s='Module version' mod='affinityitems'}: {$configInfo.module_version|escape:'htmlall':'UTF-8'} </span>
 	</fieldset>
 </div>
 </div>
