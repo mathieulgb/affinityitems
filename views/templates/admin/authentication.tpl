@@ -192,13 +192,12 @@ $(document).ready(function () {
 	</div>
 	<div class="items-box items-line items-explain">
 		<div class="items-explain-description">
-			<strong>{l s='Improve your sales by up to 50%' mod='affinityitems'} <br> {l s='thanks to personalized recommendations.' mod='affinityitems'}</strong><br><br>
-			<p>{l s='Give each visitor the products that fit his tastes' mod='affinityitems'}</p>
-			<p>{l s='& needs and benefit from higher transformation rate' mod='affinityitems'}</p>
+			<strong>{l s='Improve your sales by up to 50%' mod='affinityitems'} <br> {l s='thanks to affinity items personnalized recommendations' mod='affinityitems'}</strong><br><br>
+			<p>{l s='Propose to each visitor the products that fit his tastes & needs' mod='affinityitems'}</p>
+			<p>{l s='and strongly increase your conversion rate,' mod='affinityitems'}</p>
 			<p>{l s='average basket and visitors loyalty.' mod='affinityitems'}</p><br />
-			<p>{l s='Easy to install, this service has no fixed costs, requires no commitment, and drives a big bunch of profits.' mod='affinityitems'}</p><br>
-			<strong>{l s='And a free trial offer for 1 month.' mod='affinityitems'}</strong><br><br>
-			<p>{l s='Take no risks try and see !' mod='affinityitems'}</p>
+			<p>{l s='Contact us to benefit from our expertise and get a free set-up by our technical team.' mod='affinityitems'}</p><br />
+			<p>{l s='Miss no sales: try Affinity Items!' mod='affinityitems'}</p>
 		</div>
 		<div class="items-video">
 			<span class="items-video-promotion"><object type="text/html" data="http://www.youtube.com/embed/rxn3fHYNL3s" width="400" height="236"></object></span>
@@ -303,32 +302,33 @@ $(document).ready(function () {
 			<div class="items-auth-presentation items-right">
 				<div class='ae-auth-desc aecontent'>
 					<div class="items-auth-presentation-block">
-					<h3>{l s='Unmatched performance through real-time semantics' mod='affinityitems'}</h3>
+					<h3>{l s='An unrivalled service level thanks to real-time semantic' mod='affinityitems'}</h3>
 					<img src="{$module_dir|escape:'htmlall':'UTF-8'}img/aeboard.jpg">
 					<ul>
-						<li>{l s='Detailed understanding of the needs and expectations of visitors by giving meaning to their actions' mod='affinityitems'}</li>
-						<li>{l s='Recommendations tailored to each visitor' mod='affinityitems'}</li>
-						<li>{l s='Recommendations from the very first visit' mod='affinityitems'}</li>
+						<li>{l s='Precise understanding of each visitor tastes and needs' mod='affinityitems'}</li>
+						<li>{l s='Taylor-made recommendations for each visitor' mod='affinityitems'}</li>
+						<li>{l s='Recommendations as soon as the very first visit' mod='affinityitems'}</li>
 					</ul>
 					</div>
 					<div class="clear"></div>
-					<div class="items-auth-presentation-block">
-					<h3>{l s='A solution easy to install and to configure' mod='affinityitems'}</h3>
+					<div class="items-auth-presentation-block items-auth-presentation-block-middle">
+					<h3>{l s='A flexible set-up' mod='affinityitems'}</h3>
 					<img src="{$module_dir|escape:'htmlall':'UTF-8'}img/aestart.jpg">
 					<ul>
-						<li>{l s='Fully automatic installation' mod='affinityitems'}</li>
-						<li>{l s='Simple and flexible settings (10-15 minutes) for seamless integration into your site' mod='affinityitems'}</li>
-						<li>{l s='Total control over the activation areas and abtesting' mod='affinityitems'}</li>
+						<li>{l s='Chose the recommendations role: cross-selling, up-selling…' mod='affinityitems'}</li>
+						<li>{l s='Chose the recommendations product perimeter (eg promotions, new articles, specific catégories…) ' mod='affinityitems'}</li>
+						<li>{l s='A perfect match with your website design.' mod='affinityitems'}</li>
+						<li>{l s='Total and instant control on recommendations areas activation.' mod='affinityitems'}</li>
 					</ul>
 					</div>
 					<div class="clear"></div>
 					<div class="items-auth-presentation-block">
-					<h3>{l s='A very profitable, without commitment, and accessible to all department sites, large or small' mod='affinityitems'}</h3>
+					<h3>{l s='A highly-profitable service, from 20 £/month' mod='affinityitems'}</h3>
 					<img src="{$module_dir|escape:'htmlall':'UTF-8'}img/aemoney.jpg">
 					<ul>
-						<li>{l s='No setup costs, no monthly fixed cost' mod='affinityitems'}</li>
-						<li>{l s='Pay per use only, at a cost widely covered by the additional margin generated.' mod='affinityitems'} <a class="ae-link-color" href="http://www.affinity-engine.fr/simulateur-de-rentabilite">{l s='Simulate cost and profitability of service for your website' mod='affinityitems'}</a></li>
-						<li>{l s='No minimum volume, nor duration commitment' mod='affinityitems'}</li>
+						<li>{l s='A pay-per-use cost, adapted to your stakes (minimum monthly billing: 20£/month, be around 18 000 recommendations)' mod='affinityitems'}</li>
+						<li>{l s='A cost cost is largely covered by the additional margin generated. ' mod='affinityitems'} <a class="ae-link-color" href="http://www.affinity-engine.fr/simulateur-de-rentabilite">{l s='Simulate service profitability for your website' mod='affinityitems'}</a></li>
+						<li>{l s='No commitment on contract length.' mod='affinityitems'}</li>
 					</ul>
 					</div>
 					<div class="clear"></div>
