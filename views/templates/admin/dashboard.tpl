@@ -702,57 +702,5 @@ $(document).ready(function() {
 	</div>
 	<div id="items-wiki"></div>
 	<div class="clear"></div>
-	<fieldset class="phpinfo">
-		<legend><img src="../img/t/AdminInformation.gif" alt="" /> {l s='Information about your configuration.' mod='affinityitems'}</legend>
-		<h3>{l s='Server information' mod='affinityitems'}</h3>	
-		{if count($configInfo.uname)}
-		<p>
-			<b>{l s='Server information' mod='affinityitems'}:</b> {$configInfo.uname|escape:'htmlall':'UTF-8'}
-		</p>
-		{/if}
-		<p>
-			<b>{l s='Server software version' mod='affinityitems'}:</b> {$configInfo.version.server|escape:'htmlall':'UTF-8'}
-		</p>
-		<p>
-			<b>{l s='PHP version' mod='affinityitems'}:</b> {$configInfo.version.php|escape:'htmlall':'UTF-8'}
-		</p>
-		<p>
-			<b>{l s='Memory limit' mod='affinityitems'}:</b> {$configInfo.version.memory_limit|escape:'htmlall':'UTF-8'}
-		</p>
-		<p>
-			<b>{l s='Max execution time' mod='affinityitems'}:</b> {$configInfo.version.max_execution_time|escape:'htmlall':'UTF-8'}
-		</p>
-		{if $configInfo.apache_instaweb}
-			<p style="color:red;font-weight:700">{l s='PageSpeed module for Apache installed (mod_instaweb)' mod='affinityitems'}</p>
-		{/if}
-		<hr />
-		<h3>{l s='Database information' mod='affinityitems'}</h3>
-		<p>
-			<b>{l s='MySQL version' mod='affinityitems'}:</b> {$configInfo.database.version|escape:'htmlall':'UTF-8'}
-		</p>
-		<p>
-			<b>{l s='MySQL engine' mod='affinityitems'}:</b> {$configInfo.database.engine|escape:'htmlall':'UTF-8'}
-		</p>
-		<p>
-			<b>{l s='Tables prefix' mod='affinityitems'}:</b> {$configInfo.database.prefix|escape:'htmlall':'UTF-8'}
-		</p>
-		<hr />
-		<h3>{l s='Store information' mod='affinityitems'}</h3>
-		<p>
-			<b>{l s='PrestaShop version' mod='affinityitems'}:</b> {$configInfo.shop.ps|escape:'htmlall':'UTF-8'}
-		</p>
-		<p>
-			<b>{l s='Shop URL' mod='affinityitems'}:</b> {$configInfo.shop.url|escape:'htmlall':'UTF-8'}
-		</p>
-		<p>
-			<b>{l s='Current theme in use' mod='affinityitems'}:</b> {$configInfo.shop.theme|escape:'htmlall':'UTF-8'}
-		</p>
-		<hr />
-		<span style="font-weight:bold; color:{if $configInfo.cUrl} green {else} red {/if};">{l s='cUrl' mod='affinityitems'}</span>
-		<br />
-		<span style="font-weight:bold; color:{if $configInfo.allow_url_fopen} green {else} red {/if};">{l s='allow_url_fopen' mod='affinityitems'}</span>
-		<br />
-		<span>{l s='Module version' mod='affinityitems'}: {$configInfo.module_version|escape:'htmlall':'UTF-8'} </span>
-	</fieldset>
 </div>
 </div>

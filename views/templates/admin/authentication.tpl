@@ -207,16 +207,6 @@ $(document).ready(function () {
 		</div>
 	</div>
 	<div class="clear"></div>
-	{if !$configInfo.cUrl || !$configInfo.allow_url_fopen || !$configInfo.version.compatibility}
-		<div class="items-alert">
-			{l s='Warning : it seems that your server doesn\'t have all requirements for this module' mod='affinityitems'} :
-			<ul>
-				{if !$configInfo.cUrl}<li>{l s='You need cUrl library' mod='affinityitems'}</li>{/if}
-				{if !$configInfo.allow_url_fopen}<li>{l s='You need enable allow_url_fopen' mod='affinityitems'}</li>{/if}
-				{if !$configInfo.version.compatibility}<li>{l s='You need at least php 5.1.0' mod='affinityitems'} ({$configInfo.version.php})</li>{/if}
-			</ul>
-		</div>
-	{/if}
 	<div class="ae-info-auth"> 
 		{l s='SUPPORT - Let our team install your module for free' mod='affinityitems'}
 		<ul>

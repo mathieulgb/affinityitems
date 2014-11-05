@@ -789,7 +789,6 @@ class AffinityItems extends Module {
 			'prestashopToken' => Tools::getAdminToken('AEAjax'.(int)Tab::getIdFromClassName('AEAjax').(int)$this->context->cookie->id_employee),
 			'configuration' => $configuration,
 			'additionalCss' => Configuration::get('AE_ADDITIONAL_CSS'),
-			'configInfo' => $this->configInfo(),
 			'imgSizeList' => $this->getImageSize()
 			));
 
@@ -806,7 +805,6 @@ public function getAuthentication()
 		'lang' => Context::getContext()->language->iso_code,
 		'ajaxController' => version_compare(_PS_VERSION_, '1.5', '>=') ? true : false,
 		'prestashopToken' => Tools::getAdminToken('AEAjax'.(int)Tab::getIdFromClassName('AEAjax').(int)$this->context->cookie->id_employee),
-		'configInfo' => $this->configInfo(),
 		'activity' => AEAdapter::getActivity()
 		));
 	$html .= $this->display(($this->_path), '/views/templates/admin/authentication.tpl');
@@ -974,11 +972,10 @@ public function postProcess()
 
 	public function wishInstall() 
 	{
-		$php_info = $this->configInfo();
 		$store_list = AEAdapter::getStoreList();
 		$employee = AEAdapter::getEmployeesByProfile($this->context->cookie->id_employee);
 		$contact = array('lastname' => $employee[0]['lastname'], 'firstname' =>  $employee[0]['lastname'] , 'email' => $employee[0]['email']);
-		$install_request_array = array('phpInfo' => $php_info, 'storeList' => $store_list, 'contact' => $contact);
+		$install_request_array = array('storeList' => $store_list, 'contact' => $contact);
 		if ($php_info['cUrl'] && $php_info['allow_url_fopen']) 
 		{
 			try {
@@ -989,36 +986,6 @@ public function postProcess()
 				AELogger::log('[INFO]', $e->getMessage());
 			}
 		}
-	}
-
-	public function configInfo() 
-	{
-		$php_info = array(
-			'version' => array(
-				'php' => phpversion(),
-				'compatibility' => version_compare(phpversion(), '5.1.0', '>='),
-				'server' => $_SERVER['SERVER_SOFTWARE'],
-				'memory_limit' => ini_get('memory_limit'),
-				'max_execution_time' => ini_get('max_execution_time')
-			),
-			'database' => array(
-				'version' => Db::getInstance()->getVersion(),
-				'prefix' => _DB_PREFIX_,
-				'engine' => _MYSQL_ENGINE_,
-			),
-			'uname' => function_exists('php_uname') ? php_uname('s').' '.php_uname('v').' '.php_uname('m') : '',
-			'apache_instaweb' => Tools::apacheModExists('mod_instaweb'),
-			'shop' => array(
-				'ps' => _PS_VERSION_,
-				'url' => Tools::getHttpHost(true).__PS_BASE_URI__,
-				'theme' => _THEME_NAME_,
-			),
-			'module_version' => $this->version,			
-			'user_agent' => $_SERVER['HTTP_USER_AGENT'],
-			'cUrl' => extension_loaded('curl'),
-			'allow_url_fopen' => ini_get('allow_url_fopen')
-		);
-		return $php_info;
 	}
 
 	private function checkForUpdates()
