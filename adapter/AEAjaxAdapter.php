@@ -290,6 +290,9 @@ public static function postAction()
 		else if ($person instanceof AEGuest)
 			$action->guestId = $person->personId;
 
+		if(Context::getContext()->customer->isLogged())
+			$action->memberId = Context::getContext()->cookie->id_customer;
+
 		if ($group = $person->getGroup())
 			$action->group = $group;
 

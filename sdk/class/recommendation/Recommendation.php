@@ -57,6 +57,9 @@ class Recommendation {
 			$this->aecontext->guestId = $person->personId;
 		}
 
+		if($this->pscontext->customer->isLogged())
+			$this->aecontext->memberId = $this->pscontext->cookie->id_customer;
+
 		if($group = $person->getGroup()) {
 			$this->aecontext->group = $group;
 		}

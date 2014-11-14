@@ -91,6 +91,10 @@ class OrderSynchronize extends AbstractModuleSynchronize {
 			$aeorder->amount = $order['total_paid_tax_excl'];
 			$aeorder->orderLines = $orderLines;
 
+			if($guestId = AEAdapter::getCartGuestId($order['id_cart'])) {
+				$aeorder->guestId = $guestId;
+			}
+
 			if(AEAdapter::isLastSync()) {
 				if($group = AEAdapter::getCartGroup($order['id_cart'])) {
 						$aeorder->group = $group;
@@ -99,9 +103,6 @@ class OrderSynchronize extends AbstractModuleSynchronize {
 			
 			if(!AELibrary::isEmpty(Tools::getRemoteAddr()) && !(bool)Synchronize::getLock())
 				$aeorder->ip = Tools::getRemoteAddr();
-
-			if(!AELibrary::isEmpty(Context::getContext()->language->iso_code) && !(bool)Synchronize::getLock())
-				$aeorder->language = Context::getContext()->language->iso_code;
 
 			array_push($aeorders, $aeorder);
 		}

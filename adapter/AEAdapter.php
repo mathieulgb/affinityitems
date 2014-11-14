@@ -582,6 +582,11 @@ class AEAdapter {
 			AND id_product_attribute = '.(int)$cart->productAttributesId.';');
 	}
 
+	public static function getCartGuestId($cart_id) 
+	{
+		return Db::getInstance()->getValue('SELECT id_guest FROM '._DB_PREFIX_.'ae_cart_ab_testing WHERE id_cart = '.(int)$cart_id);
+	}
+
 	public static function getCartGroup($cart_id)
 	{
 		return Db::getInstance()->getValue('SELECT cgroup FROM '._DB_PREFIX_.'ae_cart_ab_testing WHERE id_cart = '.(int)$cart_id);

@@ -120,7 +120,11 @@ class CartSynchronize extends AbstractModuleSynchronize {
 			$aecart->addDate = $cart['date_add'];
 	  		$aecart->memberId = $cart['id_customer'];
 			$aecart->productAttributesId = $cart['id_product_attribute'];
-	 
+
+			if($guestId = AEAdapter::getCartGuestId($cart['id_cart'])) {
+				$aecart->guestId = $guestId;
+			}
+			
 			$orderLine = new stdClass();
 			$orderLine->productId = $cart['id_product'];
 			$orderLine->attributeIds = $attributes;
@@ -212,6 +216,9 @@ class CartSynchronize extends AbstractModuleSynchronize {
 				if($aecookie->getCookie()->__isset('aeguest')) {
 					$aecart->guestId = (String)$aecookie->getCookie()->__get('aeguest');
 				}
+
+				if(Context::getContext()->customer->isLogged())
+					$aecart->memberId = Context::getContext()->cookie->id_customer;
 
 				$aecart->productAttributesId = $cart['id_product_attribute'];
 
