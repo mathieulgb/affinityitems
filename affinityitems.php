@@ -976,15 +976,12 @@ public function postProcess()
 		$employee = AEAdapter::getEmployeesByProfile($this->context->cookie->id_employee);
 		$contact = array('lastname' => $employee[0]['lastname'], 'firstname' =>  $employee[0]['lastname'] , 'email' => $employee[0]['email']);
 		$install_request_array = array('storeList' => $store_list, 'contact' => $contact);
-		if ($php_info['cUrl'] && $php_info['allow_url_fopen']) 
+		try {
+			$install_request = new InstallRequest($install_request_array);
+			$install_request->post();
+		} catch(Exception $e)
 		{
-			try {
-				$install_request = new InstallRequest($install_request_array);
-				$install_request->post();
-			} catch(Exception $e)
-			{
-				AELogger::log('[INFO]', $e->getMessage());
-			}
+			AELogger::log('[INFO]', $e->getMessage());
 		}
 	}
 
