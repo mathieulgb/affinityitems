@@ -470,7 +470,7 @@ class AEAdapter {
 		$multishop = Context::getContext()->shop->isFeatureActive() ? 'AND o.id_shop = '.Shop::getContextShopID(true) : '';
 		$total_paid = (_PS_VERSION_) >= '1.5' ? 'o.total_paid_tax_excl' : 'o.total_products as total_paid_tax_excl';
 		return Db::getInstance()->ExecuteS('
-			SELECT o.id_order, o.date_add, o.date_upd,
+			SELECT o.id_order, o.date_add, o.date_upd, o.payment,
 			(SELECT id_order_state FROM `'._DB_PREFIX_.'order_history` oh WHERE oh.`id_order` = o.`id_order` ORDER BY oh.`date_add` DESC LIMIT 1) current_state, 
 			osl.name as statusMessage, o.id_cart, o.id_customer, '.$total_paid.', l.iso_code as language
 			FROM '._DB_PREFIX_.'orders o, '._DB_PREFIX_.'order_state_lang osl, `'._DB_PREFIX_.'lang` l
