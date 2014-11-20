@@ -184,18 +184,28 @@ class ProductSynchronize extends AbstractModuleSynchronize {
 	}
 
 	public static function getProductPrices($productId){
-	 	$listPrice = array();
-		if (!$prices = AEAdapter::getProductPrices($productId)) {
-			return array();
+		$listPrice = array();
+		$specific_price_output = null;
+		$shopId = (Context::getContext()->shop->isFeatureActive()) ? Shop::getContextShopID(true) : 1;
+		foreach (Currency::getCurrencies() as $currency) {
+			$price = new stdClass();
+			$price->currency = $currency['iso_code'];
+			
+			if (_PS_VERSION_ < '1.5') {
+				if (!$id_customer)
+					$id_customer = ((Validate::isCookie($cookie) && isset($cookie->id_customer) && $cookie->id_customer) ? (int)$cookie->id_customer : null);
+				$groupId = $id_customer ? (int)Customer::getDefaultGroupId($id_customer) : _PS_DEFAULT_CUSTOMER_GROUP_;
+			} else {
+				$groupId = Group::getCurrent()->id;
+			}
+
+			$price->amount = Product::priceCalculation($shopId,	1, null, 0, 0, 0, $currency['id_currency'], $groupId, 1, false, 2, false, true, false, $specific_price_output, true);
+
+			array_push($listPrice, $price);
 		}
-	 	foreach ($prices as $pprice){
-	 		$price = new stdClass();
-	 		$price->currency = $pprice['iso_code'];
-	 		$price->amount = $pprice['price'];
-	 		array_push($listPrice, $price);
-	 	}
-	 	return $listPrice;
+		return $listPrice;
 	}
+
 
 
 	public static function getProductAttributes($productId, $isoCode){
