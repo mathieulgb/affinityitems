@@ -199,7 +199,7 @@ class ProductSynchronize extends AbstractModuleSynchronize {
 				$groupId = Group::getCurrent()->id;
 			}
 
-			$price->amount = Product::priceCalculation($shopId,	1, null, 0, 0, 0, $currency['id_currency'], $groupId, 1, false, 2, false, true, false, $specific_price_output, true);
+			$price->amount = Product::priceCalculation($shopId, 1, null, 0, 0, 0, $currency['id_currency'], $groupId, 1, false, 2, false, true, false, $specific_price_output, true);
 
 			array_push($listPrice, $price);
 		}

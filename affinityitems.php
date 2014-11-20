@@ -653,8 +653,36 @@ class AffinityItems extends Module {
 		return $render;
 	}
 
+	public function actionSearch($expr)
+	{
+		if (self::isConfig())
+		{
+			$person = $this->getPerson();
+			$action = new stdClass();
+			$action->context = "search";
+			$action->keywords = $expr;
+			if ($person instanceof stdClass)
+				exit;
+			else if ($person instanceof AEGuest)
+				$action->guestId = $person->personId;
+			if (!AELibrary::isEmpty(Tools::getRemoteAddr()))
+				$action->ip = Tools::getRemoteAddr();
+			if (!AELibrary::isEmpty(Context::getContext()->language->iso_code))
+				$action->language = Context::getContext()->language->iso_code;
+			if(Context::getContext()->customer->isLogged())
+				$action->memberId = Context::getContext()->cookie->id_customer;
+			$request = new ActionRequest($action);
+			if (!$request->post())
+			{
+				$repository = new ActionRepository();
+				$repository->insert(AELibrary::castArray($action));
+			}
+		}
+	}
+
 	public function renderSearch($expr)
 	{
+		$this->actionSearch($expr);
 		$render = array();
 		if (self::isConfig() && self::isLastSync() && (bool)Configuration::get('AE_RECOMMENDATION'))
 		{
