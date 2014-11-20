@@ -6,7 +6,7 @@
 div.ae_block .ae_block_content {
 	border-left: 1px #d0d3d8;
 	border-right: 1px #d0d3d8;
-	background: #f1f2f4 url('../img/block_bg.jpg') repeat-x bottom left;
+	background: #f1f2f4;
 	min-height: 16px;
 }
 
@@ -160,7 +160,6 @@ div.ae_block h4 {
 }
 
 div.ae_block h4 {
-	background: transparent url('../../img/block_header_large.png') no-repeat top left;
 	height: 17px;
 	color: white;
 	margin-bottom: 0px;
