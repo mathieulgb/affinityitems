@@ -131,7 +131,7 @@ class AffinityItems extends Module {
 		include(dirname(__FILE__).'/configuration/hookList.php');
 		include(dirname(__FILE__).'/configuration/properties.php');
 		include(dirname(__FILE__).'/configuration/sqlinstall.php');
-		$this->wishInstall();
+
 		if (parent::install())
 		{
 			foreach ($sql as $s)
@@ -995,21 +995,6 @@ public function postProcess()
 			$aeguest = str_replace('.', '', uniqid('ae', true));
 			$this->aecookie->getCookie()->__set('aeguest', $aeguest);
 			$this->aecookie->getCookie()->write();
-		}
-	}
-
-	public function wishInstall() 
-	{
-		$store_list = AEAdapter::getStoreList();
-		$employee = AEAdapter::getEmployeesByProfile($this->context->cookie->id_employee);
-		$contact = array('lastname' => $employee[0]['lastname'], 'firstname' =>  $employee[0]['lastname'] , 'email' => $employee[0]['email']);
-		$install_request_array = array('storeList' => $store_list, 'contact' => $contact);
-		try {
-			$install_request = new InstallRequest($install_request_array);
-			$install_request->post();
-		} catch(Exception $e)
-		{
-			AELogger::log('[INFO]', $e->getMessage());
 		}
 	}
 
