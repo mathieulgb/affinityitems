@@ -1387,3 +1387,7 @@
 .items-set-notification-read:hover {
 	opacity: 0.9;
 }
+
+.position-options {
+	float: left;
+}
