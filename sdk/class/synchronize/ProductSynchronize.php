@@ -141,7 +141,7 @@ class ProductSynchronize extends AbstractModuleSynchronize {
 			$aeproduct->productId = (int)$product["id_product"];
 			$aeproduct->updateDate = $product["date_upd"];
 			$aeproduct->categoryIds = $categoryList;
-			$aeproduct->recommendable = (bool)$product["active"];			
+			$aeproduct->recommendable = $this->isRecommendable($product);			
 			$aeproduct->localizations = $localizationList;
 			$aeproduct->prices = $priceList;
 
@@ -156,6 +156,12 @@ class ProductSynchronize extends AbstractModuleSynchronize {
 		else {			
 			return $aeproduct;
 		}
+	}
+
+	public function isRecommendable($product) {
+		$available = (_PS_VERSION_) >= '1.5' ? ((bool)$product["active"] && (bool)$product["available_for_order"] && $product["visibility"] != 'none') 
+						: ((bool)$product["active"] && (bool)$product["available_for_order"]);
+		return $available;
 	}
 	
 	public function getCategories($productId) {

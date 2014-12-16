@@ -188,8 +188,10 @@ class AEAdapter {
 	{
 		if (Context::getContext()->shop->isFeatureActive())
 		{
-			return Db::getInstance()->executeS('SELECT DISTINCT ps.id_product, ps.date_upd, ps.active
+			$available = (_PS_VERSION_) >= '1.5' ? 'ps.visibility,' : '';
+			return Db::getInstance()->executeS('SELECT DISTINCT ps.id_product, ps.date_upd, ps.active, ps.available_for_order, '.$available.' pl.link_rewrite
 				FROM `'._DB_PREFIX_.'product_shop` ps
+				LEFT JOIN `'._DB_PREFIX_.'product_lang` pl ON pl.id_product = ps.id_product
 				'.$clause.'
 				AND ps.id_shop = '.(int)Shop::getContextShopID(true).'
 				ORDER BY ps.id_product
@@ -197,8 +199,10 @@ class AEAdapter {
 		}
 		else
 		{
-			return Db::getInstance()->executeS('SELECT DISTINCT p.id_product, p.date_upd, p.active
+			$available = (_PS_VERSION_) >= '1.5' ? 'p.visibility,' : '';
+			return Db::getInstance()->executeS('SELECT DISTINCT p.id_product, p.date_upd, p.active, p.available_for_order, '.$available.' pl.link_rewrite
 				FROM `'._DB_PREFIX_.'product` p
+				LEFT JOIN `'._DB_PREFIX_.'product_lang` pl ON pl.id_product = p.id_product
 				'.$clause.'
 				ORDER BY p.id_product
 				LIMIT 0,'.(int)$bulk.';');
