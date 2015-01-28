@@ -475,7 +475,8 @@ class AEAdapter {
 		$multishop = Context::getContext()->shop->isFeatureActive() ? 'AND o.id_shop = '.Shop::getContextShopID(true) : '';
 		$total_paid = (_PS_VERSION_) >= '1.5' ? 'o.total_paid_tax_excl' : 'o.total_products as total_paid_tax_excl';
 		
-		if((_PS_VERSION_) >= '1.5') {
+		if((_PS_VERSION_) >= '1.5') 
+		{
 			return Db::getInstance()->ExecuteS('
 				SELECT o.id_order, o.date_add, o.date_upd, o.payment, o.current_state, osl.name as statusMessage, c.iso_code as currency, o.id_cart, o.id_customer, 
 				'.$total_paid.', l.iso_code as language
@@ -491,7 +492,9 @@ class AEAdapter {
 				AND o.date_add >= NOW() - INTERVAL \'1\' YEAR
 				'.$multishop.'
 				LIMIT 0,'.(int)$bulk.';');
-		} else {
+		} 
+		else 
+		{
 			return Db::getInstance()->ExecuteS('
 				SELECT o.id_order, o.date_add, o.date_upd, o.payment, 
 				(SELECT id_order_state FROM `'._DB_PREFIX_.'order_history` oh WHERE oh.`id_order` = o.`id_order` ORDER BY oh.`date_add` DESC LIMIT 1) current_state, 
@@ -836,7 +839,8 @@ class AEAdapter {
 		Db::getInstance()->execute('TRUNCATE `'._DB_PREFIX_.'ae_guest_action_repository`;');
 	}
 
-	public static function getBulkPackage() {
+	public static function getBulkPackage() 
+	{
 		return Configuration::get('AE_BULK_PACKAGE');
 	}
 
@@ -898,7 +902,8 @@ class AEAdapter {
 		Configuration::updateValue('AE_LAST_SYNC_END', $timestamp);
 	}
 
-	public static function setBulkPackage($bulk) {
+	public static function setBulkPackage($bulk) 
+	{
 		Configuration::updateValue('AE_BULK_PACKAGE', $bulk);
 	}
 

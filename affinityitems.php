@@ -349,7 +349,8 @@ class AffinityItems extends Module {
 			if (isset($params['cart']->id) && $person instanceof AEGuest)
 			{
 				AEAdapter::setCartGroup($params['cart']->id, $person->getGroup(), $person->getPersonId(), Tools::getRemoteAddr());
-				if(Context::getContext()->customer->isLogged()) {
+				if(Context::getContext()->customer->isLogged()) 
+				{
 					$this->cartSynchronize->syncNewElement();
 					$this->cartSynchronize->syncUpdateElement();
 					$this->cartSynchronize->syncDeleteElement();
@@ -401,7 +402,7 @@ class AffinityItems extends Module {
 			exit;
 		else if ($person instanceof AEGuest)
 			$action->guestId = $person->personId;
-		if(Context::getContext()->customer->isLogged())
+		if (Context::getContext()->customer->isLogged())
 			$action->memberId = Context::getContext()->cookie->id_customer;
 		if ($group = $person->getGroup())
 			$action->group = $group;
@@ -409,9 +410,9 @@ class AffinityItems extends Module {
 			$action->ip = Tools::getRemoteAddr();
 		if (!AELibrary::isEmpty(Context::getContext()->language->iso_code))
 			$action->language = Context::getContext()->language->iso_code;
-		if(isset($aecontext->productId))
+		if (isset($aecontext->productId))
 			$action->productId = $aecontext->productId;
-		if(isset($aecontext->categoryId))
+		if (isset($aecontext->categoryId))
 			$action->categoryId = $aecontext->categoryId;
 		$request = new ActionRequest($action);
 		try {
@@ -475,7 +476,6 @@ class AffinityItems extends Module {
 
 	public function hookHome()
 	{
-		
 		$recommendations = array();
 		$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_HOME'));
 		$occurrence = $this->preg_match_count_object_key('/recoHome/i', $hook_configuration);
@@ -510,7 +510,7 @@ class AffinityItems extends Module {
 		else
 		{
 			$aepreview = AEPreview::getInstance();
-			if($aepreview->getCookie()->__get('aepreview')) 
+			if ($aepreview->getCookie()->__get('aepreview')) 
 			{
 				for ($i = 1; $i <= $occurrence; $i++)
 				{
@@ -539,7 +539,6 @@ class AffinityItems extends Module {
 
 	public function hookLeftColumn()
 	{
-
 		$recommendations = array();
 		$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_LEFT'));
 		$occurrence = $this->preg_match_count_object_key('/recoLeft/i', $hook_configuration);
@@ -575,7 +574,7 @@ class AffinityItems extends Module {
 		else
 		{
 			$aepreview = AEPreview::getInstance();
-			if($aepreview->getCookie()->__get('aepreview')) 
+			if ($aepreview->getCookie()->__get('aepreview')) 
 			{
 				for ($i = 1; $i <= $occurrence; $i++)
 				{
@@ -635,7 +634,7 @@ class AffinityItems extends Module {
 		else
 		{
 			$aepreview = AEPreview::getInstance();
-			if($aepreview->getCookie()->__get('aepreview')) 
+			if ($aepreview->getCookie()->__get('aepreview')) 
 			{
 				for ($i = 1; $i <= $occurrence; $i++)
 				{
@@ -684,7 +683,7 @@ class AffinityItems extends Module {
 		else 
 		{
 			$aepreview = AEPreview::getInstance();
-			if($aepreview->getCookie()->__get('aepreview')) 
+			if ($aepreview->getCookie()->__get('aepreview')) 
 			{
 				for ($i = 1; $i <= $occurrence; $i++)
 				{
@@ -740,7 +739,7 @@ class AffinityItems extends Module {
 		else
 		{
 			$aepreview = AEPreview::getInstance();
-			if($aepreview->getCookie()->__get('aepreview')) 
+			if ($aepreview->getCookie()->__get('aepreview')) 
 			{
 				for ($i = 1; $i <= $occurrence; $i++)
 				{
@@ -801,7 +800,7 @@ class AffinityItems extends Module {
 		else
 		{
 			$aepreview = AEPreview::getInstance();
-			if($aepreview->getCookie()->__get('aepreview')) 
+			if ($aepreview->getCookie()->__get('aepreview')) 
 			{
 				for ($i = 1; $i <= $occurrence; $i++)
 				{
@@ -821,10 +820,10 @@ class AffinityItems extends Module {
 			}
 		}
 
-		if(empty($render)) 
+		if (empty($render)) 
 		{
 			$aecontext = new stdClass();
-			$aecontext->page = "category";
+			$aecontext->page = 'category';
 			$aecontext->categoryId = $category_id;
 			$this->setVisit($aecontext);
 		}
@@ -838,7 +837,7 @@ class AffinityItems extends Module {
 		{
 			$person = $this->getPerson();
 			$action = new stdClass();
-			$action->context = "search";
+			$action->context = 'search';
 			$action->keywords = $expr;
 			if ($person instanceof stdClass)
 				exit;
@@ -850,7 +849,7 @@ class AffinityItems extends Module {
 				$action->ip = Tools::getRemoteAddr();
 			if (!AELibrary::isEmpty(Context::getContext()->language->iso_code))
 				$action->language = Context::getContext()->language->iso_code;
-			if(Context::getContext()->customer->isLogged())
+			if (Context::getContext()->customer->isLogged())
 				$action->memberId = Context::getContext()->cookie->id_customer;
 			$request = new ActionRequest($action);
 			if (!$request->post())
@@ -896,7 +895,7 @@ class AffinityItems extends Module {
 		else
 		{
 			$aepreview = AEPreview::getInstance();
-			if($aepreview->getCookie()->__get('aepreview')) 
+			if ($aepreview->getCookie()->__get('aepreview')) 
 			{
 				for ($i = 1; $i <= $occurrence; $i++)
 				{
@@ -1095,12 +1094,12 @@ public function postProcess()
 		self::setBlackList(Tools::safeOutput(Tools::getValue('blacklist')));
 		return true;
 	}
-	else if(Tools::isSubmit('graphic'))
+	else if (Tools::isSubmit('graphic'))
 	{
 		foreach (self::$hook_list as $hook)
 		{
 			$configuration = unserialize(Configuration::get('AE_CONFIGURATION_'.Tools::strtoupper($hook)));
-			for ($i=1; $i <= 2; $i++) 
+			for ($i = 1; $i <= 2; $i++) 
 				$configuration->{'recoTheme'.$hook.'_'.$i} = Tools::getValue('graphic');
 			Configuration::updateValue('AE_CONFIGURATION_'.Tools::strtoupper($hook), serialize($configuration));
 			Configuration::updateValue('AE_FUNNEL', 1);
@@ -1121,8 +1120,8 @@ public function postProcess()
 		$hook_search_configuration = unserialize(Configuration::get('AE_CONFIGURATION_SEARCH'));
 		$hook_category_configuration = unserialize(Configuration::get('AE_CONFIGURATION_CATEGORY'));
 
- 		$smarty = $this->context->smarty;
- 		$page = $smarty->tpl_vars['page_name']->value;
+		$smarty = $this->context->smarty;
+		$page = $smarty->tpl_vars['page_name']->value;
 
 		if (Tools::getValue('id_category'))
 			$render_category = $this->renderCategory(Tools::getValue('id_category'));

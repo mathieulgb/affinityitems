@@ -497,7 +497,7 @@ $(document).ready(function() {
 							<td>
 								<select disabled class="items-open-theme-list">
 									{foreach from=$themeList item=theme}
-									<option {if $theme.id_theme == $configuration.{$hook}->recoTheme{$zone1}} selected {/if} value="{$theme.id_theme}">{$theme.name}</option>
+									<option {if $theme.id_theme == $configuration.{$hook}->recoTheme{$zone1}} selected {/if} value="{$theme.id_theme|escape:'htmlall':'UTF-8'}">{$theme.name|escape:'htmlall':'UTF-8'}</option>
 									{/foreach}
 								</select>
 								<a href="#" class="items-open-theme-list" >{l s='Edit' mod='affinityitems'}</a>
@@ -553,8 +553,8 @@ $(document).ready(function() {
 						<ul>
 							{foreach from=$themeList item=theme}
 							<li>
-								<label for="radio-style-white">{$theme.name}</label>
-								<input type="radio" name="recoTheme{$hook|escape:'htmlall':'UTF-8'}_1" value="{$theme.id_theme}" id="radio-style-white"
+								<label for="radio-style-white">{$theme.name|escape:'htmlall':'UTF-8'}</label>
+								<input type="radio" name="recoTheme{$hook|escape:'htmlall':'UTF-8'}_1" value="{$theme.id_theme|escape:'htmlall':'UTF-8'}" id="radio-style-white"
 								{if $theme.id_theme == $configuration.{$hook}->recoTheme{$zone1}} checked="checked" {/if} />    
 							</li>
 							{/foreach}
@@ -601,7 +601,7 @@ $(document).ready(function() {
 							<td>
 								<select disabled class="items-open-theme-list">
 									{foreach from=$themeList item=theme}
-									<option {if $theme.id_theme == $configuration.{$hook}->recoTheme{$zone2}} selected {/if} value="{$theme.id_theme}">{$theme.name}</option>
+									<option {if $theme.id_theme == $configuration.{$hook}->recoTheme{$zone2}} selected {/if} value="{$theme.id_theme|escape:'htmlall':'UTF-8'}">{$theme.name|escape:'htmlall':'UTF-8'}</option>
 									{/foreach}
 								</select>
 								<a href="#" class="items-open-theme-list" >{l s='Edit' mod='affinityitems'}</a>
@@ -656,8 +656,8 @@ $(document).ready(function() {
 						<ul>
 							{foreach from=$themeList item=theme}
 							<li>
-								<label for="radio-style-white">{$theme.name}</label>
-								<input type="radio" name="recoTheme{$hook|escape:'htmlall':'UTF-8'}_2" value="{$theme.id_theme}" id="radio-style-white"
+								<label for="radio-style-white">{$theme.name|escape:'htmlall':'UTF-8'}</label>
+								<input type="radio" name="recoTheme{$hook|escape:'htmlall':'UTF-8'}_2" value="{$theme.id_theme|escape:'htmlall':'UTF-8'}" id="radio-style-white"
 								{if $theme.id_theme == $configuration.{$hook}->recoTheme{$zone2}} checked="checked" {/if} />    
 							</li>
 							{/foreach}
@@ -782,8 +782,8 @@ $(document).ready(function() {
 			<ul>
 				{foreach from=$themeList item=theme}
 				<li>
-					<label for="radio-style-white">{$theme.name}</label>
-					<input type="radio" name="graphic" value="{$theme.id_theme}" id="radio-style-white" />
+					<label for="radio-style-white">{$theme.name|escape:'htmlall':'UTF-8'}</label>
+					<input type="radio" name="graphic" value="{$theme.id_theme|escape:'htmlall':'UTF-8'}" id="radio-style-white" />
 				</li>
 				{/foreach}
 			</ul>

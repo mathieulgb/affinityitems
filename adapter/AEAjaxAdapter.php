@@ -126,7 +126,7 @@ class AEAjaxAdapter {
 		{
 			try {
 				AEAdapter::setActiveRecommendation(Tools::safeOutput(Tools::getValue('activation')));
-				if((int)Tools::getValue('activation') === 1)
+				if ((int)Tools::getValue('activation') === 1) 
 					Configuration::updateValue('AFFINITYITEMS_CONFIGURATION_OK', true);
 				AELogger::log('[INFO]', 'Recommendation Activation : '.Tools::safeOutput(Tools::getValue('activation')));
 				$response['_ok'] = true;
@@ -282,7 +282,7 @@ class AEAjaxAdapter {
 			else if ($person instanceof AEGuest)
 				$action->guestId = $person->personId;
 
-			if(Context::getContext()->customer->isLogged())
+			if (Context::getContext()->customer->isLogged()) 
 				$action->memberId = Context::getContext()->cookie->id_customer;
 
 			if ($group = $person->getGroup())

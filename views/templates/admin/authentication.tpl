@@ -136,7 +136,7 @@ return false;
 					</div>
 					<p>{l s='Up to 60% of products sold' mod='affinityitems'}</p>
 					<p>{l s='have been recommended by affinity items.' mod='affinityitems'}</p>
-					<a class="items-button items-purple" href="http://addons.prestashop.com/fr/ventes-croisees-cross-selling/17491-affinityitems.html">{l s='More about'}</a>
+					<a class="items-button items-purple" href="http://addons.prestashop.com/fr/ventes-croisees-cross-selling/17491-affinityitems.html">{l s='More about' mod='affinityitems'}</a>
 				</div>
 
 			</div>
