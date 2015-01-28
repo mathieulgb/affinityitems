@@ -351,7 +351,7 @@ Product list(Index page) Styles
   margin-bottom: 0;
   text-decoration: none;
 }
-
+/*
 .button.ajax_add_to_cart_button span {
   border: 1px solid;
   border-color: #06b2e6;
@@ -393,6 +393,7 @@ Product list(Index page) Styles
   padding: 0;
   border: none !important;
 }
+*/
 
 .lnk_view {
   margin: 0 6px 10px 6px;

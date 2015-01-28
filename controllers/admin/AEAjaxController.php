@@ -48,6 +48,12 @@ class AEAjaxController extends ModuleAdminController {
 			echo AEAjaxAdapter::postAction();
 		else if (Tools::getIsset('notificationId'))
 			echo AEAjaxAdapter::syncNotification();
+		else if (Tools::getIsset('closeFunnel'))
+			echo AEAjaxAdapter::closeFunnel();
+		else if(Tools::getIsset('help'))
+			echo AEAjaxAdapter::help();
+		else if (Tools::getIsset('preview'))
+			echo AEAjaxAdapter::preview();
 	}
 }
 

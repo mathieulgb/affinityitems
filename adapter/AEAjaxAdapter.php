@@ -72,58 +72,141 @@ class AEAjaxAdapter {
 			$customer->platformVersion = _PS_VERSION_;
 			$customer->ip = $_SERVER['SERVER_ADDR'];
 
-			if (Tools::safeOutput(Tools::getValue('action')) == 'register' && Tools::getIsset('confirmPassword') && Tools::getIsset('activity')
-				&& Tools::getIsset('firstname') && Tools::getIsset('lastname'))
+			if (Tools::safeOutput(Tools::getValue('action')) == 'register')
 			{
 				$customer->firstname = Tools::safeOutput(Tools::getValue('firstname'));
 				$customer->lastname = Tools::safeOutput(Tools::getValue('lastname'));
-				$customer->activity = Tools::safeOutput(Tools::getValue('activity'));
+				$customer->activity = AEAdapter::getActivity();
 				if (Tools::getIsset('discountCode') && !AELibrary::isEmpty(Tools::getValue('discountCode')))
 					$customer->code = Tools::safeOutput(Tools::getValue('discountCode'));
-				if (Tools::safeOutput(Tools::getValue('password')) == Tools::safeOutput(Tools::getValue('confirmPassword')))
-				{
-					$request = new CustomerRequest($customer);
-					$response = $request->registerCustomer();
-				}
-		}
-		else if (Tools::safeOutput(Tools::getValue('action')) == 'login')
-		{
-			$customer->activity = AEAdapter::getActivity();
-			$request = new CustomerRequest($customer);
-			$response = $request->loginCustomer();
-		}
 
-		if ($response)
-		{
-			if ($response->_ok == 'true')
+				$request = new CustomerRequest($customer);
+				$response = $request->registerCustomer();	
+			}
+
+			if ($response)
 			{
-				AEAdapter::authentication($response->email, $response->password,
-					$response->siteId, $response->securityKey);
-				self::initHosts();
+				if ($response->_ok == 'true')
+				{
+					AEAdapter::authentication($response->email, '',
+						$response->siteId, $response->securityKey);
+					self::initHosts();
+				}
+				else
+					$ret['_errorMessage'] = $response->_errorMessage;
+				$ret['_ok'] = $response->_ok;
 			}
 			else
-				$ret['_errorMessage'] = $response->_errorMessage;
-			$ret['_ok'] = $response->_ok;
+				$ret['_ok'] = false;
 		}
-		else
-			$ret['_ok'] = false;
+
+		return Tools::jsonEncode($ret);
 	}
 
-	return Tools::jsonEncode($ret);
-}
-
-public static function setProperty()
-{
-	if (!Tools::getValue('aetoken') || Tools::getValue('aetoken') != AEAdapter::getBackOfficeToken())
-		die('ERROR');
-
-	$response = array();
-
-	if (Tools::getIsset('percentage'))
+	public static function setProperty()
 	{
+		if (!Tools::getValue('aetoken') || Tools::getValue('aetoken') != AEAdapter::getBackOfficeToken())
+			die('ERROR');
+
+		$response = array();
+
+		if (Tools::getIsset('percentage'))
+		{
+			try {
+				AEAdapter::setAbTestingPercentage(Tools::safeOutput(Tools::getValue('percentage')));
+				AELogger::log('[INFO]', 'A/B Testing percentage has changed : '.Tools::safeOutput(Tools::getValue('percentage')).'%');
+				$response['_ok'] = true;
+			} catch (Exception $e)
+			{
+				AELogger::log('[ERROR]', $e->getMessage());
+				$response['_ok'] = false;
+			}
+		}
+		else if (Tools::getIsset('activation'))
+		{
+			try {
+				AEAdapter::setActiveRecommendation(Tools::safeOutput(Tools::getValue('activation')));
+				if((int)Tools::getValue('activation') === 1)
+					Configuration::updateValue('AFFINITYITEMS_CONFIGURATION_OK', true);
+				AELogger::log('[INFO]', 'Recommendation Activation : '.Tools::safeOutput(Tools::getValue('activation')));
+				$response['_ok'] = true;
+			} catch (Exception $e)
+			{
+				AELogger::log('[ERROR]', $e->getMessage());
+				$response['_ok'] = false;
+			}
+		}
+
+		return Tools::jsonEncode($response);
+	}
+
+	public static function setHosts()
+	{
+		if (!Tools::getValue('aetoken') || Tools::getValue('aetoken') != AEAdapter::getBackOfficeToken())
+			die('ERROR');
+
+		$response = array();
+
+		if (Tools::getIsset('ip') && Tools::getIsset('type'))
+		{
+			if (Tools::safeOutput(Tools::getValue('type')) == 'local')
+			{
+				try {
+					$hosts = unserialize(AEAdapter::getLocalHosts());
+					if (!is_array($hosts))
+						$hosts = array();
+					if (preg_match(AELibrary::$check_ip, Tools::safeOutput(Tools::getValue('ip'))))
+					{
+						array_push($hosts, Tools::getValue('ip'));
+						AEAdapter::setLocalHosts(serialize($hosts));
+						$response['_ok'] = true;
+					}
+					else
+						$response['_ok'] = false;
+				} catch(Exception $e)
+				{
+					$response['_ok'] = false;
+					AELogger::log('[ERROR]', $e->getMessage());
+				}
+			}
+		}
+		else if (Tools::getIsset('ipList') && Tools::getIsset('type'))
+		{
+			if (Tools::safeOutput(Tools::getValue('type')) == 'remote')
+			{
+				try {
+					$host_request = new HostRequest(Tools::getValue('ipList'));
+					if ($host_request->post())
+						$response['_ok'] = true;
+					else
+						$response['_ok'] = false;
+				} catch(Exception $e)
+				{
+					$response['_ok'] = false;
+					AELogger::log('[ERROR]', $e->getMessage());
+				}
+			}
+		}
+
+		return Tools::jsonEncode($response);
+	}
+
+	public static function resetSync()
+	{
+		Synchronize::setLock(0);
+		Synchronize::setStartDate('');
+	}
+
+	public static function launchSync()
+	{
+		$response = array();
 		try {
-			AEAdapter::setAbTestingPercentage(Tools::safeOutput(Tools::getValue('percentage')));
-			AELogger::log('[INFO]', 'A/B Testing percentage has changed : '.Tools::safeOutput(Tools::getValue('percentage')).'%');
+			if (!AELibrary::isEmpty(AEAdapter::getSiteId())
+				&& !AELibrary::isEmpty(AEAdapter::getSecurityKey()))
+			{
+				$sync = new Synchronize();
+				$sync->syncElement();
+			}
 			$response['_ok'] = true;
 		} catch (Exception $e)
 		{
@@ -131,224 +214,194 @@ public static function setProperty()
 			$response['_ok'] = false;
 		}
 	}
-	else if (Tools::getIsset('activation'))
+
+	public static function checkSyncDiff()
 	{
-		try {
-			AEAdapter::setActiveRecommendation(Tools::safeOutput(Tools::getValue('activation')));
-			if((int)Tools::getValue('activation') === 1)
-				Configuration::updateValue('AFFINITYITEMS_CONFIGURATION_OK', true);
-			AELogger::log('[INFO]', 'Recommendation Activation : '.Tools::safeOutput(Tools::getValue('activation')));
+		return (((time() - Synchronize::getStartDate()) > (AEAdapter::getSyncDiff() * 60)));
+	}
+
+	public static function synchronize()
+	{
+		$response = array();
+
+		if (Tools::getIsset('synchronize'))
+		{
+			if ((bool)Synchronize::getLock())
+			{
+				if (!AELibrary::isEmpty(Synchronize::getStartDate()))
+				{
+					if (self::checkSyncDiff())
+					{
+						self::resetSync();
+						self::launchSync();
+					}
+				}
+			}
+			else
+			{
+				if (!AELibrary::isEmpty(Synchronize::getStartDate()))
+				{
+					if (self::checkSyncDiff())
+						self::launchSync();
+				}
+				else
+					self::launchSync();
+			}
+		}
+		if (Tools::getIsset('getInformation'))
+		{
 			$response['_ok'] = true;
-		} catch (Exception $e)
+			$response['_activate'] = AEAdapter::getActiveRecommendation();
+			$response['_step'] = ((int)Synchronize::getStep() + 1);
+			$response['_lock'] = (bool)Synchronize::getLock();
+			$response['_lastStart'] = Synchronize::getStartDate();
+			$response['_percentage'] = (((int)Synchronize::getStep() + 1) * (100 / 6));
+		}
+
+		return Tools::jsonEncode($response);
+	}
+
+	public static function postAction()
+	{
+		if ((Tools::getIsset('productId') || Tools::getIsset('categoryId')) && Tools::getIsset('action'))
+		{
+			$instance = new AffinityItems();
+			$person = $instance->getPerson();
+
+			$action = new stdClass();
+			if (Tools::getValue('productId'))
+				$action->productId = (int)Tools::getValue('productId');
+			if (Tools::getValue('categoryId'))
+				$action->categoryId = (int)Tools::getValue('categoryId');
+			if (Tools::getIsset('recoType'))
+				$action->recoType = Tools::safeOutput(Tools::strtoupper(Tools::getValue('recoType')));
+			$action->context = Tools::safeOutput(Tools::getValue('action'));
+
+			if ($person instanceof stdClass)
+				exit;
+			else if ($person instanceof AEGuest)
+				$action->guestId = $person->personId;
+
+			if(Context::getContext()->customer->isLogged())
+				$action->memberId = Context::getContext()->cookie->id_customer;
+
+			if ($group = $person->getGroup())
+				$action->group = $group;
+
+			if (!AELibrary::isEmpty(Tools::getRemoteAddr()))
+				$action->ip = Tools::getRemoteAddr();
+
+			if (!AELibrary::isEmpty(Context::getContext()->language->iso_code))
+				$action->language = Context::getContext()->language->iso_code;
+
+			$content = $action;
+			$request = new ActionRequest($content);
+
+			if (!AELibrary::isEmpty(AEAdapter::getSiteId())
+				&& !AELibrary::isEmpty(AEAdapter::getSecurityKey()))
+			{
+				if (!$request->post())
+				{
+					$repository = new ActionRepository();
+					$repository->insert(AELibrary::castArray($content));
+				}
+			}
+
+			if (AELibrary::equals($action->context, 'read') && Tools::getValue('productId'))
+				self::stackRead($action->productId);
+
+			return Tools::jsonEncode((array('_ok' => true)));
+		}
+		else
+			return Tools::jsonEncode((array('_ok' => false)));
+	}
+
+	public static function syncNotification()
+	{
+		if (!Tools::getValue('aetoken') || Tools::getValue('aetoken') != AEAdapter::getBackOfficeToken())
+			die('ERROR');
+
+		$response = array();
+
+		if (Tools::getIsset('notificationId'))
+		{
+			try {
+				$notification = new stdClass();
+				$notification->id = Tools::safeOutput(Tools::getValue('notificationId'));
+				$notifications = array($notification);
+				$instance = new AENotification($notifications);
+				$instance->syncUpdateElement();
+				$response['_ok'] = true;
+			} catch(Exception $e)
+			{
+				AELogger::log('[ERROR]', $e->getMessage());
+				$response['_ok'] = false;
+			}
+		}
+
+		return Tools::jsonEncode($response);
+	}
+
+	public static function closeFunnel()
+	{
+		$response = array();
+		try 
+		{
+			Configuration::updateValue('AE_FUNNEL', 1);
+			$response['_ok'] = true;			
+		}
+		catch(Exception $e)
 		{
 			AELogger::log('[ERROR]', $e->getMessage());
 			$response['_ok'] = false;
 		}
+
+		return Tools::jsonEncode($response);
 	}
 
-	return Tools::jsonEncode($response);
-}
-
-public static function setHosts()
-{
-	if (!Tools::getValue('aetoken') || Tools::getValue('aetoken') != AEAdapter::getBackOfficeToken())
-		die('ERROR');
-
-	$response = array();
-
-	if (Tools::getIsset('ip') && Tools::getIsset('type'))
+	public static function help() 
 	{
-		if (Tools::safeOutput(Tools::getValue('type')) == 'local')
+		$response = array();
+		try 
 		{
-			try {
-				$hosts = unserialize(AEAdapter::getLocalHosts());
-				if (!is_array($hosts))
-					$hosts = array();
-				if (preg_match(AELibrary::$check_ip, Tools::safeOutput(Tools::getValue('ip'))))
-				{
-					array_push($hosts, Tools::getValue('ip'));
-					AEAdapter::setLocalHosts(serialize($hosts));
-					$response['_ok'] = true;
-				}
-				else
-					$response['_ok'] = false;
-			} catch(Exception $e)
-			{
-				$response['_ok'] = false;
-				AELogger::log('[ERROR]', $e->getMessage());
-			}
+			$content = new stdClass();
+			$content->firstname = Tools::safeOutput(Tools::getValue('firstname'));
+			$content->lastname = Tools::safeOutput(Tools::getValue('lastname'));
+			$content->phone = Tools::safeOutput(Tools::getValue('phone'));
+			$request = new HelpRequest($content);
+			if ($request->post())
+				$response['_ok'] = true;
 		}
-	}
-	else if (Tools::getIsset('ipList') && Tools::getIsset('type'))
-	{
-		if (Tools::safeOutput(Tools::getValue('type')) == 'remote')
+		catch(Exception $e)
 		{
-			try {
-				$host_request = new HostRequest(Tools::getValue('ipList'));
-				if ($host_request->post())
-					$response['_ok'] = true;
-				else
-					$response['_ok'] = false;
-			} catch(Exception $e)
-			{
-				$response['_ok'] = false;
-				AELogger::log('[ERROR]', $e->getMessage());
-			}
+			AELogger::log('[ERROR]', $e->getMessage());
+			$response['_ok'] = false;
 		}
+
+		return Tools::jsonEncode($response);
 	}
 
-	return Tools::jsonEncode($response);
-}
-
-public static function resetSync()
-{
-	Synchronize::setLock(0);
-	Synchronize::setStartDate('');
-}
-
-public static function launchSync()
-{
-	$response = array();
-	try {
-		if (!AELibrary::isEmpty(AEAdapter::getSiteId())
-			&& !AELibrary::isEmpty(AEAdapter::getSecurityKey()))
-			{
-			$sync = new Synchronize();
-			$sync->syncElement();
-		}
-		$response['_ok'] = true;
-	} catch (Exception $e)
+	public static function preview()
 	{
-		AELogger::log('[ERROR]', $e->getMessage());
-		$response['_ok'] = false;
-	}
-}
-
-public static function checkSyncDiff()
-{
-	return (((time() - Synchronize::getStartDate()) > (AEAdapter::getSyncDiff() * 60)));
-}
-
-public static function synchronize()
-{
-	$response = array();
-
-	if (Tools::getIsset('synchronize'))
-	{
-		if ((bool)Synchronize::getLock())
-		{
-			if (!AELibrary::isEmpty(Synchronize::getStartDate()))
-			{
-				if (self::checkSyncDiff())
-				{
-					self::resetSync();
-					self::launchSync();
-				}
-			}
-		}
-		else
-		{
-			if (!AELibrary::isEmpty(Synchronize::getStartDate()))
-			{
-				if (self::checkSyncDiff())
-					self::launchSync();
-			}
-			else
-				self::launchSync();
-		}
-	}
-	if (Tools::getIsset('getInformation'))
-	{
-		$response['_ok'] = true;
-		$response['_step'] = ((int)Synchronize::getStep() + 1);
-		$response['_lock'] = (bool)Synchronize::getLock();
-		$response['_lastStart'] = Synchronize::getStartDate();
-		$response['_percentage'] = (((int)Synchronize::getStep() + 1) * (100 / 6));
-	}
-
-	return Tools::jsonEncode($response);
-}
-
-public static function postAction()
-{
-	if ((Tools::getIsset('productId') || Tools::getIsset('categoryId')) && Tools::getIsset('action'))
-	{
-		$instance = new AffinityItems();
-		$person = $instance->getPerson();
-
-		$action = new stdClass();
-		if (Tools::getValue('productId'))
-			$action->productId = (int)Tools::getValue('productId');
-		if (Tools::getValue('categoryId'))
-			$action->categoryId = (int)Tools::getValue('categoryId');
-		if (Tools::getIsset('recoType'))
-			$action->recoType = Tools::safeOutput(Tools::strtoupper(Tools::getValue('recoType')));
-		$action->context = Tools::safeOutput(Tools::getValue('action'));
-
-		if ($person instanceof stdClass)
-			exit;
-		else if ($person instanceof AEGuest)
-			$action->guestId = $person->personId;
-
-		if(Context::getContext()->customer->isLogged())
-			$action->memberId = Context::getContext()->cookie->id_customer;
-
-		if ($group = $person->getGroup())
-			$action->group = $group;
-
-		if (!AELibrary::isEmpty(Tools::getRemoteAddr()))
-			$action->ip = Tools::getRemoteAddr();
+		if (!Tools::getValue('aetoken') || Tools::getValue('aetoken') != AEAdapter::getBackOfficeToken())
+			die('ERROR');
 		
-		if (!AELibrary::isEmpty(Context::getContext()->language->iso_code))
-			$action->language = Context::getContext()->language->iso_code;
-
-		$content = $action;
-		$request = new ActionRequest($content);
-
-		if (!AELibrary::isEmpty(AEAdapter::getSiteId())
-			&& !AELibrary::isEmpty(AEAdapter::getSecurityKey()))
-			{
-			if (!$request->post())
-			{
-				$repository = new ActionRepository();
-				$repository->insert(AELibrary::castArray($content));
-			}
-		}
-
-		if (AELibrary::equals($action->context, 'read') && Tools::getValue('productId'))
-			self::stackRead($action->productId);
-
-		return Tools::jsonEncode((array('_ok' => true)));
-	}
-	else
-		return Tools::jsonEncode((array('_ok' => false)));
-}
-
-public static function syncNotification()
-{
-	if (!Tools::getValue('aetoken') || Tools::getValue('aetoken') != AEAdapter::getBackOfficeToken())
-		die('ERROR');
-
-	$response = array();
-
-	if (Tools::getIsset('notificationId'))
-	{
+		$response = array();
 		try {
-			$notification = new stdClass();
-			$notification->id = Tools::safeOutput(Tools::getValue('notificationId'));
-			$notifications = array($notification);
-			$instance = new AENotification($notifications);
-			$instance->syncUpdateElement();
+			$aepreview = AEPreview::getInstance();
+			$aepreview->getCookie()->__set('aepreview', 'true');
+			$aepreview->getCookie()->write();
 			$response['_ok'] = true;
-		} catch(Exception $e)
+		}
+		catch(Exception $e)
 		{
 			AELogger::log('[ERROR]', $e->getMessage());
 			$response['_ok'] = false;
 		}
-	}
 
-	return Tools::jsonEncode($response);
-}
+		return Tools::jsonEncode($response);
+
+	}
 
 }
 

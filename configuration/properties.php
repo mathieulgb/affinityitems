@@ -17,13 +17,17 @@
 */
 
 $properties = array(
+	'AE_BULK_PACKAGE' => 50,
 	'AE_BREAK_CONTRACT' => 0,
+	'AE_LIMIT' => 2,
+	'AE_FUNNEL' => 0,
 	'AE_CONF_HOST' => '',
+	'AE_TRACKING_JS' => 0,
 	'AE_CONF_PORT' => '',
 	'AE_LOGIN' => '',
 	'AE_PASSWORD' => '',
 	'AE_SITE_ID' => '',
-	'AE_VERSION' => '1.1.1',
+	'AE_VERSION' => '1.2.0',
 	'AE_SECURITY_KEY' => '',
 	'AE_LAST_SYNC_START' => '',
 	'AE_LAST_SYNC_END' => '',

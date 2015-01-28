@@ -22,7 +22,7 @@ abstract class AbstractModuleSynchronize {
 
 	const BULK_PACKAGE = 50;
 
-	public function __construct($prepository){ 
+	public function __construct($prepository) { 
 		$this->repository = $prepository;
 	}
 

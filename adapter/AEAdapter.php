@@ -188,7 +188,7 @@ class AEAdapter {
 	{
 		if (Context::getContext()->shop->isFeatureActive())
 		{
-			$available = (_PS_VERSION_) >= '1.5' ? 'ps.visibility,' : '';
+			$available = 'ps.visibility,';
 			return Db::getInstance()->executeS('SELECT DISTINCT ps.id_product, ps.date_upd, ps.active, ps.available_for_order, '.$available.' pl.link_rewrite
 				FROM `'._DB_PREFIX_.'product_shop` ps
 				LEFT JOIN `'._DB_PREFIX_.'product_lang` pl ON pl.id_product = ps.id_product
@@ -199,7 +199,7 @@ class AEAdapter {
 		}
 		else
 		{
-			$available = (_PS_VERSION_) >= '1.5' ? 'p.visibility,' : '';
+			$available = version_compare(_PS_VERSION_, '1.5', '>=') ? 'p.visibility,' : '';
 			return Db::getInstance()->executeS('SELECT DISTINCT p.id_product, p.date_upd, p.active, p.available_for_order, '.$available.' pl.link_rewrite
 				FROM `'._DB_PREFIX_.'product` p
 				LEFT JOIN `'._DB_PREFIX_.'product_lang` pl ON pl.id_product = p.id_product
@@ -466,6 +466,7 @@ class AEAdapter {
 			AND o.id_customer IN (SELECT id_customer FROM '._DB_PREFIX_.'customer)
 			AND o.id_order IN (SELECT id_order FROM '._DB_PREFIX_.'order_detail)
 			AND id_customer <> 0
+			AND o.date_upd >= NOW() - INTERVAL \''.self::getLimit().'\' MONTH
 			'.$multishop);
 	}
 
@@ -473,21 +474,42 @@ class AEAdapter {
 	{
 		$multishop = Context::getContext()->shop->isFeatureActive() ? 'AND o.id_shop = '.Shop::getContextShopID(true) : '';
 		$total_paid = (_PS_VERSION_) >= '1.5' ? 'o.total_paid_tax_excl' : 'o.total_products as total_paid_tax_excl';
-		return Db::getInstance()->ExecuteS('
-			SELECT o.id_order, o.date_add, o.date_upd, o.payment,
-			(SELECT id_order_state FROM `'._DB_PREFIX_.'order_history` oh WHERE oh.`id_order` = o.`id_order` ORDER BY oh.`date_add` DESC LIMIT 1) current_state, 
-			osl.name as statusMessage, o.id_cart, o.id_customer, '.$total_paid.', l.iso_code as language
-			FROM '._DB_PREFIX_.'orders o, '._DB_PREFIX_.'order_state_lang osl, `'._DB_PREFIX_.'lang` l
-			'.$clause.'
-			AND (SELECT id_order_state FROM `'._DB_PREFIX_.'order_history` oh WHERE oh.`id_order` = o.`id_order` ORDER BY oh.`date_add` DESC LIMIT 1) = osl.id_order_state
-			AND o.id_customer IN (SELECT id_customer FROM '._DB_PREFIX_.'customer)
-			AND o.id_order IN (SELECT id_order FROM '._DB_PREFIX_.'order_detail)
-			AND id_customer <> 0
-			AND l.id_lang = o.id_lang
-			AND osl.id_lang = o.id_lang
-			AND o.date_add >= NOW() - INTERVAL \'1\' YEAR
-			'.$multishop.'
-			LIMIT 0,'.(int)$bulk.';');
+		
+		if((_PS_VERSION_) >= '1.5') {
+			return Db::getInstance()->ExecuteS('
+				SELECT o.id_order, o.date_add, o.date_upd, o.payment, o.current_state, osl.name as statusMessage, c.iso_code as currency, o.id_cart, o.id_customer, 
+				'.$total_paid.', l.iso_code as language
+				FROM '._DB_PREFIX_.'orders o, '._DB_PREFIX_.'order_state_lang osl, `'._DB_PREFIX_.'lang` l, `'._DB_PREFIX_.'currency` c
+				'.$clause.'
+				AND o.current_state = osl.id_order_state
+				AND o.id_customer IN (SELECT id_customer FROM '._DB_PREFIX_.'customer)
+				AND o.id_order IN (SELECT id_order FROM '._DB_PREFIX_.'order_detail)
+				AND id_customer <> 0
+				AND l.id_lang = o.id_lang
+				AND osl.id_lang = o.id_lang
+				AND o.id_currency = c.id_currency
+				AND o.date_add >= NOW() - INTERVAL \'1\' YEAR
+				'.$multishop.'
+				LIMIT 0,'.(int)$bulk.';');
+		} else {
+			return Db::getInstance()->ExecuteS('
+				SELECT o.id_order, o.date_add, o.date_upd, o.payment, 
+				(SELECT id_order_state FROM `'._DB_PREFIX_.'order_history` oh WHERE oh.`id_order` = o.`id_order` ORDER BY oh.`date_add` DESC LIMIT 1) current_state, 
+				osl.name as statusMessage, c.iso_code as currency, o.id_cart, o.id_customer, '.$total_paid.', l.iso_code as language
+				FROM '._DB_PREFIX_.'orders o, '._DB_PREFIX_.'order_state_lang osl, `'._DB_PREFIX_.'lang` l, `'._DB_PREFIX_.'currency` c
+				'.$clause.'
+				AND (SELECT id_order_state FROM `'._DB_PREFIX_.'order_history` oh WHERE oh.`id_order` = o.`id_order` ORDER BY oh.`date_add` DESC LIMIT 1) = osl.id_order_state
+				AND o.id_customer IN (SELECT id_customer FROM '._DB_PREFIX_.'customer)
+				AND o.id_order IN (SELECT id_order FROM '._DB_PREFIX_.'order_detail)
+				AND id_customer <> 0
+				AND l.id_lang = o.id_lang
+				AND osl.id_lang = o.id_lang
+				AND o.id_currency = c.id_currency
+				AND o.date_add >= NOW() - INTERVAL \'1\' YEAR
+				'.$multishop.'
+				LIMIT 0,'.(int)$bulk.';');
+		}
+
 	}
 
 	public static function getOrderLines($order_id)
@@ -794,7 +816,7 @@ class AEAdapter {
 		Db::getInstance()->execute('TRUNCATE `'._DB_PREFIX_.'ae_category_repository`;');
 	}
 
-	public static function deleteProductSync() 
+	public static function deleteProductSync()
 	{
 		Db::getInstance()->execute('TRUNCATE `'._DB_PREFIX_.'ae_product_repository`;');
 	}
@@ -812,6 +834,10 @@ class AEAdapter {
 	public static function deleteActionSync() 
 	{
 		Db::getInstance()->execute('TRUNCATE `'._DB_PREFIX_.'ae_guest_action_repository`;');
+	}
+
+	public static function getBulkPackage() {
+		return Configuration::get('AE_BULK_PACKAGE');
 	}
 
 	public static function getHost()
@@ -872,6 +898,10 @@ class AEAdapter {
 		Configuration::updateValue('AE_LAST_SYNC_END', $timestamp);
 	}
 
+	public static function setBulkPackage($bulk) {
+		Configuration::updateValue('AE_BULK_PACKAGE', $bulk);
+	}
+
 	public static function setLock($state)
 	{
 		Configuration::updateValue('AE_LAST_SYNC_LOCK', $state);
@@ -930,6 +960,11 @@ class AEAdapter {
 	public static function getBackOfficeToken()
 	{
 		return Configuration::get('AE_BACKOFFICE_TOKEN');
+	}
+
+	public static function setTrackingJs($trackingJs)
+	{
+		Configuration::updateValue('AE_TRACKING_JS', $trackingJs);
 	}
 
 	public static function getActiveRecommendation()

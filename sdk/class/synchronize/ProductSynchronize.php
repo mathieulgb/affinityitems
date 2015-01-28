@@ -159,9 +159,8 @@ class ProductSynchronize extends AbstractModuleSynchronize {
 	}
 
 	public function isRecommendable($product) {
-		$available = (_PS_VERSION_) >= '1.5' ? ((bool)$product["active"] && (bool)$product["available_for_order"] && $product["visibility"] != 'none') 
+		return version_compare(_PS_VERSION_, '1.5', '>=') ? ((bool)$product["active"] && (bool)$product["available_for_order"] && $product["visibility"] != 'none') 
 						: ((bool)$product["active"] && (bool)$product["available_for_order"]);
-		return $available;
 	}
 	
 	public function getCategories($productId) {

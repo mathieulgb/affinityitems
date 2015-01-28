@@ -17,6 +17,17 @@
 {literal}
 <script>
     var abtesting = '{/literal}{$abtesting}{literal}';
+
+    {/literal}{if $trackingJs}{literal}
+
+    var pageName = '{/literal}{$pageName}{literal}';
+
+    var affinityItemsTrackPageView=function(t,e){"use strict";var n=function(t,e){"undefined"==typeof ga&&!function(t,e,n,o,a,c,i){t.GoogleAnalyticsObject=a,t[a]=t[a]||function(){(t[a].q=t[a].q||[]).push(arguments)},t[a].l=1*new Date,c=e.createElement(n),i=e.getElementsByTagName(n)[0],c.async=1,c.src=o,i.parentNode.insertBefore(c,i)}(window,document,"script","//www.google-analytics.com/analytics.js","ga"),ga("create","UA-57445738-1",{name:"affintyItemsTracker",cookieName:"_affintyItemsGa",cookieDomain:"auto"}),ga("affintyItemsTracker.set","location",window.location.protocol+"//"+window.location.host+"/"+window.location.host+window.location.pathname+window.location.search+window.location.hash),void 0===t&&(t="not-set"),void 0===e&&(e="not-set"),ga("affintyItemsTracker.send","pageview",{dimension1:t,dimension2:e})};document.addEventListener?document.addEventListener("DOMContentLoaded",function(){n(t,e)}):document.attachEvent?document.attachEvent("onreadystatechange",function(){"complete"==document.readyState&&n(t,e)}):console.log("[affintyItemsTrack] cannot attach to a document ready event")};
+
+    affinityItemsTrackPageView(abtesting, pageName);
+
+    {/literal}{/if}{literal}
+
     $(document).ready(function () {
        {/literal}
        {if $renderCategory != "" && !empty($renderCategory)}

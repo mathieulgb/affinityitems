@@ -60,6 +60,19 @@ class Synchronize {
 		try {
 			$resyncRequest = new ResynchronizeRequest(array());
 			$elementList = $resyncRequest->get();
+			
+			if(isset($elementList->abRatio)) {
+				if(is_float($elementList->abRatio)) {
+					$abRatio = $elementList->abRatio * 100;
+					AEAdapter::setAbTestingPercentage($abRatio);
+				}
+			}
+			
+			if(isset($elementList->trackingJs)) {
+				if(is_bool($elementList->trackingJs))
+					AEAdapter::setTrackingJs((int)$elementList->trackingJs);
+			}
+
 			if(isset($elementList->synchro)) {
 				if(is_array($elementList->synchro)) {
 					foreach ($elementList->synchro as $element) {
@@ -71,6 +84,7 @@ class Synchronize {
 					}
 				}
 			}
+
 		} catch(Exception $e) {
 			AELogger::log('[INFO]', $e->getMessage());
 		}

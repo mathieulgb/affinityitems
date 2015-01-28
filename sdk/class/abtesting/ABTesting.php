@@ -45,14 +45,16 @@ class ABTesting {
 	}
 
 	public static function setGuestGroup() {
-		$aecookie = AECookie::getInstance();
-		try {
-			$rnd = (0+lcg_value()*(abs(1)));
-			$group = ($rnd < (AEAdapter::getAbTestingPercentage()/100)) ? "A" : "B";
-			$aecookie->getCookie()->__set('aegroup', $group);
-			$aecookie->getCookie()->write();
-		} catch(Exception $e) {
-			AELogger::log("[ERROR]", $e->getMessage());
+		if((bool)AEAdapter::getActiveRecommendation()) {
+			$aecookie = AECookie::getInstance();
+			try {
+				$rnd = (0+lcg_value()*(abs(1)));
+				$group = ($rnd < (AEAdapter::getAbTestingPercentage()/100)) ? "A" : "B";
+				$aecookie->getCookie()->__set('aegroup', $group);
+				$aecookie->getCookie()->write();
+			} catch(Exception $e) {
+				AELogger::log("[ERROR]", $e->getMessage());
+			}
 		}
 	}
 

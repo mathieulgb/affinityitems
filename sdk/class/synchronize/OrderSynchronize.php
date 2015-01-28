@@ -90,6 +90,7 @@ class OrderSynchronize extends AbstractModuleSynchronize {
 			$aeorder->language = $order['language'];
 			$aeorder->memberId = $order['id_customer'];
 			$aeorder->amount = $order['total_paid_tax_excl'];
+			$aeorder->currency = $order['currency'];
 			$aeorder->orderLines = $orderLines;
 
 			if($guestId = AEAdapter::getCartGuestId($order['id_cart'])) {
