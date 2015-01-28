@@ -349,7 +349,7 @@ class AffinityItems extends Module {
 			if (isset($params['cart']->id) && $person instanceof AEGuest)
 			{
 				AEAdapter::setCartGroup($params['cart']->id, $person->getGroup(), $person->getPersonId(), Tools::getRemoteAddr());
-				if(Context::getContext()->customer->isLogged()) 
+				if (Context::getContext()->customer->isLogged()) 
 				{
 					$this->cartSynchronize->syncNewElement();
 					$this->cartSynchronize->syncUpdateElement();
@@ -1127,7 +1127,7 @@ public function postProcess()
 			$render_category = $this->renderCategory(Tools::getValue('id_category'));
 		else if (Tools::getValue('search_query'))
 			$render_search = $this->renderSearch(Tools::getValue('search_query'));
- 
+
 		if (!$this->getPerson() instanceof stdClass)
 		{
 			$this->smarty->assign(array(
