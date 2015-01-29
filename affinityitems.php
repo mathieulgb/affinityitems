@@ -476,7 +476,6 @@ class AffinityItems extends Module {
 
 	public function hookHome()
 	{
-		
 		$recommendations = array();
 		$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_HOME'));
 		$occurrence = $this->preg_match_count_object_key('/recoHome/i', $hook_configuration);
@@ -540,7 +539,6 @@ class AffinityItems extends Module {
 
 	public function hookLeftColumn()
 	{
-
 		$recommendations = array();
 		$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_LEFT'));
 		$occurrence = $this->preg_match_count_object_key('/recoLeft/i', $hook_configuration);
@@ -1122,8 +1120,8 @@ public function postProcess()
 		$hook_search_configuration = unserialize(Configuration::get('AE_CONFIGURATION_SEARCH'));
 		$hook_category_configuration = unserialize(Configuration::get('AE_CONFIGURATION_CATEGORY'));
 
- 		$smarty = $this->context->smarty;
- 		$page = $smarty->tpl_vars['page_name']->value;
+		$smarty = $this->context->smarty;
+		$page = $smarty->tpl_vars['page_name']->value;
 
 		if (Tools::getValue('id_category'))
 			$render_category = $this->renderCategory(Tools::getValue('id_category'));
