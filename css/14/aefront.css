@@ -1,17 +1,14 @@
 .ae_products_block .ae_block_content {
-	background: #d0d3d8 none;
 	padding: 0;
 }
 
 div.ae_block .ae_block_content {
 	border-left: 1px #d0d3d8;
 	border-right: 1px #d0d3d8;
-	background: #f1f2f4;
 	min-height: 16px;
 }
 
 .ae_products_block .ae_block_content {
-	background: #d0d3d8 none;
 	padding: 0;
 }
 
@@ -35,7 +32,6 @@ div.ae_block ul {
 .ae_products_block { color: #595a5e }
 .ae_products_block h4 { line-height: 1.3em }
 .ae_products_block .ae_block_content {
-	background: #d0d3d8 none;
 	padding: 0
 }
 .ae_products_block ul li:hover { background-color: #bdc2c9 }

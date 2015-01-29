@@ -16,34 +16,34 @@
 	*}
 
 	<script>
-		{literal}
-		function synchronize() {
-			$.ajax({
-				{/literal}{if $ajaxController}{literal}
-				url: "index.php?controller=AEAjax&configure=affinityitems&ajax",
-				{/literal}{else}{literal}
-				url: "{/literal}{$module_dir|escape:'htmlall':'UTF-8'}{literal}ajax/synchronize.php",
-				{/literal}{/if}{literal}
-				data: {"synchronize" : true, "getInformation" : true, "token" : "{/literal}{$prestashopToken|escape:'htmlall':'UTF-8'}{literal}"},
-				type: "POST",
-				async: true,
-				success: function (e, t, n) {
-					var response = jQuery.parseJSON(e);
-					if(response._ok == true) {
-						if(response._activate == 1) {
-							if(response._percentage == 100) {
-								$('.items-synchronize-container').css('background-color', '#82c836');
-								$('.items-synchronize-container').html($('#items-synchronize-finished').html());
-							} else {
-								$('.items-synchronize-container').css('background-color', '#82c836');
-								$('.items-synchronize-container').html($('#items-synchronize-in-progress').html());
-							}
+	{literal}
+	function synchronize() {
+		$.ajax({
+			{/literal}{if $ajaxController}{literal}
+			url: "index.php?controller=AEAjax&configure=affinityitems&ajax",
+			{/literal}{else}{literal}
+			url: "{/literal}{$module_dir|escape:'htmlall':'UTF-8'}{literal}ajax/synchronize.php",
+			{/literal}{/if}{literal}
+			data: {"synchronize" : true, "getInformation" : true, "token" : "{/literal}{$prestashopToken|escape:'htmlall':'UTF-8'}{literal}"},
+			type: "POST",
+			async: true,
+			success: function (e, t, n) {
+				var response = jQuery.parseJSON(e);
+				if(response._ok == true) {
+					if(response._activate == 1) {
+						if(response._percentage == 100) {
+							$('.items-synchronize-container').css('background-color', '#82c836');
+							$('.items-synchronize-container').html($('#items-synchronize-finished').html());
 						} else {
-							$('.items-synchronize-container').css('background-color', '#c0504d');
-							$('.items-synchronize-container').html($('#items-synchronize-desactivate').html());
+							$('.items-synchronize-container').css('background-color', '#82c836');
+							$('.items-synchronize-container').html($('#items-synchronize-in-progress').html());
 						}
+					} else {
+						$('.items-synchronize-container').css('background-color', '#c0504d');
+						$('.items-synchronize-container').html($('#items-synchronize-desactivate').html());
 					}
-				}});
+				}
+			}});
 setTimeout("synchronize()", 10000);
 }
 
@@ -127,7 +127,7 @@ function switchSupportTab(name) {
 	}
 }
 
-var pages = ['funnel-step-one', 'funnel-step-two', 'dashboard', 'activation', 'config', 'theme-editor', 'support', 'help'];
+var pages = ['funnel-step-one', 'funnel-step-two', 'dashboard', 'activation', 'config', 'theme-editor', 'support', 'help', 'desactivate'];
 
 $(document).ready(function() {
 	synchronize();
@@ -242,10 +242,11 @@ $(document).ready(function() {
 			{/literal}{if $ajaxController}{literal}
 			url: "index.php?controller=AEAjax&configure=affinityitems&ajax",
 			{/literal}{else}{literal}
-			url: "{/literal}{$module_dir|escape:'htmlall':'UTF-8'}{literal}ajax/help.php",
+			url: "{/literal}{$module_dir|escape:'htmlall':'UTF-8'}{literal}ajax/support.php",
 			{/literal}{/if}{literal}
 			type: "POST",
 			data : {
+				"support" : true,
 				"help" : true,
 				"firstname" : firstname,
 				"lastname" : lastname,
@@ -260,40 +261,67 @@ $(document).ready(function() {
 		});
 	});
 
-	$("#myonoffswitch").on('change', function(){
-		var checked = $(this).is(':checked') ? 1 : 0;
-		$.ajax({
-			{/literal}{if $ajaxController}{literal}
-			url: "index.php?controller=AEAjax&configure=affinityitems&ajax",
-			{/literal}{else}{literal}
-			url: "{/literal}{$module_dir|escape:'htmlall':'UTF-8'}{literal}ajax/property.php",
-			{/literal}{/if}{literal}
-			type: "POST",
-			data : {"activation" : checked, "token" : "{/literal}{$prestashopToken|escape:'htmlall':'UTF-8'}{literal}", "aetoken" : '{/literal}{$aetoken}{literal}'},
-			async: false,
-			success: function (e, t, n) {}
-		});
-	});
 
-	$('.items-reco-all-filtered-select').on("change", function() {
-		if($(this).val() == "byCategory") {
-			$(this).closest('.items-reco-all-filtered').find(".categoryIds").show();
-			$(this).closest('.items-reco-all-filtered').find(".attributeIds").hide();
-			$(this).closest('.items-reco-all-filtered').find(".featureIds").hide();
-		} else if($(this).val() == "byAttribute") {
-			$(this).closest('.items-reco-all-filtered').find(".categoryIds").hide();
-			$(this).closest('.items-reco-all-filtered').find(".attributeIds").show();
-			$(this).closest('.items-reco-all-filtered').find(".featureIds").hide();
-		} else if($(this).val() == "byFeature") {
-			$(this).closest('.items-reco-all-filtered').find(".categoryIds").hide();
-			$(this).closest('.items-reco-all-filtered').find(".attributeIds").hide();
-			$(this).closest('.items-reco-all-filtered').find(".featureIds").show();
-		} else {
-			$(this).closest('.items-reco-all-filtered').find(".categoryIds").hide();
-			$(this).closest('.items-reco-all-filtered').find(".attributeIds").hide();
-			$(this).closest('.items-reco-all-filtered').find(".featureIds").hide();
+$('.items-desactivate-button').on('click', function() {
+	$.ajax({
+		{/literal}{if $ajaxController}{literal}
+		url: "index.php?controller=AEAjax&configure=affinityitems&ajax",
+		{/literal}{else}{literal}
+		url: "{/literal}{$module_dir|escape:'htmlall':'UTF-8'}{literal}ajax/support.php",
+		{/literal}{/if}{literal}
+		type: "POST",
+		data : {
+			"support" : true,
+			"desactivate" : true,
+			"reason" : $(".items-desactivate-reason:checked").val(),
+			"token" : "{/literal}{$prestashopToken|escape:'htmlall':'UTF-8'}{literal}", 
+			"aetoken" : '{/literal}{$aetoken}{literal}'
+		},
+		async: false,
+		success: function (e, t, n) {
+			success();
 		}
 	});
+});
+
+$("#myonoffswitch").on('change', function(){
+	var checked = $(this).is(':checked') ? 1 : 0;
+	$.ajax({
+		{/literal}{if $ajaxController}{literal}
+		url: "index.php?controller=AEAjax&configure=affinityitems&ajax",
+		{/literal}{else}{literal}
+		url: "{/literal}{$module_dir|escape:'htmlall':'UTF-8'}{literal}ajax/property.php",
+		{/literal}{/if}{literal}
+		type: "POST",
+		data : {"activation" : checked, "token" : "{/literal}{$prestashopToken|escape:'htmlall':'UTF-8'}{literal}", "aetoken" : '{/literal}{$aetoken}{literal}'},
+		async: false,
+		success: function (e, t, n) {
+			if(!checked) {
+				showPage('desactivate');
+			}
+		}
+	});
+});
+
+$('.items-reco-all-filtered-select').on("change", function() {
+	if($(this).val() == "byCategory") {
+		$(this).closest('.items-reco-all-filtered').find(".categoryIds").show();
+		$(this).closest('.items-reco-all-filtered').find(".attributeIds").hide();
+		$(this).closest('.items-reco-all-filtered').find(".featureIds").hide();
+	} else if($(this).val() == "byAttribute") {
+		$(this).closest('.items-reco-all-filtered').find(".categoryIds").hide();
+		$(this).closest('.items-reco-all-filtered').find(".attributeIds").show();
+		$(this).closest('.items-reco-all-filtered').find(".featureIds").hide();
+	} else if($(this).val() == "byFeature") {
+		$(this).closest('.items-reco-all-filtered').find(".categoryIds").hide();
+		$(this).closest('.items-reco-all-filtered').find(".attributeIds").hide();
+		$(this).closest('.items-reco-all-filtered').find(".featureIds").show();
+	} else {
+		$(this).closest('.items-reco-all-filtered').find(".categoryIds").hide();
+		$(this).closest('.items-reco-all-filtered').find(".attributeIds").hide();
+		$(this).closest('.items-reco-all-filtered').find(".featureIds").hide();
+	}
+});
 {/literal}{include file="./live-editor.tpl"}{literal}
 });
 {/literal}
@@ -326,47 +354,47 @@ $(document).ready(function() {
 
 	<div id="items-dashboard">
 		<div class="items-synchronize-container"></div>
-
+		
 		<div class="items-boxes">
 
 			<div class="items-box items-box-black">
-				<p><span class="items-box-large-font">10</span> <br /> <span>{l s='current connected visitors' mod='affinityitems'}</span></p>
+				<p><span class="items-box-large-font">{if $statistics && is_numeric($statistics->onlineUsers)}{$statistics->onlineUsers}{else}0{/if} </span> <br /> <span>{l s='current connected visitors' mod='affinityitems'}</span></p>
 			</div>
 
 			<div class="items-box items-box-black">
-				<p><span class="items-box-large-font">4</span> <br /> <span>{l s='current carts' mod='affinityitems'}</span></p>
+				<p><span class="items-box-large-font">{if $statistics && is_numeric($statistics->cartsInProgress)}{$statistics->cartsInProgress}{else}0{/if}</span> <br /> <span>{l s='current carts' mod='affinityitems'}</span></p>
 			</div>
 
 			<div class="items-box items-box-purple">
-				<p><span class="items-box-large-font">0</span> <br /> <span>{l s='visits with recommendations' mod='affinityitems'}</span></p>
+				<p><span class="items-box-large-font">{if $statistics && is_numeric($statistics->lastMonthVisitsWithRecommendation)}{$statistics->lastMonthVisitsWithRecommendation}{else}0{/if}</span> <br /> <span>{l s='visits with recommendations' mod='affinityitems'}</span></p>
 			</div>
 
 			<div class="items-box items-box-purple">
-				<p><span class="items-box-large-font">0%</span> <br /> <span>{l s='recommendations click rate on product page*' mod='affinityitems'}</span></p>
+				<p><span class="items-box-large-font">{if $statistics && is_numeric($statistics->bestClickRate->rate)} {math equation="rate * cent" cent=100 rate={$statistics->bestClickRate->rate} format="%.2f"} %{else}0{/if}</span> <br /> <span> {l s='recommendations click rate on' mod='affinityitems'} {if $statistics && $statistics->bestClickRate->hook}{$statistics->bestClickRate->hook}{/if} {l s='page*' mod='affinityitems'}</span></p>
 			</div>
 
 			<div class="items-box items-box-purple">
-				<p><span class="items-box-large-font">%</span> <br /> <span>{l s='transformation rate among clickers *' mod='affinityitems'}</span></p>
+				<p><span class="items-box-large-font">{if $statistics && is_numeric($statistics->lastMonthClickersConversationRate)}{math equation="lastMonthClickersConversationRate * cent" cent=100 lastMonthClickersConversationRate={$statistics->lastMonthClickersConversationRate} format="%.2f"} %{else}0{/if}</span> <br /> <span>{l s='transformation rate among clickers *' mod='affinityitems'}</span></p>
 			</div>
 
 			<div class="items-box items-box-black">
-				<p><span class="items-box-large-font">10</span> <br /> <span>{l s='visitors since installation' mod='affinityitems'}</span></p>
+				<p><span class="items-box-large-font">{if $statistics && is_numeric($statistics->lastMonthOrders)}{$statistics->lastMonthOrders}{else}0{/if}</span> <br /> <span>{l s='orders last 30 days' mod='affinityitems'}</span></p>
 			</div>
 
 			<div class="items-box items-box-black">
-				<p><span class="items-box-large-font">%</span> <br /> <span>{l s='of conversion rate' mod='affinityitems'}</span></p>
+				<p><span class="items-box-large-font">{if $statistics && is_numeric($statistics->lastMonthSales)}{$statistics->lastMonthSales|string_format:"%.0f"}{else}0{/if}</span> <br /> <span>{l s='sales last 30 days' mod='affinityitems'}</span></p>
 			</div>
 
 			<div class="items-box items-box-purple">
-				<p><span class="items-box-large-font">0</span> <br /> <span>{l s='recommandations since installation' mod='affinityitems'}</span></p>
+				<p><span class="items-box-large-font">{if $statistics && is_numeric($data->recommendation)}{$data->recommendation}{else}0{/if}</span> <br /> <span>{l s='recommandations since 30 days' mod='affinityitems'}</span></p>
 			</div>
 
 			<div class="items-box items-box-purple">
-				<p><span class="items-box-large-font">0 €</span> <br /> <span>{l s='of sales following click on recommendations*' mod='affinityitems'}</span></p>
+				<p><span class="items-box-large-font">{if $statistics && is_numeric($statistics->salesAfterClick)}{$statistics->salesAfterClick|string_format:"%.0f"}{else}0{/if} €</span> <br /> <span>{l s='of sales following click on recommendations*' mod='affinityitems'}</span></p>
 			</div>
 
 			<div class="items-box items-box-purple">
-				<p><span class="items-box-large-font">0 €</span> <br /> <span>{l s='of sales following a recommendation*' mod='affinityitems'}</span></p>
+				<p><span class="items-box-large-font">{if $statistics && is_numeric($statistics->salesAfterReco)}{$statistics->salesAfterReco|string_format:"%.0f"}{else}0{/if} €</span> <br /> <span>{l s='of sales following a recommendation*' mod='affinityitems'}</span></p>
 			</div>
 
 		</div>
@@ -449,11 +477,11 @@ $(document).ready(function() {
 				<div>
 					<table style="width:100%">
 						<tr>
-							<th>{l s='Activation' mod='affinityitems'}</th>
-							<th>{l s='Zone title' mod='affinityitems'}</th> 
-							<th>{l s='Recommendation type' mod='affinityitems'}</th>
-							<th>{l s='Product number' mod='affinityitems'}</th>
-							<th>{l s='Theme' mod='affinityitems'}</th>
+							<th class="items-table-activation-cell">{l s='Activation' mod='affinityitems'}</th>
+							<th class="items-table-zone-title-cell">{l s='Zone title' mod='affinityitems'}</th> 
+							<th class="items-table-recommendation-type-cell">{l s='Recommendation type' mod='affinityitems'}</th>
+							<th class="items-table-product-number-cell">{l s='Product number' mod='affinityitems'}</th>
+							<th class="items-table-theme-cell">{l s='Theme' mod='affinityitems'}</th>
 						</tr>
 					</table>
 
@@ -497,7 +525,7 @@ $(document).ready(function() {
 							<td>
 								<select disabled class="items-open-theme-list">
 									{foreach from=$themeList item=theme}
-									<option {if $theme.id_theme == $configuration.{$hook}->recoTheme{$zone1}} selected {/if} value="{$theme.id_theme|escape:'htmlall':'UTF-8'}">{$theme.name|escape:'htmlall':'UTF-8'}</option>
+									<option {if $theme.id_theme == $configuration.{$hook}->recoTheme{$zone1}} selected {/if} value="{$theme.id_theme}">{$theme.name}</option>
 									{/foreach}
 								</select>
 								<a href="#" class="items-open-theme-list" >{l s='Edit' mod='affinityitems'}</a>
@@ -553,8 +581,8 @@ $(document).ready(function() {
 						<ul>
 							{foreach from=$themeList item=theme}
 							<li>
-								<label for="radio-style-white">{$theme.name|escape:'htmlall':'UTF-8'}</label>
-								<input type="radio" name="recoTheme{$hook|escape:'htmlall':'UTF-8'}_1" value="{$theme.id_theme|escape:'htmlall':'UTF-8'}" id="radio-style-white"
+								<label for="radio-style-white">{$theme.name}</label>
+								<input type="radio" name="recoTheme{$hook|escape:'htmlall':'UTF-8'}_1" value="{$theme.id_theme}" id="radio-style-white"
 								{if $theme.id_theme == $configuration.{$hook}->recoTheme{$zone1}} checked="checked" {/if} />    
 							</li>
 							{/foreach}
@@ -601,7 +629,7 @@ $(document).ready(function() {
 							<td>
 								<select disabled class="items-open-theme-list">
 									{foreach from=$themeList item=theme}
-									<option {if $theme.id_theme == $configuration.{$hook}->recoTheme{$zone2}} selected {/if} value="{$theme.id_theme|escape:'htmlall':'UTF-8'}">{$theme.name|escape:'htmlall':'UTF-8'}</option>
+									<option {if $theme.id_theme == $configuration.{$hook}->recoTheme{$zone2}} selected {/if} value="{$theme.id_theme}">{$theme.name}</option>
 									{/foreach}
 								</select>
 								<a href="#" class="items-open-theme-list" >{l s='Edit' mod='affinityitems'}</a>
@@ -619,8 +647,8 @@ $(document).ready(function() {
 							<td><input class="items-selectors-input" name="recoSelector{$hook|escape:'htmlall':'UTF-8'}_2" type="text" value="{$configuration.{$hook|escape:'htmlall':'UTF-8'}->recoSelector{$zone2}}"></td>
 							<td>
 								<select  name="recoSelectorPosition{$hook|escape:'htmlall':'UTF-8'}_2">
-									<option {if $configuration.{$hook}->recoSelectorPosition{$zone2} == "before"} selected {/if} value="before">Before</option>
-									<option {if $configuration.{$hook}->recoSelectorPosition{$zone2} == "after"} selected {/if} value="after">After</option>
+									<option {if $configuration.{$hook}->recoSelectorPosition{$zone2} == "before"} selected {/if} value="before">{l s='Before' mod='affinityitems'}</option>
+									<option {if $configuration.{$hook}->recoSelectorPosition{$zone2} == "after"} selected {/if} value="after">{l s='After' mod='affinityitems'}</option>
 								</select>
 							</td>
 						</tr>
@@ -656,8 +684,8 @@ $(document).ready(function() {
 						<ul>
 							{foreach from=$themeList item=theme}
 							<li>
-								<label for="radio-style-white">{$theme.name|escape:'htmlall':'UTF-8'}</label>
-								<input type="radio" name="recoTheme{$hook|escape:'htmlall':'UTF-8'}_2" value="{$theme.id_theme|escape:'htmlall':'UTF-8'}" id="radio-style-white"
+								<label for="radio-style-white">{$theme.name}</label>
+								<input type="radio" name="recoTheme{$hook|escape:'htmlall':'UTF-8'}_2" value="{$theme.id_theme}" id="radio-style-white"
 								{if $theme.id_theme == $configuration.{$hook}->recoTheme{$zone2}} checked="checked" {/if} />    
 							</li>
 							{/foreach}
@@ -764,6 +792,68 @@ $(document).ready(function() {
 	</div>
 </div>
 
+<div id="items-desactivate">
+
+	<div class="items-help-explaination">
+		<p>{l s='You have disactivated affinity items.' mod='affinityitems'}</p>
+		<p>{l s='Please tell us your main reason:' mod='affinityitems'}</p>
+	</div>
+
+	<div class="items-desactivate-form">
+
+	<table>
+		<tr>
+			<td>
+				<input type="radio" checked class="items-desactivate-reason" name="items-desactivate-reason" value="{l s='No need' mod='affinityitems'}" />
+			</td>
+			<td>
+				{l s='No need' mod='affinityitems'}
+			</td>
+		</tr>
+
+		<tr>
+			<td>
+				<input type="radio" class="items-desactivate-reason" name="items-desactivate-reason" value="{l s='No time' mod='affinityitems'}" />
+			</td>
+			<td>
+				{l s='No time' mod='affinityitems'}
+			</td>
+		</tr>
+
+		<tr>
+			<td>
+				<input type="radio" class="items-desactivate-reason" name="items-desactivate-reason" value="{l s='Too complicated' mod='affinityitems'}" />
+			</td>			
+			<td>
+				{l s='Too complicated' mod='affinityitems'}
+			</td>
+		</tr>
+
+		<tr>
+			<td>
+				<input type="radio" class="items-desactivate-reason" name="items-desactivate-reason" value="{l s='Too expensive' mod='affinityitems'}" />
+			</td>			
+			<td>
+				{l s='Too expensive' mod='affinityitems'}
+			</td>
+		</tr>
+
+		<tr>
+			<td>
+				<input type="radio" class="items-desactivate-reason" name="items-desactivate-reason" value="{l s='Back in few minutes!' mod='affinityitems'}" />
+			</td>
+			<td>
+				{l s='Back in few minutes!' mod='affinityitems'}
+			</td>
+		</tr>
+	</table>
+
+	<input type="submit" class="items-desactivate-button items-button items-green" value="{l s='Validate' mod='affinityitems'}"/>
+
+	</div>
+
+</div>
+
 <div id="items-funnel-step-one">
 	<h2>{l s='Recommendations activation' mod='affinityitems'}</h2>
 	<p>{l s='You can change the recommendations parameters' mod='affinityitems'}</p>
@@ -781,10 +871,12 @@ $(document).ready(function() {
 		<div class="items-radio-funnel-style-choice">
 			<ul>
 				{foreach from=$themeList item=theme}
-				<li>
-					<label for="radio-style-white">{$theme.name|escape:'htmlall':'UTF-8'}</label>
-					<input type="radio" name="graphic" value="{$theme.id_theme|escape:'htmlall':'UTF-8'}" id="radio-style-white" />
+				{if $theme.name|lower == 'clear' || $theme.name|lower == 'dark'}
+				<li class="radio-style-{$theme.name|lower}">
+					<label for="radio-style-{$theme.name|lower}">{$theme.name}</label>
+					<input {if $theme.name|lower == 'clear'} checked {/if} type="radio" name="graphic" value="{$theme.id_theme}" id="radio-style-{$theme.name|lower}" />
 				</li>
+				{/if}
 				{/foreach}
 			</ul>
 		</div>

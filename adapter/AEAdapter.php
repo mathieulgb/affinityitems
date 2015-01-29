@@ -466,7 +466,7 @@ class AEAdapter {
 			AND o.id_customer IN (SELECT id_customer FROM '._DB_PREFIX_.'customer)
 			AND o.id_order IN (SELECT id_order FROM '._DB_PREFIX_.'order_detail)
 			AND id_customer <> 0
-			AND o.date_upd >= NOW() - INTERVAL \''.self::getLimit().'\' MONTH
+			AND o.date_add >= NOW() - INTERVAL \'1\' YEAR
 			'.$multishop);
 	}
 

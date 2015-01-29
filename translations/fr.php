@@ -28,6 +28,7 @@ $_MODULE['<{affinityitems}prestashop>authentication_c63bec6e2e597874e36b5550f048
 $_MODULE['<{affinityitems}prestashop>authentication_1ea4764e47133eb5be13d33bebb3fc21'] = 'une sélection de produits adaptés à chaque visiteur.';
 $_MODULE['<{affinityitems}prestashop>authentication_74246928ff0b779891e5258072be18c0'] = 'Jusqu’à 60% des produits achetés';
 $_MODULE['<{affinityitems}prestashop>authentication_f4b29422a4c503421fe531bff9d2f36b'] = 'ont été recommandés par affinity items.';
+$_MODULE['<{affinityitems}prestashop>authentication_49fa2426b7903b3d4c89e2c1874d9346'] = 'En savoir plus';
 $_MODULE['<{affinityitems}prestashop>dashboard_1f5c2b583bbaba12bf040d969c1ccdce'] = 'Opération réussie';
 $_MODULE['<{affinityitems}prestashop>dashboard_c98e6dff0112dcbc19282f0afd447129'] = 'Merci d\'entrer des données valides';
 $_MODULE['<{affinityitems}prestashop>dashboard_373922d37421ba64110b034265e0f820'] = 'Merci d\'entrer un nom, un prénom et un numéro de téléphone';
@@ -40,11 +41,7 @@ $_MODULE['<{affinityitems}prestashop>dashboard_db5eb84117d06047c97c9a0191b5fffe'
 $_MODULE['<{affinityitems}prestashop>dashboard_aabeaba451febb837b395ea13f45dfe6'] = 'visiteurs  connectés';
 $_MODULE['<{affinityitems}prestashop>dashboard_8b455a63668b8f9405883fc5530f2f68'] = 'paniers  en cours';
 $_MODULE['<{affinityitems}prestashop>dashboard_da6c31394200699bd7586e4aaebca5cd'] = 'visites avec recommandations';
-$_MODULE['<{affinityitems}prestashop>dashboard_7cbf2bf7e42874838cc1f9fb470cb242'] = 'de taux de clic sur les recos en page produit*';
 $_MODULE['<{affinityitems}prestashop>dashboard_13320725f082457ab5fe084ae6b52395'] = 'de taux de transformation auprès des clickers *';
-$_MODULE['<{affinityitems}prestashop>dashboard_5ceac02007d5c572b52d0f921640d40c'] = 'visiteurs depuis l’installation';
-$_MODULE['<{affinityitems}prestashop>dashboard_96dd7564df4324c40fb2353e6aa37428'] = 'de taux de transformation';
-$_MODULE['<{affinityitems}prestashop>dashboard_b95a7dca07fb711b6e6f5c0d9d2c9e6d'] = 'Recommandations depuis l’installation';
 $_MODULE['<{affinityitems}prestashop>dashboard_d3fb4493f38d61e7115253f8970ec72d'] = 'de CA suite à un clic sur une recommandation*';
 $_MODULE['<{affinityitems}prestashop>dashboard_6f185e5c3cef6a911c954621272b8d70'] = 'de CA suite à l’affichage d’une recommandation*';
 $_MODULE['<{affinityitems}prestashop>dashboard_b05aa1dbadcd1efe2fdeeb95e1649628'] = 'Recommandations activées';

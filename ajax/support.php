@@ -21,6 +21,6 @@ require_once(dirname(__FILE__).'/../../../init.php');
 
 require_once('../loader.php');
 
-echo AEAjaxAdapter::help();
+echo AEAjaxAdapter::support();
 
 

@@ -16,10 +16,10 @@
 *  International Registered Trademark & Property of Affinity Engine SARL
 */
 
-class HelpRequest extends AbstractRequest {
+class SupportRequest extends AbstractRequest {
 
 	public function __construct($pcontent) {
-		parent::__construct('/help', $pcontent);
+		parent::__construct('/support', $pcontent);
 	}
 
 }

@@ -126,7 +126,7 @@ class AEAjaxAdapter {
 		{
 			try {
 				AEAdapter::setActiveRecommendation(Tools::safeOutput(Tools::getValue('activation')));
-				if ((int)Tools::getValue('activation') === 1) 
+				if ((int)Tools::getValue('activation') === 1)
 					Configuration::updateValue('AFFINITYITEMS_CONFIGURATION_OK', true);
 				AELogger::log('[INFO]', 'Recommendation Activation : '.Tools::safeOutput(Tools::getValue('activation')));
 				$response['_ok'] = true;
@@ -282,7 +282,7 @@ class AEAjaxAdapter {
 			else if ($person instanceof AEGuest)
 				$action->guestId = $person->personId;
 
-			if (Context::getContext()->customer->isLogged()) 
+			if (Context::getContext()->customer->isLogged())
 				$action->memberId = Context::getContext()->cookie->id_customer;
 
 			if ($group = $person->getGroup())
@@ -359,16 +359,25 @@ class AEAjaxAdapter {
 		return Tools::jsonEncode($response);
 	}
 
-	public static function help() 
+	public static function support()
 	{
 		$response = array();
 		try 
 		{
 			$content = new stdClass();
-			$content->firstname = Tools::safeOutput(Tools::getValue('firstname'));
-			$content->lastname = Tools::safeOutput(Tools::getValue('lastname'));
-			$content->phone = Tools::safeOutput(Tools::getValue('phone'));
-			$request = new HelpRequest($content);
+			if (Tools::getIsset('help')) 
+			{
+				$content->help = true;
+				$content->firstname = Tools::safeOutput(Tools::getValue('firstname'));
+				$content->lastname = Tools::safeOutput(Tools::getValue('lastname'));
+				$content->phone = Tools::safeOutput(Tools::getValue('phone'));
+			} 
+			else if (Tools::getIsset('desactivate'))
+			{
+				$content->desactivate = true;
+				$content->reason = Tools::safeOutput(Tools::getValue('reason'));
+			}
+			$request = new SupportRequest($content);
 			if ($request->post())
 				$response['_ok'] = true;
 		}
