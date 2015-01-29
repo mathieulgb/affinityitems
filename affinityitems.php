@@ -1127,7 +1127,7 @@ public function postProcess()
 			$render_category = $this->renderCategory(Tools::getValue('id_category'));
 		else if (Tools::getValue('search_query'))
 			$render_search = $this->renderSearch(Tools::getValue('search_query'));
- 
+		
 		if (!$this->getPerson() instanceof stdClass)
 		{
 			$this->smarty->assign(array(
