@@ -47,7 +47,7 @@ class AffinityItems extends Module {
 	{
 		$this->name = 'affinityitems';
 		$this->tab = 'advertising_marketing';
-		$this->version = '1.2.2';
+		$this->version = '2.0.0';
 		$this->author = 'Affinity Engine';
 		parent::__construct();
 
