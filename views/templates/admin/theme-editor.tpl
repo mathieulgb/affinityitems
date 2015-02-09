@@ -14,10 +14,16 @@
 	*  @license   http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL Version 2 (GPLv2)
 	*  International Registered Trademark & Property of Affinity Engine SARL
 	*}
-	<div class="items-title">
-		{l s='Theme editor' mod='affinityitems'}
-		<span class="visit"><a href="{$baseUrl|escape:'htmlall':'UTF-8'}?aeabtesting=A" target="_blank"><i class="fa fa-eye"></i> {l s='Display recommendation on your shop' mod='affinityitems'}</span></a>
+
+
+	<div class="items-theme-editor-container">
+		<div class="items-theme-editor-text">
+			{l s='Simply create or manage graphic themes available for recommendation zones. (your website general theme will remain unchanged)' mod='affinityitems'}
+		</div>
 	</div>
+
+	<div class="clear"></div>
+
 	<form action="#theme-editor" method="POST">
 	<div class="items-theme-selector">
 			<div id="items-overlay"></div>
@@ -37,8 +43,9 @@
 						<input type="submit" value="{l s='Save' mod='affinityitems'}" class="items-button-submit">
 						<input type="submit" id="registerTheme" value="{l s='Save as' mod='affinityitems'}" class="items-button-submit">
 			</div>
-			<div class="clear"></div>
+			<div class="clear"></div>			
 		</div>
+
 		<div class="preview">
 			<div class="toolbox">
 				<div class="background-toolbox toolboxarea" style="display:none">

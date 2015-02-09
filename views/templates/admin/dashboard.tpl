@@ -33,13 +33,16 @@
 					if(response._activate == 1) {
 						if(response._percentage == 100) {
 							$('.items-synchronize-container').css('background-color', '#82c836');
+							$('.items-synchronize-container').css('color', 'white');
 							$('.items-synchronize-container').html($('#items-synchronize-finished').html());
 						} else {
 							$('.items-synchronize-container').css('background-color', '#82c836');
+							$('.items-synchronize-container').css('color', 'white');
 							$('.items-synchronize-container').html($('#items-synchronize-in-progress').html());
 						}
 					} else {
-						$('.items-synchronize-container').css('background-color', '#c0504d');
+						$('.items-synchronize-container').css('background-color', '#f2f2f2');
+						$('.items-synchronize-container').css('color', 'grey');
 						$('.items-synchronize-container').html($('#items-synchronize-desactivate').html());
 					}
 				}
@@ -357,44 +360,44 @@ $('.items-reco-all-filtered-select').on("change", function() {
 		
 		<div class="items-boxes">
 
-			<div class="items-box items-box-black">
-				<p><span class="items-box-large-font">{if $statistics && is_numeric($statistics->onlineUsers)}{$statistics->onlineUsers}{else}0{/if} </span> <br /> <span>{l s='current connected visitors' mod='affinityitems'}</span></p>
+			<div class="items-box items-box-black items-box-first">
+				<p><span class="items-box-large-font">{if $statistics && is_numeric($statistics->onlineUsers)}{$statistics->onlineUsers}{else}0{/if} </span> <br /> <span class="items-box-text">{l s='current connected' mod='affinityitems'}<br />{l s='visitors' mod='affinityitems'}</span></p>
 			</div>
 
 			<div class="items-box items-box-black">
-				<p><span class="items-box-large-font">{if $statistics && is_numeric($statistics->cartsInProgress)}{$statistics->cartsInProgress}{else}0{/if}</span> <br /> <span>{l s='current carts' mod='affinityitems'}</span></p>
+				<p><span class="items-box-large-font">{if $statistics && is_numeric($statistics->cartsInProgress)}{$statistics->cartsInProgress}{else}0{/if}</span> <br /> <span class="items-box-text">{l s='current' mod='affinityitems'}<br />{l s='carts' mod='affinityitems'}</span></p>
 			</div>
 
 			<div class="items-box items-box-purple">
-				<p><span class="items-box-large-font">{if $statistics && is_numeric($statistics->lastMonthVisitsWithRecommendation)}{$statistics->lastMonthVisitsWithRecommendation}{else}0{/if}</span> <br /> <span>{l s='visits with recommendations' mod='affinityitems'}</span></p>
+				<p><span class="items-box-large-font">{if $statistics && is_numeric($statistics->lastMonthVisitsWithRecommendation)}{$statistics->lastMonthVisitsWithRecommendation}{else}0{/if}</span> <br /> <span class="items-box-text">{l s='visits with' mod='affinityitems'}<br />{l s='recommendations' mod='affinityitems'}</span></p>
 			</div>
 
 			<div class="items-box items-box-purple">
-				<p><span class="items-box-large-font">{if $statistics && is_numeric($statistics->bestClickRate->rate)} {math equation="rate * cent" cent=100 rate={$statistics->bestClickRate->rate} format="%.2f"} %{else}0{/if}</span> <br /> <span> {l s='recommendations click rate on' mod='affinityitems'} {if $statistics && $statistics->bestClickRate->hook}{$statistics->bestClickRate->hook}{/if} {l s='page*' mod='affinityitems'}</span></p>
+				<p><span class="items-box-large-font">{if $statistics && is_numeric($statistics->bestClickRate->rate)} {math equation="rate * cent" cent=100 rate={$statistics->bestClickRate->rate} format="%.1f"} %{else}0{/if}</span> <br /> <span class="items-box-text"> {l s='recommendations click rate on' mod='affinityitems'} {if $statistics && $statistics->bestClickRate->hook}{$statistics->bestClickRate->hook}{/if} {l s='page*' mod='affinityitems'}</span></p>
 			</div>
 
 			<div class="items-box items-box-purple">
-				<p><span class="items-box-large-font">{if $statistics && is_numeric($statistics->lastMonthClickersConversationRate)}{math equation="lastMonthClickersConversationRate * cent" cent=100 lastMonthClickersConversationRate={$statistics->lastMonthClickersConversationRate} format="%.2f"} %{else}0{/if}</span> <br /> <span>{l s='transformation rate among clickers *' mod='affinityitems'}</span></p>
+				<p><span class="items-box-large-font">{if $statistics && is_numeric($statistics->lastMonthClickersConversationRate)}{math equation="lastMonthClickersConversationRate * cent" cent=100 lastMonthClickersConversationRate={$statistics->lastMonthClickersConversationRate} format="%.1f"} %{else}0{/if}</span> <br /> <span class="items-box-text">{l s='transformation rate among clickers *' mod='affinityitems'}</span></p>
+			</div>
+
+			<div class="items-box items-box-black items-box-first">
+				<p><span class="items-box-large-font">{if $statistics && is_numeric($statistics->lastMonthOrders)}{$statistics->lastMonthOrders}{else}0{/if}</span> <br /> <span class="items-box-text">{l s='orders last'  mod='affinityitems'}<br />{l s='30 days' mod='affinityitems'}</span></p>
 			</div>
 
 			<div class="items-box items-box-black">
-				<p><span class="items-box-large-font">{if $statistics && is_numeric($statistics->lastMonthOrders)}{$statistics->lastMonthOrders}{else}0{/if}</span> <br /> <span>{l s='orders last 30 days' mod='affinityitems'}</span></p>
-			</div>
-
-			<div class="items-box items-box-black">
-				<p><span class="items-box-large-font">{if $statistics && is_numeric($statistics->lastMonthSales)}{$statistics->lastMonthSales|string_format:"%.0f"}{else}0{/if}</span> <br /> <span>{l s='sales last 30 days' mod='affinityitems'}</span></p>
+				<p><span class="items-box-large-font">{if $statistics && is_numeric($statistics->lastMonthSales)}{$statistics->lastMonthSales|string_format:"%.0f"}{else}0{/if}</span> <br /> <span class="items-box-text">{l s='sales last' mod='affinityitems'}<br />{l s='30 days' mod='affinityitems'}</span></p>
 			</div>
 
 			<div class="items-box items-box-purple">
-				<p><span class="items-box-large-font">{if $statistics && is_numeric($data->recommendation)}{$data->recommendation}{else}0{/if}</span> <br /> <span>{l s='recommandations since 30 days' mod='affinityitems'}</span></p>
+				<p><span class="items-box-large-font">{if $statistics && is_numeric($data->recommendation)}{$data->recommendation}{else}0{/if}</span> <br /> <span class="items-box-text">{l s='recommandations' mod='affinityitems'}<br />{l s='since 30 days' mod='affinityitems'}</span></p>
 			</div>
 
 			<div class="items-box items-box-purple">
-				<p><span class="items-box-large-font">{if $statistics && is_numeric($statistics->salesAfterClick)}{$statistics->salesAfterClick|string_format:"%.0f"}{else}0{/if} €</span> <br /> <span>{l s='of sales following click on recommendations*' mod='affinityitems'}</span></p>
+				<p><span class="items-box-large-font">{if $statistics && is_numeric($statistics->salesAfterClick)}{$statistics->salesAfterClick|string_format:"%.0f"}{else}0{/if} €</span> <br /> <span class="items-box-text">{l s='of sales following click on recommendations*' mod='affinityitems'}</span></p>
 			</div>
 
 			<div class="items-box items-box-purple">
-				<p><span class="items-box-large-font">{if $statistics && is_numeric($statistics->salesAfterReco)}{$statistics->salesAfterReco|string_format:"%.0f"}{else}0{/if} €</span> <br /> <span>{l s='of sales following a recommendation*' mod='affinityitems'}</span></p>
+				<p><span class="items-box-large-font">{if $statistics && is_numeric($statistics->salesAfterReco)}{$statistics->salesAfterReco|string_format:"%.0f"}{else}0{/if} €</span> <br /> <span  class="items-box-text">{l s='of sales following' mod='affinityitems'}<br />{l s='a recommendation*' mod='affinityitems'}</span></p>
 			</div>
 
 		</div>
@@ -404,22 +407,28 @@ $('.items-reco-all-filtered-select').on("change", function() {
 
 	<div id="items-activation">
 
-		<div class="onoffswitch">
-			<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" {if $recommendation==1} checked {/if}>
-			<label class="onoffswitch-label" for="myonoffswitch">
-				<span class="onoffswitch-inner"></span>
-				<span class="onoffswitch-switch"></span>
-			</label>
-		</div>
+		<div class="items-activation-container">
 
-		<h2>{l s='Recommendation activation' mod='affinityitems'}</h2>
-		{l s='Note : during the free-trial period, only 50% of visitors get recommandations.' mod='affinityitems'}
+			<div class="onoffswitch">
+				<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" {if $recommendation==1} checked {/if}>
+				<label class="onoffswitch-label" for="myonoffswitch">
+					<span class="onoffswitch-inner"></span>
+					<span class="onoffswitch-switch"></span>
+				</label>
+			</div>
+
+			<h2>{l s='Recommendation activation' mod='affinityitems'}</h2>
+			<span class="items-activation-text">{l s='Note : during the free-trial period, only 50' mod='affinityitems'}% {l s='of visitors get recommandations.' mod='affinityitems'}</span>
+
+			<i class="fa fa-eye items-right items-eye"><span class="items-eye-text">{l s='preview' mod='affinityitems'}</span></i>
+
+		</div>
 
 		<div class="clear"></div>
 
 		<div class="items-activation-content">
 			<div class="items-activation-content-settings">
-				<a href="#" onClick="showPage('config'); return false;"> <div class="items-button items-purple">  {l s='Parameters' mod='affinityitems'} </div> </a>
+				<a href="#" onClick="showPage('config'); return false;"> <div class="items-activation-button items-purple">  {l s='Parameters' mod='affinityitems'} </div> </a>
 				<div class="items-activation-content-settings-text">
 					<div class="items-activation-content-settings-text-container">
 						{l s='Define the recommendation zones' mod='affinityitems'}
@@ -433,7 +442,7 @@ $('.items-reco-all-filtered-select').on("change", function() {
 			<br />
 
 			<div class="items-activation-content-settings">
-				<a href="#" onClick="showPage('theme-editor'); return false;"> <div class="items-button items-purple"> {l s='Design' mod='affinityitems'} </div> </a>
+				<a href="#" onClick="showPage('theme-editor'); return false;"> <div class="items-activation-button items-purple"> {l s='Design' mod='affinityitems'} </div> </a>
 				<div class="items-activation-content-settings-text">
 					<div class="items-activation-content-settings-text-container">
 						{l s='Simply create or manage graphic themes' mod='affinityitems'}
@@ -444,8 +453,6 @@ $('.items-reco-all-filtered-select').on("change", function() {
 				<div class="clear"></div>
 			</div>
 		</div>
-
-		<i class="fa fa-eye items-right items-eye"></i>
 	</div>
 
 	<div id="items-config">
@@ -456,10 +463,11 @@ $('.items-reco-all-filtered-select').on("change", function() {
 
 				<div class="items-config-text">
 					{l s='Define recommendations wished on each page type.' mod='affinityitems'}
+					<br />
 					{l s='Use existing graphic themes. (go to setup > design to create or modify availablle themes.)' mod='affinityitems'}
 				</div>
 
-				<input type="submit" value="{l s='Save' mod='affinityitems'}" class="items-button items-green">
+				<input type="submit" value="{l s='Save' mod='affinityitems'}" class="items-button items-green items-button-config-container">
 			</div>
 
 			<div class="clear"></div>
@@ -472,7 +480,7 @@ $('.items-reco-all-filtered-select').on("change", function() {
 
 			<div class="zone" id="zone-{$hook|lower}">
 				<span class="title">
-					{$hook|escape:'htmlall':'UTF-8'} ({l s='2 zones possibles' mod='affinityitems'})
+					{$hook|escape:'htmlall':'UTF-8'}  (2 zones {l s='available' mod='affinityitems'})
 				</span>
 				<div>
 					<table style="width:100%">
@@ -751,16 +759,18 @@ $('.items-reco-all-filtered-select').on("change", function() {
 <div id="items-help">
 	
 	<div class="items-help-explaination">
-		<p>{l s='You wish some help to install affinity items ?' mod='affinityitems'}</p>
-		<p>{l s='Please give us your contact details,' mod='affinityitems'}</p>
-		<p>{l s='we will call you back as soon as possible.' mod='affinityitems'}</p>
+		<p><span class="items-help-explaination-bold">{l s='You wish some help to install affinity items ?' mod='affinityitems'}</span>
+		<br />
+		<span class="items-help-explaination-bold">{l s='Please give us your contact details,' mod='affinityitems'}</span>
+		<br />
+		{l s='we will call you back as soon as possible.' mod='affinityitems'}</p>
 	</div>
 	
 	<div class="items-help-form">
 		
 		<table>
 			<tr>
-				<td>
+				<td class="items-help-form-label">
 					{l s='Lastname' mod='affinityitems'} :
 				</td>
 				<td>
@@ -769,7 +779,7 @@ $('.items-reco-all-filtered-select').on("change", function() {
 			</tr>
 
 			<tr>
-				<td>
+				<td class="items-help-form-label">
 					{l s='Firstname' mod='affinityitems'} :
 				</td>
 				<td>
@@ -778,7 +788,7 @@ $('.items-reco-all-filtered-select').on("change", function() {
 			</tr>
 
 			<tr>
-				<td>
+				<td class="items-help-form-label">
 					{l s='Phone number' mod='affinityitems'} :
 				</td>
 				<td>
@@ -795,8 +805,9 @@ $('.items-reco-all-filtered-select').on("change", function() {
 <div id="items-desactivate">
 
 	<div class="items-help-explaination">
-		<p>{l s='You have disactivated affinity items.' mod='affinityitems'}</p>
-		<p>{l s='Please tell us your main reason:' mod='affinityitems'}</p>
+		<p> <span class="items-help-explaination-bold">{l s='You have disactivated affinity items.' mod='affinityitems'}</span>
+		<br />
+		{l s='Please tell us your main reason:' mod='affinityitems'}</p>
 	</div>
 
 	<div class="items-desactivate-form">
@@ -856,8 +867,9 @@ $('.items-reco-all-filtered-select').on("change", function() {
 
 <div id="items-funnel-step-one">
 	<h2>{l s='Recommendations activation' mod='affinityitems'}</h2>
-	<p>{l s='You can change the recommendations parameters' mod='affinityitems'}</p>
-	<p>{l s='at any time in the setup menu' mod='affinityitems'}</p>
+	<p>{l s='You can change the recommendations parameters' mod='affinityitems'}
+	<br />
+	{l s='at any time in the setup menu' mod='affinityitems'}</p>
 	<a class="items-button items-green" href="#" onClick="showPage('funnel-step-two'); return false;">{l s='Simple activation' mod='affinityitems'} <br /> <span class="">{l s='With default parameters' mod='affinityitems'}</span></a>
 	<br />
 	<a class="items-button items-grey" href="#" onClick="closeFunnel(); return false;">{l s='Advanced activation' mod='affinityitems'} <br /> <span class="">{l s='Change the default parameters' mod='affinityitems'}</span></a>
@@ -865,8 +877,9 @@ $('.items-reco-all-filtered-select').on("change", function() {
 
 <div id="items-funnel-step-two">
 	<h2>{l s='Choose your graphic theme' mod='affinityitems'}</h2>
-	<p>{l s='You can change the recommendations parameters' mod='affinityitems'}</p>
-	<p>{l s='at any time in the setup menu' mod='affinityitems'}</p>
+	<p>{l s='You can change the recommendations parameters' mod='affinityitems'}
+	<br />
+	{l s='at any time in the setup menu' mod='affinityitems'}</p>
 	<form method='POST' action="#">
 		<div class="items-radio-funnel-style-choice">
 			<ul>
@@ -908,7 +921,7 @@ $('.items-reco-all-filtered-select').on("change", function() {
 
 	<a href="#" onclick="showPage('activation'); return false;">
 		<div class="items-synchronize-container-button items-green items-right">
-			{l s='Change recommendation parameters' mod='affinityitems'}			
+			{l s='Change recommendation parameters' mod='affinityitems'}
 		</div>
 	</a>
 	
@@ -920,13 +933,11 @@ $('.items-reco-all-filtered-select').on("change", function() {
 		{l s='Affinity items is activated and operational' mod='affinityitems'}
 	</div>
 
-	{if isset($data->authToken)}
-	<a target="_blank" href="http://manager.affinityitems.com/login/{$siteId|escape:'htmlall':'UTF-8'}/{$data->authToken|escape:'htmlall':'UTF-8'}">
+	<a href="#" onclick="showPage('activation'); return false;">
 		<div class="items-synchronize-container-button items-green items-right">
-			{l s='Access to your account' mod='affinityitems'}
+			{l s='Configure recommendation' mod='affinityitems'}			
 		</div>
 	</a>
-	{/if}
 
 	<div class="clear"></div>
 </div>

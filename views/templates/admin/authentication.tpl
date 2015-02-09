@@ -41,6 +41,7 @@
 		}
 
 		$(document).ready(function () {
+			$('#rdiscount').hide();
 			$('.items-register-container').on('submit', function() {
 				r = [];
 				if (!v.test($("#remail").val())) {
@@ -114,6 +115,9 @@ return false;
 						<br>
 						<input type="password" class="aeinput" id="rpassword" placeholder="{l s='Password' mod='affinityitems'}" />
 						<br>
+						<a href="#" onClick="$(this).hide(); $('#rdiscount').show(); $('#aeregister').css('margin-top', '48px'); return false;" class="items-text-discount-code">{l s='I\'ve got a discount code' mod='affinityitems'}</a>
+						<input type="text" class="aeinput" id="rdiscount" placeholder="{l s='Discount code' mod='affinityitems'}" />
+
 						<div class="ae-cgv">
 							<input type="checkbox" id="rcgv">
 							{l s='I accept the' mod='affinityitems'} <a target='_blank' href="{$module_dir|escape:'htmlall':'UTF-8'}resources/pdf/contract.pdf" >{l s='terms and conditions of use.' mod='affinityitems'}</a>
@@ -134,7 +138,7 @@ return false;
 					<div class="items-video">
 						<span class="items-video-promotion"><object type="text/html" data="http://www.youtube.com/embed/rxn3fHYNL3s" width="340" height="210"></object></span>
 					</div>
-					<p>{l s='Up to 60% of products sold' mod='affinityitems'}</p>
+					<p>{l s='Up to 60' mod='affinityitems'}% {l s='of products sold' mod='affinityitems'}</p>
 					<p>{l s='have been recommended by affinity items.' mod='affinityitems'}</p>
 					<a class="items-button items-purple" href="http://addons.prestashop.com/fr/ventes-croisees-cross-selling/17491-affinityitems.html">{l s='More about' mod='affinityitems'}</a>
 				</div>

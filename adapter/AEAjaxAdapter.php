@@ -74,9 +74,6 @@ class AEAjaxAdapter {
 
 			if (Tools::safeOutput(Tools::getValue('action')) == 'register')
 			{
-				$customer->firstname = Tools::safeOutput(Tools::getValue('firstname'));
-				$customer->lastname = Tools::safeOutput(Tools::getValue('lastname'));
-				$customer->activity = AEAdapter::getActivity();
 				if (Tools::getIsset('discountCode') && !AELibrary::isEmpty(Tools::getValue('discountCode')))
 					$customer->code = Tools::safeOutput(Tools::getValue('discountCode'));
 
