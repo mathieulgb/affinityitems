@@ -1101,8 +1101,8 @@ public function postProcess()
 			$configuration = unserialize(Configuration::get('AE_CONFIGURATION_'.Tools::strtoupper($hook)));
 			for ($i = 1; $i <= 2; $i++) 
 				$configuration->{'recoTheme'.$hook.'_'.$i} = Tools::getValue('graphic');
+			Configuration::updateValue('AE_CONFIGURATION_'.Tools::strtoupper($hook), serialize($configuration));
 		}
-		Configuration::updateValue('AE_CONFIGURATION_'.Tools::strtoupper($hook), serialize($configuration));
 		Configuration::updateValue('AE_FUNNEL', 1);
 		Configuration::updateValue('AE_RECOMMENDATION', 1);
 	}

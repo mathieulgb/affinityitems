@@ -82,6 +82,13 @@ function overlay() {
 	content.style.visibility = (content.style.visibility == "visible") ? "hidden" : "visible";
 }
 
+function showPreview(img) {
+	var overlay = document.getElementById("items-preview-overlay");
+	var content = document.getElementById("items-preview-overlay-content-"+img.toLowerCase());
+	overlay.style.visibility = (overlay.style.visibility == "visible") ? "hidden" : "visible";
+	content.style.visibility = (content.style.visibility == "visible") ? "hidden" : "visible";
+}
+
 function closeFunnel() {
 	$.ajax({
 		{/literal}{if $ajaxController}{literal}
@@ -158,6 +165,16 @@ $(document).ready(function() {
 
 	$('#items-overlay').click(function() {
 		overlay();
+	});
+
+
+	$('#items-preview-overlay').click(function() {
+		var overlay = document.getElementById("items-preview-overlay");
+		var bright = document.getElementById("items-preview-overlay-content-bright");
+		var dark = document.getElementById("items-preview-overlay-content-dark");
+		overlay.style.visibility = "hidden";
+		bright.style.visibility = "hidden";
+		dark.style.visibility = "hidden";
 	});
 
 	$('.ae-type-recommendation-select').on("change", function() {
@@ -283,6 +300,7 @@ $('.items-desactivate-button').on('click', function() {
 		async: false,
 		success: function (e, t, n) {
 			success();
+			showPage('dashboard');
 		}
 	});
 });
@@ -329,7 +347,6 @@ $('.items-reco-all-filtered-select').on("change", function() {
 });
 {/literal}
 </script>
-
 <div class="items-wrapper">
 	<div class="items-header">
 		<div class="aelogo" onclick="showPage({if $isConfig}'dashboard'{else}'funnel-step-one'{/if}); return false;"></div>
@@ -881,21 +898,28 @@ $('.items-reco-all-filtered-select').on("change", function() {
 	<br />
 	{l s='at any time in the setup menu' mod='affinityitems'}</p>
 	<form method='POST' action="#">
+		<div id="items-preview-overlay"></div>
+		<div id="items-preview-overlay-content-bright" class="items-preview-overlay-content">
+			<img src='{$module_dir|escape:'htmlall':'UTF-8'}img/bright.png' alt='bright' />
+		</div>
+		<div id="items-preview-overlay-content-dark" class="items-preview-overlay-content">
+			<img src='{$module_dir|escape:'htmlall':'UTF-8'}img/dark.png' alt='dark' />
+		</div>
+
 		<div class="items-radio-funnel-style-choice">
 			<ul>
 				{foreach from=$themeList item=theme}
-				{if $theme.name|lower == 'clear' || $theme.name|lower == 'dark'}
+				{if $theme.name|lower == 'bright' || $theme.name|lower == 'dark'}
 				<li class="radio-style-{$theme.name|lower}">
-					<label for="radio-style-{$theme.name|lower}">{$theme.name|escape:'htmlall':'UTF-8'}</label>
+					<label for="radio-style-{$theme.name|lower}">
+						<a href="#" onClick="showPreview('{$theme.name|escape:'htmlall':'UTF-8'}');return false;">{$theme.name|escape:'htmlall':'UTF-8'} <i class="fa fa-eye"></i></label></a>
 					<input {if $theme.name|lower == 'clear'} checked {/if} type="radio" name="graphic" value="{$theme.id_theme}" id="radio-style-{$theme.name|lower}" />
 				</li>
 				{/if}
 				{/foreach}
 			</ul>
 		</div>
-
 		<input type="submit" class="items-button items-green" value="{l s='Active recommendations' mod='affinityitems'}" />
-
 	</form>
 	<br />
 </div>
