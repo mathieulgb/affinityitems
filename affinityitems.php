@@ -258,10 +258,6 @@ class AffinityItems extends Module {
 			$action->ip = Tools::getRemoteAddr();
 		if (!AELibrary::isEmpty(Context::getContext()->language->iso_code))
 			$action->language = Context::getContext()->language->iso_code;
-		if (isset($aecontext->productId))
-			$action->productId = $aecontext->productId;
-		if (isset($aecontext->categoryId))
-			$action->categoryId = $aecontext->categoryId;
 		$request = new ActionRequest($action);
 		try {
 			$request->post();
@@ -391,9 +387,9 @@ class AffinityItems extends Module {
 	public function extractProductIds($items) 
 	{
 		$products = array();
-		if(is_array($items))
+		if (is_array($items))
 			foreach ($items as $item)
-				if(isset($item->id))
+				if (isset($item->id))
 					$products[] = $item->id;
 				else
 					$products[] = $item['id_product'];
@@ -411,17 +407,17 @@ class AffinityItems extends Module {
 		$orderLine->attributeIds = $product->attributes;
 		$aecart->orderLine = $orderLine;
 		
-		if($cart->id_customer <> 0)
+		if ($cart->id_customer <> 0)
 			$aecart->memberId = $cart->id_customer;
 
 		$aecart->guestId = (String)$this->aecookie->getCookie()->__get('aeguest');
 
-		if(AEAdapter::isLastSync())
-			if($group = AEAdapter::getCartGroup($cart->id))
+		if (AEAdapter::isLastSync())
+			if ($group = AEAdapter::getCartGroup($cart->id))
 				$aecart->group = $group;
-		if(!AELibrary::isEmpty(Tools::getRemoteAddr()) && !(bool)Synchronize::getLock())
+		if (!AELibrary::isEmpty(Tools::getRemoteAddr()) && !(bool)Synchronize::getLock())
 			$aecart->ip = Tools::getRemoteAddr();
-		if(!AELibrary::isEmpty(Context::getContext()->language->iso_code) && !(bool)Synchronize::getLock())
+		if (!AELibrary::isEmpty(Context::getContext()->language->iso_code) && !(bool)Synchronize::getLock())
 			$aecart->language = Context::getContext()->language->iso_code;
 		$request = new ActionRequest($aecart);
 		$request->post();
@@ -433,7 +429,7 @@ class AffinityItems extends Module {
 		$aeproducts = is_array(unserialize($this->aecookie->getCart()->__get('cart'))) ? unserialize($this->aecookie->getCart()->__get('cart')) : array();
 		foreach ($products as $product) 
 		{
-			if(!in_array($product['id_product'], $this->extractProductIds($aeproducts))) 
+			if (!in_array($product['id_product'], $this->extractProductIds($aeproducts))) 
 			{
 				$prod = new stdClass();
 				$prod->id = $product['id_product'];
@@ -453,7 +449,7 @@ class AffinityItems extends Module {
 		$aeproducts = is_array(unserialize($this->aecookie->getCart()->__get('cart'))) ? unserialize($this->aecookie->getCart()->__get('cart')) : array();
 		foreach ($aeproducts as $key => $product) 
 		{
-			if(!in_array($product->id, $this->extractProductIds($products)))
+			if (!in_array($product->id, $this->extractProductIds($products)))
 			{
 				$prod = new stdClass();
 				$prod->id = $product->id;
@@ -475,7 +471,7 @@ class AffinityItems extends Module {
 			if (isset($params['cart']->id) && $person instanceof AEGuest)
 			{
 				AEAdapter::setCartGroup($params['cart']->id, $person->getGroup(), $person->getPersonId(), Tools::getRemoteAddr());
-				$cart = new Cart(intval($params['cart']->id));
+				$cart = new Cart((int)$params['cart']->id);
 				$this->addToCart($cart);
 				$this->removeFromCart($cart);
 			}
@@ -578,7 +574,7 @@ class AffinityItems extends Module {
 				if ((bool)$hook_configuration->{'reco'.$hook.'_'.$i})
 				{
 					$aecontext->context = $hook_configuration->{'recoType'.$hook.'_'.$i};
-					if(in_array($hook, array('Home', 'Left', 'Right'))) 
+					if (in_array($hook, array('Home', 'Left', 'Right'))) 
 					{
 						if (AELibrary::equals($hook_configuration->{'recoType'.$hook.'_'.$i}, 'recoAllFiltered'))
 						{
@@ -591,21 +587,21 @@ class AffinityItems extends Module {
 								$aecontext->{$hook_configuration->{'recoFilter'.$hook.'_'.$i}} = true;
 						}
 					}
-					else if($hook == "Product")
+					else if ($hook == 'Product')
 						$aecontext->productId = (string)Tools::getValue('id_product');
-					else if($hook == "Cart")
+					else if ($hook == 'Cart')
 						$aecontext->orderLines = $this->getCartOrderLines($params);
-					else if($hook == "Category")
+					else if ($hook == 'Category')
 						$aecontext->categoryId = $params;
-					else if($hook == "Search")
+					else if ($hook == 'Search')
 						$aecontext->keywords = $params;
 
-					$aecontext->area = strtoupper($hook);
+					$aecontext->area = Tools::strtoupper($hook);
 					$aecontext->size = (int)$hook_configuration->{'recoSize'.$hook.'_'.$i};
 					$products = $this->getRecommendation($aecontext, false);
 					$theme = AEAdapter::getThemeById($hook_configuration->{'recoTheme'.$hook.'_'.$i});
 
-					if(!in_array($hook, array('Search', 'Category')))
+					if (!in_array($hook, array('Search', 'Category')))
 						array_push($recommendations, array('aeproducts' => $products,
 							'theme' => unserialize($theme[0]['configuration']), 'configuration' => $hook_configuration, 'titleZone' => $hook_configuration->{'recoTitle'.$hook.'_'.$i}));
 					else
@@ -626,7 +622,7 @@ class AffinityItems extends Module {
 					if ((bool)$hook_configuration->{'reco'.$hook.'_'.$i})
 					{
 						$theme = AEAdapter::getThemeById($hook_configuration->{'recoTheme'.$hook.'_'.$i});
-						if(!in_array($hook, array('Search', 'Category')))
+						if (!in_array($hook, array('Search', 'Category')))
 							array_push($recommendations, array('aeproducts' =>  AEAdapter::renderPreviewRecommendation((int)$this->context->cookie->id_lang),
 								'theme' => unserialize($theme[0]['configuration']), 'configuration' => $hook_configuration, 'titleZone' => 'PREVIEW'));
 						else 
@@ -640,7 +636,7 @@ class AffinityItems extends Module {
 		}
 		if (!empty($recommendations))
 		{
-			if(!in_array($hook, array('Search', 'Category'))) {
+			if (!in_array($hook, array('Search', 'Category'))) {
 				$this->smarty->assign(array('recommendations' => $recommendations));
 				return $this->display(__FILE__, '/views/templates/hook/'.Tools::substr(str_replace('.', '', _PS_VERSION_), 0, 2).'/hrecommendation.tpl');
 			}
