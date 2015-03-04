@@ -41,6 +41,7 @@ $_MODULE['<{affinityitems}prestashop>dashboard_8cf04a9734132302f96da8e113e80ce5'
 $_MODULE['<{affinityitems}prestashop>dashboard_f4f70727dc34561dfde1a3c529b6205c'] = 'Paramètres';
 $_MODULE['<{affinityitems}prestashop>dashboard_08bd40c7543007ad06e4fce31618f6ec'] = 'Compte';
 $_MODULE['<{affinityitems}prestashop>dashboard_db5eb84117d06047c97c9a0191b5fffe'] = 'Support';
+$_MODULE['<{affinityitems}prestashop>dashboard_2938c7f7e560ed972f8a4f68e80ff834'] = 'Dashboard';
 $_MODULE['<{affinityitems}prestashop>dashboard_06e22c18bb7401976447db53de5d9bc6'] = 'visiteurs';
 $_MODULE['<{affinityitems}prestashop>dashboard_f24d2cc05ca7eaa87d0959ea3f5ddfb2'] = 'connectés';
 $_MODULE['<{affinityitems}prestashop>dashboard_43b5c9175984c071f30b873fdce0a000'] = 'paniers';
@@ -133,6 +134,7 @@ $_MODULE['<{affinityitems}prestashop>dashboard_4d4938a44e2732a79e5c5eb4201502e8'
 $_MODULE['<{affinityitems}prestashop>dashboard_a413525bd127335aaba3164062074d21'] = 'Paramétrer les zones de recommandation';
 $_MODULE['<{affinityitems}prestashop>dashboard_e549c9bab75d742ebd2430a686eb8e45'] = 'Affinity items est activé et opérationnel';
 $_MODULE['<{affinityitems}prestashop>dashboard_07c336eb067ddd9df8f988743229340c'] = 'Configurer la recommandation';
+$_MODULE['<{affinityitems}prestashop>theme-editor_3c5605951b104b8657d05cdd01eb7cdd'] = 'Créez ou modifiez simplement les thèmes disponibles pour les zones de recommandation (le thème général de la boutique reste inchangé).';
 $_MODULE['<{affinityitems}prestashop>theme-editor_d721757161f7f70c5b0949fdb6ec2c30'] = 'Theme';
 $_MODULE['<{affinityitems}prestashop>theme-editor_ea4788705e6873b424c65e91c2846b19'] = 'Annuler';
 $_MODULE['<{affinityitems}prestashop>theme-editor_c9cc8cce247e49bae79f15173ce97354'] = 'Enregistrer';

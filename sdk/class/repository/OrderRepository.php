@@ -25,7 +25,7 @@ class OrderRepository extends AbstractRepository {
 	public function insert($content) {
 		try {
 			foreach ($content as $order) {
-				AEAdapter::insertOrder($order);
+				OrderAdapter::insertOrder($order);
 			}
 		} catch(Exception $e) {
 			AELogger::log("[ERROR]", $e->getMessage());
@@ -35,7 +35,7 @@ class OrderRepository extends AbstractRepository {
 	public function update($content) { 
 		try {
 			foreach ($content as $order) {
-				AEAdapter::updateOrder($order);
+				OrderAdapter::updateOrder($order);
 			}
 		} catch(Exception $e) {
 			AELogger::log("[ERROR]", $e->getMessage());

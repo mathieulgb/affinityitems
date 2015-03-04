@@ -18,7 +18,7 @@
 
 class ActionSynchronize extends AbstractModuleSynchronize {
 
-	const ORDER = 5;
+	const ORDER = 4;
 
 	public function __construct() {
 		parent::__construct(new ActionRepository());
@@ -27,26 +27,21 @@ class ActionSynchronize extends AbstractModuleSynchronize {
 	public function getCountElementToSynchronize($clause) {
 		unset($clause);
 		$countElement = 0;
-		if($countElement = AEAdapter::countAction()) {
+		if($countElement = ActionAdapter::countAction())
 			$countElement = (int)$countElement;
-		}
 		return $countElement;
 	}
-
-	public function updateNumberElementSynchronized() { }
 
 	public function syncNewElement() {
 		$clause = '';
 		$countElement = $this->getCountElementToSynchronize($clause);
 		if(!AELibrary::isNull($countElement)) {
 			$countPage = ceil($countElement/parent::BULK_PACKAGE);
-			for($cPage = 0; $cPage <= ($countPage - 1); $cPage++) {
+			for($page = 0; $page <= ($countPage - 1); $page++) {
 				$content = $this->syncAction();
 				$request = new ActionRequest($content);
-				if($request->post()) {
-					$content = AELibrary::castArray($content);
+				if($request->post())
 					$this->getRepository()->delete($content);
-				}
 			}
 		}
 	}
@@ -56,51 +51,24 @@ class ActionSynchronize extends AbstractModuleSynchronize {
 	public function syncDeleteElement() { /* There is not delete for actions */ }
 
 	public function syncAction() {
-
 		$aeactionList = array();
-
-		$actionList = AEAdapter::getActionList(parent::BULK_PACKAGE);
-
-		foreach ($actionList as $action) {
-			$action = unserialize($action["action"]);
-			if(count($actionList) > 1){
+		if($actionList = ActionAdapter::getActionList(parent::BULK_PACKAGE)) {
+			foreach ($actionList as $action) {
+				$action = unserialize($action["action"]);
 				array_push($aeactionList, $action);
 			}
 		}
-
-		if(!empty($aeactionList)) {
-			return $aeactionList;
-		}
-		else {
-			return $action;
-		}
+		return $aeactionList;
 	}
 
-	/*public function syncMemberAction($memberId) {
-		$content = array();
-		$actionList = AEAdapter::getMemberActionList($memberId);
-		if(!empty($actionList)) {
-			foreach ($actionList as $action) {
-				array_push($content, unserialize($action["action"]));
-			}
-			$request = new ActionRequest($content);
-			if($request->post()) {
-				$this->getRepository()->delete($content);
-			}
-		}
-	}*/
-
 	public function syncGuestAction($guestId) {
-		$content = array();
-		$actionList = AEAdapter::getGuestActionList($guestId);
-		if(!empty($actionList)) {
-			foreach ($actionList as $action) {
+		if($actionList = ActionAdapter::getGuestActionList($guestId)) {
+			$content = array();
+			foreach ($actionList as $action)
 				array_push($content, unserialize($action["action"]));
-			}
 			$request = new ActionRequest($content);
-			if($request->post()) {
+			if($request->post())
 				$this->getRepository()->delete($content);
-			}
 		}
 	}
 

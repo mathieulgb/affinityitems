@@ -58,8 +58,13 @@ class Synchronize {
 
 	public function resynElement() {
 		try {
-			$resyncRequest = new ResynchronizeRequest(array());
-			$elementList = $resyncRequest->get();
+			$pluginVersion = new AffinityItems();
+			$params = new stdClass();
+			$params->version = $pluginVersion->version;
+			$params->activation = (bool)AEAdapter::getActiveRecommendation();
+
+			$resyncRequest = new ResynchronizeRequest($params);
+			$elementList = $resyncRequest->post();
 			
 			if(isset($elementList->abRatio)) {
 				if(is_float($elementList->abRatio)) {

@@ -19,9 +19,7 @@
 class InstallRequest extends AbstractRequest {
 
 	public function __construct($pcontent) { 
-		if(is_array($pcontent)) {
-			parent::__construct('wishInstall', $pcontent);
-		}
+		parent::__construct('wishInstall', $pcontent);
 	}
 
 }

@@ -37,6 +37,9 @@ class ABTesting {
 		try {
 			self::filter();
 			if($aecookie->getCookie()->__isset('aegroup')) {
+				if((int)AEAdapter::getAbTestingPercentage() == 100 && $aecookie->getCookie()->__get('aegroup') == "B")
+					self::forceGroup("A");
+
 				return $aecookie->getCookie()->__get('aegroup');
 			}
 		} catch(Exception $e) {

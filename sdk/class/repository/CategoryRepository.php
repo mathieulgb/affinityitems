@@ -25,7 +25,7 @@ class CategoryRepository extends AbstractRepository {
 	public function insert($content) { 
 		foreach ($content as $category) {
 			try {
-				AEAdapter::insertCategory($category);
+				CategoryAdapter::insertCategory($category);
 			}
 			catch(Exception $e) {
 				AELogger::log("[ERROR]", $e->getMessage());
@@ -36,7 +36,7 @@ class CategoryRepository extends AbstractRepository {
 	public function update($content) { 
 		foreach ($content as $category) {
 			try {
-				AEAdapter::updateCategory($category);
+				CategoryAdapter::updateCategory($category);
 			}
 			catch(Exception $e) {
 				AELogger::log("[ERROR]", $e->getMessage());
@@ -47,7 +47,7 @@ class CategoryRepository extends AbstractRepository {
 	public function delete($content) { 
 		foreach ($content as $category) {
 			try {
-				AEAdapter::deleteCategory($category);
+				CategoryAdapter::deleteCategory($category);
 			}
 			catch(Exception $e) {
 				AELogger::log("[ERROR]", $e->getMessage());

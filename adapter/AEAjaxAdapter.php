@@ -252,7 +252,7 @@ class AEAjaxAdapter {
 			$response['_step'] = ((int)Synchronize::getStep() + 1);
 			$response['_lock'] = (bool)Synchronize::getLock();
 			$response['_lastStart'] = Synchronize::getStartDate();
-			$response['_percentage'] = (((int)Synchronize::getStep() + 1) * (100 / 6));
+			$response['_percentage'] = (((int)Synchronize::getStep() + 1) * (100 / 5));
 		}
 
 		return Tools::jsonEncode($response);
@@ -394,9 +394,9 @@ class AEAjaxAdapter {
 		
 		$response = array();
 		try {
-			$aepreview = AEPreview::getInstance();
-			$aepreview->getCookie()->__set('aepreview', 'true');
-			$aepreview->getCookie()->write();
+			$aepreview = AECookie::getInstance();
+			$aepreview->getPreview()->__set('aepreview', 'true');
+			$aepreview->getPreview()->write();
 			$response['_ok'] = true;
 		}
 		catch(Exception $e)

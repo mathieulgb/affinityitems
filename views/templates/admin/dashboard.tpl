@@ -347,6 +347,13 @@ $('.items-reco-all-filtered-select').on("change", function() {
 });
 {/literal}
 </script>
+<div id="items-preview-overlay"></div>
+<div id="items-preview-overlay-content-bright" class="items-preview-overlay-content">
+	<img src='{$module_dir|escape:'htmlall':'UTF-8'}img/bright.png' alt='bright' />
+</div>
+<div id="items-preview-overlay-content-dark" class="items-preview-overlay-content">
+	<img src='{$module_dir|escape:'htmlall':'UTF-8'}img/dark.png' alt='dark' />
+</div>
 <div class="items-wrapper">
 	<div class="items-header">
 		<div class="aelogo" onclick="showPage({if $isConfig}'dashboard'{else}'funnel-step-one'{/if}); return false;"></div>
@@ -373,6 +380,9 @@ $('.items-reco-all-filtered-select').on("change", function() {
 	<div class="items-success" style="display:none;"></div>
 
 	<div id="items-dashboard">
+
+		<p> > {l s='Dashboard' mod='affinityitems'} </p>
+
 		<div class="items-synchronize-container"></div>
 		
 		<div class="items-boxes">
@@ -424,6 +434,8 @@ $('.items-reco-all-filtered-select').on("change", function() {
 
 	<div id="items-activation">
 
+		<p> > {l s='Settings' mod='affinityitems'} </p>
+
 		<div class="items-activation-container">
 
 			<div class="onoffswitch">
@@ -473,6 +485,9 @@ $('.items-reco-all-filtered-select').on("change", function() {
 	</div>
 
 	<div id="items-config">
+
+		<p> > {l s='Settings' mod='affinityitems'} > {l s='Parameters' mod='affinityitems'} </p>
+
 		<div class="zone-config">
 			<form action='#config' method='POST'/>
 
@@ -605,11 +620,13 @@ $('.items-reco-all-filtered-select').on("change", function() {
 					<div class="items-theme-list">
 						<ul>
 							{foreach from=$themeList item=theme}
+							{if $theme.name|lower == 'bright' || $theme.name|lower == 'dark'}<a href="#" onClick="showPreview('{$theme.name|escape:'htmlall':'UTF-8'}');return false;">{/if}
 							<li>
-								<label for="radio-style-white">{$theme.name|escape:'htmlall':'UTF-8'}</label>
+								<label for="radio-style-white">{$theme.name|escape:'htmlall':'UTF-8'}  {if $theme.name|lower == 'bright' || $theme.name|lower == 'dark'}<i class="fa fa-eye"></i>{/if}  </label>
 								<input type="radio" name="recoTheme{$hook|escape:'htmlall':'UTF-8'}_1" value="{$theme.id_theme}" id="radio-style-white"
 								{if $theme.id_theme == $configuration.{$hook}->recoTheme{$zone1}} checked="checked" {/if} />    
 							</li>
+							{if $theme.name|lower == 'bright' || $theme.name|lower == 'dark'}</a>{/if}
 							{/foreach}
 						</ul>
 					</div>
@@ -726,12 +743,15 @@ $('.items-reco-all-filtered-select').on("change", function() {
 </div>
 
 <div id="items-theme-editor">
+
+	<p> > {l s='Settings' mod='affinityitems'} > {l s='Design' mod='affinityitems'} </p>
+
 	{include file="./theme-editor.tpl"}
 	<div class="clear"></div>
 	<div class="items-title">
 		{l s='Additional CSS' mod='affinityitems'}
 	</div>
-	<form action='#config' method='POST'/>
+	<form action='#theme-editor' method='POST'/>
 	<textarea class="items-css-text-area" name="additionalCss">{$additionalCss|escape:'htmlall':'UTF-8'}</textarea>
 	<input type="submit" value="{l s='Save' mod='affinityitems'}" class="items-button-submit items-right">
 </form>
@@ -740,6 +760,8 @@ $('.items-reco-all-filtered-select').on("change", function() {
 <div class="clear"></div>
 
 <div id="items-support">
+
+	<p> > {l s='Support' mod='affinityitems'} </p>
 
 	<div class="items-support-description">
 		<p>{l s='In case of questions or needs: ' mod='affinityitems'}</p>
@@ -775,6 +797,8 @@ $('.items-reco-all-filtered-select').on("change", function() {
 
 <div id="items-help">
 	
+	<p> > {l s='Help' mod='affinityitems'} </p>
+
 	<div class="items-help-explaination">
 		<p><span class="items-help-explaination-bold">{l s='You wish some help to install affinity items ?' mod='affinityitems'}</span>
 		<br />
@@ -898,23 +922,15 @@ $('.items-reco-all-filtered-select').on("change", function() {
 	<br />
 	{l s='at any time in the setup menu' mod='affinityitems'}</p>
 	<form method='POST' action="#">
-		<div id="items-preview-overlay"></div>
-		<div id="items-preview-overlay-content-bright" class="items-preview-overlay-content">
-			<img src='{$module_dir|escape:'htmlall':'UTF-8'}img/bright.png' alt='bright' />
-		</div>
-		<div id="items-preview-overlay-content-dark" class="items-preview-overlay-content">
-			<img src='{$module_dir|escape:'htmlall':'UTF-8'}img/dark.png' alt='dark' />
-		</div>
-
 		<div class="items-radio-funnel-style-choice">
 			<ul>
 				{foreach from=$themeList item=theme}
 				{if $theme.name|lower == 'bright' || $theme.name|lower == 'dark'}
-				<li class="radio-style-{$theme.name|lower}">
+				<a href="#" onClick="showPreview('{$theme.name|escape:'htmlall':'UTF-8'}');return false;"><li class="radio-style-{$theme.name|lower}">
 					<label for="radio-style-{$theme.name|lower}">
-						<a href="#" onClick="showPreview('{$theme.name|escape:'htmlall':'UTF-8'}');return false;">{$theme.name|escape:'htmlall':'UTF-8'} <i class="fa fa-eye"></i></label></a>
-					<input {if $theme.name|lower == 'clear'} checked {/if} type="radio" name="graphic" value="{$theme.id_theme}" id="radio-style-{$theme.name|lower}" />
-				</li>
+						{$theme.name|escape:'htmlall':'UTF-8'} <i class="fa fa-eye"></i></label>
+					<input {if $theme.name|lower == 'bright'} checked {/if} type="radio" name="graphic" value="{$theme.id_theme}" id="radio-style-{$theme.name|lower}" />
+				</li></a>
 				{/if}
 				{/foreach}
 			</ul>

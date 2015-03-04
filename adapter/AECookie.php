@@ -22,14 +22,18 @@ class AECookie {
 
 	private $aecookie;
 
+	private $aecart;
+
+	private $aepreview;
+
 	private function __construct()
 	{
 		$this->aecookie = new Cookie('AffinityEngine', '/', time() + 1835136000);
+		$this->aecart = new Cookie('AECart', '/', time() + 1728000);
+		$this->aepreview = new Cookie('AffinityEnginePreview', '/', 0);
 	}
 
-	private function __clone()
-	{
-	}
+	private function __clone() { }
 
 	public static function getInstance()
 	{
@@ -47,6 +51,26 @@ class AECookie {
 	public function setcookie($aecookie)
 	{
 		$this->aecookie = $aecookie;
+	}
+
+	public function getCart()
+	{
+		return $this->aecart;
+	}
+
+	public function setCart($aecart)
+	{
+		$this->aecart = $aecart;
+	}
+
+	public function getPreview()
+	{
+		return $this->aepreview;
+	}
+
+	public function setPreview($aepreview)
+	{
+		$this->aepreview = $aepreview;
 	}
 
 }

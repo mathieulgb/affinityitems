@@ -25,45 +25,36 @@ class MemberSynchronize extends AbstractModuleSynchronize {
 	}
 
 	public function getCountElementToSynchronize($clause) { 
-			$countElement = 0;
-			if($tmp = AEAdapter::countMember($clause)) {
-				$countElement = (int)$tmp[0]['cmember'];
-			}
-			return $countElement;
+		$countElement = 0;
+		if($count = MemberAdapter::countMember($clause))
+			$countElement = (int)$count[0]['cmember'];
+		return $countElement;
 	}
 	
-	public function updateNumberElementSynchronized() { 
-
-	}
-
 	public function syncNewElement() {
-	$clause = AEAdapter::newMemberClause();
+		$clause = MemberAdapter::newMemberClause();
 		$countMember = $this->getCountElementToSynchronize($clause);
 		if(!AELibrary::isNull($countMember)) {
 			$countPage = ceil($countMember/parent::BULK_PACKAGE);
-			for($cPage = 0; $cPage <= ($countPage - 1); $cPage++) {
+			for($page = 0; $page <= ($countPage - 1); $page++) {
 				$content = $this->syncMember($clause);
 				$request = new MemberRequest($content);
-				if($request->post()) {
-					$content = AELibrary::castArray($content);
+				if($request->post()) 
 					$this->getRepository()->insert($content);
-				}
 			}
 		}
 	}
 
 	public function syncUpdateElement() {
-		$clause = AEAdapter::updateMemberClause();
+		$clause = MemberAdapter::updateMemberClause();
 		$countMember = $this->getCountElementToSynchronize($clause);
 		if(!AELibrary::isNull($countMember)) {
 			$countPage = ceil($countMember/parent::BULK_PACKAGE);
-			for($cPage = 0; $cPage <= ($countPage - 1); $cPage++) {
+			for($page = 0; $page <= ($countPage - 1); $page++) {
 				$content = $this->syncMember($clause);
 				$request = new MemberRequest($content);
-				if($request->put()) {
-					$content = AELibrary::castArray($content);
+				if($request->put())
 					$this->getRepository()->update($content);
-				}
 			}
 		}
 	}
@@ -71,13 +62,10 @@ class MemberSynchronize extends AbstractModuleSynchronize {
 	public function syncDeleteElement() { /* There is not delete for members */ }
 
 	public function syncMember($clause) {
-
 		$aememberList = array();
-
-		$memberList = AEAdapter::getMemberList($clause, parent::BULK_PACKAGE);
+		$memberList = MemberAdapter::getMemberList($clause, parent::BULK_PACKAGE);
 
 		foreach ($memberList as $member) {
-
 			$aemember = new stdClass();
 			$aemember->memberId = $member['id_customer'];
 			$aemember->firstname = $member['firstname'];
@@ -85,18 +73,12 @@ class MemberSynchronize extends AbstractModuleSynchronize {
 			$aemember->email = $member['email'];
 			$aemember->birthday = (int)strtotime($member['birthday']);
 			$aemember->updateDate = $member['date_upd'];
+			array_push($aememberList, $aemember);
+		}
 
-			if(count($memberList) > 1){
-				array_push($aememberList, $aemember);
-			}
-		}
-		if(!empty($aememberList)) {
-			return $aememberList;
-		}
-		else {			
-			return $aemember;
-		}
+		return $aememberList;
 	}
+
 }
 
 ?>

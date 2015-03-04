@@ -25,7 +25,7 @@ class MemberRepository extends AbstractRepository {
 	public function insert($content) { 
 		foreach ($content as $member) {
 			try {
-				AEAdapter::insertMember($member);
+				MemberAdapter::insertMember($member);
 			}
 			catch(Exception $e) {
 				AELogger::log("[ERROR]", $e->getMessage());
@@ -36,7 +36,7 @@ class MemberRepository extends AbstractRepository {
 	public function update($content) { 
 		foreach ($content as $member) {
 			try {
-				AEAdapter::updateMember($member);
+				MemberAdapter::updateMember($member);
 			}
 			catch(Exception $e) {
 				AELogger::log("[ERROR]", $e->getMessage());

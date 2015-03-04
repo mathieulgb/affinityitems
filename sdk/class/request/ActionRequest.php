@@ -18,7 +18,7 @@
 
 class ActionRequest extends AbstractRequest {
 
-	public function __construct($pcontent) { 
+	public function __construct($pcontent, $waitResponse = false) { 
 		if(is_array($pcontent)) {
 			parent::__construct('/actions', array("actions" => $pcontent));
 		}

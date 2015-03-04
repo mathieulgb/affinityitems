@@ -36,8 +36,6 @@ abstract class AbstractModuleSynchronize {
 
 	abstract public function getCountElementToSynchronize($clause);
 
-	abstract public function updateNumberElementSynchronized();
-
 	public function syncElement() { 
 		try {
 			$this->syncNewElement();

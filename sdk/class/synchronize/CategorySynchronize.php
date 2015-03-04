@@ -26,117 +26,77 @@ class CategorySynchronize extends AbstractModuleSynchronize {
 	
 	public function getCountElementToSynchronize($clause) { 
 			$countElement = 0;
-			if($tmp = AEAdapter::countCategory($clause)) {
-				$countElement = (int)$tmp[0]['ccategory'];
-			}
+			if($count = CategoryAdapter::countCategory($clause))
+				$countElement = (int)$count[0]['ccategory'];
 			return $countElement;
 	}
 
-	public function updateNumberElementSynchronized() { 
-
-	}
-
 	public function syncNewElement() {
-		$clause = AEAdapter::newCategoryClause();
+		$clause = CategoryAdapter::newCategoryClause();
 		$countCategory = $this->getCountElementToSynchronize($clause);
 		if(!AELibrary::isNull($countCategory)) {
 			$countPage = ceil($countCategory/parent::BULK_PACKAGE);
-			for($cPage = 0; $cPage <= ($countPage - 1); $cPage++) {
+			for($page = 0; $page <= ($countPage - 1); $page++) {
 				$content = $this->syncCategory($clause);
 				$request = new CategoryRequest($content);
-				if($request->post()) {
-					$content = AELibrary::castArray($content);
+				if($request->post())
 					$this->getRepository()->insert($content);
-				}
 			}
 		}
 	}
 
 	public function syncUpdateElement() {
-		$clause = AEAdapter::updateCategoryClause();
+		$clause = CategoryAdapter::updateCategoryClause();
 		$countCategory = $this->getCountElementToSynchronize($clause);
 		if(!AELibrary::isNull($countCategory)) {
 			$countPage = ceil($countCategory/parent::BULK_PACKAGE);
-			for($cPage = 0; $cPage <= ($countPage - 1); $cPage++) {
+			for($page = 0; $page <= ($countPage - 1); $page++) {
 				$content = $this->syncCategory($clause);
 				$request = new CategoryRequest($content);
-				if($request->put()) {
-					$content = AELibrary::castArray($content);
+				if($request->put())
 					$this->getRepository()->update($content);
-				}
 			}
 		}
 	}
 
 	public function syncDeleteElement() {
 		$aecategoryList = array();
-		$sCategoryList = AEAdapter::deleteCategoryClause();
+		$sCategoryList = CategoryAdapter::deleteCategoryClause();
 		if(count($sCategoryList) > 0) {
 			foreach ($sCategoryList as $categoryId) {
 				$category = new stdClass();
 				$category->categoryId = $categoryId["id_category"];
-				if(count($sCategoryList) > 1) {
-					array_push($aecategoryList, $category);
-				}
+				array_push($aecategoryList, $category);
 			}
-			if(!empty($aecategoryList)) {
-				$content = $aecategoryList;
-			}
-			else {			
-				$content = $category;
-			}
-			$request = new CategoryRequest($content);
-			if($request->delete()) {
-					$content = AELibrary::castArray($content);
-					$this->getRepository()->delete($content);
-			}
+			$request = new CategoryRequest($aecategoryList);
+			if($request->delete()) 
+				$this->getRepository()->delete($aecategoryList);
 		}
 	}
 
 	public function syncCategory($clause) {
 		$categoryList = array();
-
-		$categories = AEAdapter::getCategoryList($clause, parent::BULK_PACKAGE);
-
+		$categories = CategoryAdapter::getCategoryList($clause, parent::BULK_PACKAGE);
 		foreach ($categories as $pcategory) {
-			$featureList = array();
-
 			$featureList = $this->getFeatureList($pcategory['id_category']);
-
 			$category = new stdClass();
 			$category->categoryId = (int)$pcategory['id_category'];
 			$category->parentId = (int)$pcategory['id_parent'];
 			$category->updateDate = $pcategory['date_upd'];
 			$category->localizations = $featureList;
-
-			if(count($categories) > 1){
-				array_push($categoryList, $category);
-			}
+			array_push($categoryList, $category);
 		}
-		
-		if(!empty($categoryList)) {
-			return $categoryList;
-		}
-		else {
-			return $category;
-		}
-
+		return $categoryList;
 	}
 
 	public function getFeatureList($categoryId) {
 		$featureList = array();
-
-		if (!$tmp = AEAdapter::getCategoryFeatures($categoryId)) {
-			return array();
-		}
-
-		foreach ($tmp as $feature) {
+		$features = CategoryAdapter::getCategoryFeatures($categoryId);
+		foreach ($features as $feature)
 			array_push($featureList, array("language" => $feature['iso_code'], "name" => $feature['name'], "description" => $feature['description']));
-		}
-	 	
 	 	return $featureList;
 	}
-
+	
 }
 
 ?>

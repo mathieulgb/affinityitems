@@ -25,7 +25,7 @@ class ActionRepository extends AbstractRepository {
 	public function insert($content) {
 		try {
 			foreach ($content as $action) {
-				AEAdapter::insertAction($action);
+				ActionAdapter::insertAction($action);
 			}
 		} catch(Exception $e) {
 			AELogger::log("[ERROR]", $e->getMessage());
@@ -39,53 +39,13 @@ class ActionRepository extends AbstractRepository {
 	public function delete($content) {
 		try {
 			foreach ($content as $action) {
-				AEAdapter::deleteAction($action);
+				ActionAdapter::deleteAction($action);
 			} 
 		} catch(Exception $e) {
 			AELogger::log("[ERROR]", $e->getMessage());
 		}
 	}	
-
-	public function insertOrder($content) {
-		try {
-			foreach ($content as $order) {
-				AEAdapter::insertOrder($order);
-			}
-		} catch(Exception $e) {
-			AELogger::log("[ERROR]", $e->getMessage());
-		}
-	}
-
-	public function insertCart($content) {
-		try {
-			foreach ($content as $cart) {
-				AEAdapter::insertCart($cart);
-			}
-		} catch(Exception $e) {
-			AELogger::log("[ERROR]", $e->getMessage());
-		}
-	}
-
-	public function updateCart($content) {
-		try {
-			foreach ($content as $cart) {
-				AEAdapter::updateCart($cart);
-			}
-		} catch(Exception $e) {
-			AELogger::log("[ERROR]", $e->getMessage());
-		}
-	}
-
-	public function deleteCart($content) {
-		try {
-			foreach ($content as $cart) {
-				AEAdapter::deleteCart($cart);
-			}
-		} catch(Exception $e) {
-			AELogger::log("[ERROR]", $e->getMessage());
-		}
-	}
-
+	
 }
 
 ?>

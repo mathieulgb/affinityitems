@@ -26,89 +26,64 @@ class ProductSynchronize extends AbstractModuleSynchronize {
 	
 	public function getCountElementToSynchronize($clause) { 
 			$countElement = 0;
-			if($tmp = AEAdapter::countProduct($clause)) {
-				$countElement = (int)$tmp[0]['cproduct'];
-			}
+			if($count = ProductAdapter::countProduct($clause))
+				$countElement = (int)$count[0]['cproduct'];
 			return $countElement;
 	}
 
-	public function updateNumberElementSynchronized() { 
-
-	}
-
 	public function syncNewElement() {
-		$clause = AEAdapter::newProductClause();
+		$clause = ProductAdapter::newProductClause();
 		$countProduct = $this->getCountElementToSynchronize($clause);
 		if(!AELibrary::isNull($countProduct)) {
 			$countPage = ceil($countProduct/parent::BULK_PACKAGE);
-			for($cPage = 0; $cPage <= ($countPage - 1); $cPage++) {
+			for($page = 0; $page <= ($countPage - 1); $page++) {
 				$content = $this->syncProduct($clause);
 				$request = new ProductRequest($content);
-				if($request->post()) {
-					$content = AELibrary::castArray($content);
+				if($request->post())
 					$this->getRepository()->insert($content);
-				}
 			}
 		}
 	}
 
 	public function syncUpdateElement() {
-		$clause = AEAdapter::updateProductClause();
+		$clause = ProductAdapter::updateProductClause();
 		$countProduct = $this->getCountElementToSynchronize($clause);
 		if(!AELibrary::isNull($countProduct)) {
 			$countPage = ceil($countProduct/parent::BULK_PACKAGE);
-			for($cPage = 0; $cPage <= ($countPage - 1); $cPage++) {
+			for($page = 0; $page <= ($countPage - 1); $page++) {
 				$content = $this->syncProduct($clause);
 				$request = new ProductRequest($content);
-				if($request->put()) {
-					$content = AELibrary::castArray($content);
+				if($request->put())
 					$this->getRepository()->update($content);
-				}
 			}
 		}
 	}
 
-
-	/*
-	 * TODO : Improve !empty(...) ;) 
-	*/
 	public function syncDeleteElement() {
 		$aeproductList = array();
-		$sProductList = AEAdapter::deleteProductClause();
-		if(count($sProductList) > 0) {
-			foreach ($sProductList as $productId) {
+		$productList = ProductAdapter::deleteProductClause();
+		if(count($productList) > 0) {
+			foreach ($productList as $productId) {
 				$product = new stdClass();
 				$product->productId = $productId["id_product"];
-				if(count($sProductList) > 1) {
-					array_push($aeproductList, $product);
-				}
+				array_push($aeproductList, $product);
 			}
-			if(!empty($aeproductList)) {
-				$content = $aeproductList;
-			}
-			else {			
-				$content = $product;
-			}
-			$request = new ProductRequest($content);
-			if($request->delete()) {
-					$content = AELibrary::castArray($content);
-					$this->getRepository()->delete($content);
-			}
+			$request = new ProductRequest($aeproductList);
+			if($request->delete())
+				$this->getRepository()->delete($aeproductList);
 		}
 	}
 
 	public function syncProduct($clause) {
-
 		$aeproductList = array();
-
-		$productList = AEAdapter::getProductList($clause, parent::BULK_PACKAGE);
+		$productList = ProductAdapter::getProductList($clause, parent::BULK_PACKAGE);
 
 		foreach ($productList as $product) {
 			$localizationList = array();
 			$categoryList = array();
 			$priceList = array();
 
-			$localizations = AEAdapter::getProductsLocalizations((int)$product["id_product"]);
+			$localizations = ProductAdapter::getProductsLocalizations((int)$product["id_product"]);
 
 			foreach ($localizations as $localization) {
 				$tagList = array();
@@ -145,17 +120,10 @@ class ProductSynchronize extends AbstractModuleSynchronize {
 			$aeproduct->localizations = $localizationList;
 			$aeproduct->prices = $priceList;
 
-			if(count($productList) > 1) {
-				array_push($aeproductList, $aeproduct);
-			}
+			array_push($aeproductList, $aeproduct);
 		}
 
-		if(!empty($aeproductList)) {
-			return $aeproductList;
-		}
-		else {			
-			return $aeproduct;
-		}
+		return $aeproductList;
 	}
 
 	public function isRecommendable($product) {
@@ -165,83 +133,72 @@ class ProductSynchronize extends AbstractModuleSynchronize {
 	
 	public function getCategories($productId) {
 		$categoryList = array();
-
-		if (!$tmp = AEAdapter::getProductCategories((int)$productId)) {
-			return array();
+		if ($categories = ProductAdapter::getProductCategories((int)$productId)) {
+			foreach ($categories as $category) {
+				array_push($categoryList, (string)$category['id_category']);
+			}
 		}
-
-		foreach ($tmp as $category) {
-			array_push($categoryList, (string)$category['id_category']);
-		}
-
 		return $categoryList;
 	}
 
 	public function getProductTags($productId, $isoCode) {
 		$listTag = array();
-	 	if (!$tags = AEAdapter::getProductTags($productId, $isoCode)) {
-	 		return array();
+		if ($tags = ProductAdapter::getProductTags($productId, $isoCode)) {
+			foreach ($tags as $tag) {
+				array_push($listTag, $tag['name']);
+			}
 		}
-		foreach ($tags as $tag) {
-	 		array_push($listTag, $tag['name']);
-	 	}
 	 	return $listTag;
 	}
 
 	public static function getProductPrices($productId) {
 	 	$listPrice = array();
-		if (!$prices = AEAdapter::getProductPrices($productId)) {
-			return array();
-		}
-	 	foreach ($prices as $pprice){
-	 		$price = new stdClass();
-	 		$price->currency = $pprice['iso_code'];
-	 		$price->amount = $pprice['price'];
-	 		array_push($listPrice, $price);
+	 	$price = new stdClass();
+	 	$price->currency = Context::getContext()->currency->iso_code;
+	 	$price->amount = Product::getPriceStatic($productId);
+	 	array_push($listPrice, $price);
+	 	if ($prices = ProductAdapter::getProductPrices($productId)) {
+	 		foreach ($prices as $pprice) {
+	 			if($pprice['iso_code'] != Context::getContext()->currency->iso_code) {
+	 				$price = new stdClass();
+	 				$price->currency = $pprice['iso_code'];
+	 				$price->amount = $pprice['price'];
+	 				array_push($listPrice, $price);
+	 			}
+	 		}
 	 	}
 	 	return $listPrice;
-	}
+	 }
 
-	public static function getProductAttributes($productId, $isoCode){
+	 public static function getProductAttributes($productId, $isoCode){
 	 	$listAttribute = array();
-		$tmpAttribute = array();
-
-		if (!$tmp = AEAdapter::getProductAttributes($productId, $isoCode)) {
-			return array();
-		}
-
-	 	foreach ($tmp as $attribute){
-	 		$tmpAttribute[$attribute['groupname']][] = array("characteristicId" => $attribute['id_attribute'], "name" => $attribute['name']);
-	 	}
-	 	foreach ($tmpAttribute as $key => $value) {
-	 		$group = new stdClass();
-	 		$group->name = $key;
-	 		$group->values = $value;
-
-	 		array_push($listAttribute, $group);
+	 	$characteristics = array();
+	 	if ($attributes = ProductAdapter::getProductAttributes($productId, $isoCode)) {
+	 		foreach ($attributes as $attribute)
+	 			$characteristics[$attribute['groupname']][] = array("characteristicId" => $attribute['id_attribute'], "name" => $attribute['name']);
+	 		foreach ($characteristics as $key => $value) {
+	 			$group = new stdClass();
+	 			$group->name = $key;
+	 			$group->values = $value;
+	 			array_push($listAttribute, $group);
+	 		}
 	 	}
 	 	return $listAttribute;
-	}
+	 }
 
 	public static function getProductFeatures($productId, $isoCode) {
 		$listFeature = array();
-		$tmpFeature = array();
-
-		if (!$tmp = AEAdapter::getProductFeatures($productId, $isoCode)) {
-			return array();
+		$characteristics = array();
+		if($features = ProductAdapter::getProductFeatures($productId, $isoCode)) {
+			foreach ($features as $feature)
+				$characteristics[$feature['name']][] = array("characteristicId" => $feature['id_feature_value'], "name" => $feature['value']);
+			foreach ($characteristics as $key => $value) {
+				$group = new stdClass();
+				$group->name = $key;
+				$group->values = $value;
+				array_push($listFeature, $group);
+			}
 		}
-
-		foreach ($tmp as $feature){
-	 		$tmpFeature[$feature['name']][] = array("characteristicId" => $feature['id_feature_value'], "name" => $feature['value']);
-	 	}
-
-	 	foreach ($tmpFeature as $key => $value) {
-	 		$group = new stdClass();
-	 		$group->name = $key;
-	 		$group->values = $value;
-	 		array_push($listFeature, $group);
-	 	}
-
 	 	return $listFeature;
 	}
 	

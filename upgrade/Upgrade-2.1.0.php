@@ -16,38 +16,11 @@
 *  International Registered Trademark & Property of Affinity Engine SARL
 */
 
-class AEPreview {
+if (!defined('_PS_VERSION_'))
+	exit;
 
-	private static $instance;
-
-	private $aepreview;
-
-	private function __construct()
-	{
-		$this->aepreview = new Cookie('AffinityEnginePreview', '/', 0);
-	}
-
-	private function __clone()
-	{
-	}
-
-	public static function getInstance()
-	{
-		if (!(self::$instance instanceof self))
-			self::$instance = new self();
-
-		return self::$instance;
-	}
-
-	public function getCookie()
-	{
-		return $this->aepreview;
-	}
-
-	public function setcookie($aepreview)
-	{
-		$this->aepreview = $aepreview;
-	}
-
+function upgrade_module_2_1_0($module)
+{
+	Configuration::updateValue('AE_VERSION', '2.1.0');	
+	return true;
 }
-

@@ -25,7 +25,7 @@ class ProductRepository extends AbstractRepository {
 	public function insert($content) { 
 		foreach ($content as $product) {
 			try {
-				AEAdapter::insertProduct($product);
+				ProductAdapter::insertProduct($product);
 			}
 			catch(Exception $e) {
 				AELogger::log("[ERROR]", $e->getMessage());
@@ -36,7 +36,7 @@ class ProductRepository extends AbstractRepository {
 	public function update($content) { 
 		foreach ($content as $product) {
 			try {
-				AEAdapter::updateProduct($product);
+				ProductAdapter::updateProduct($product);
 			}
 			catch(Exception $e) {
 				AELogger::log("[ERROR]", $e->getMessage());
@@ -47,7 +47,7 @@ class ProductRepository extends AbstractRepository {
 	public function delete($content) {
 		foreach ($content as $product) {
 			try {
-				AEAdapter::deleteProduct($product);
+				ProductAdapter::deleteProduct($product);
 			}
 			catch(Exception $e) {
 				AELogger::log("[ERROR]", $e->getMessage());
