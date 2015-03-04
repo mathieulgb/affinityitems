@@ -1,10 +1,7 @@
 # Affinity Items module for PrestaShop
-#### [Module Affinity Items pour PrestaShop - Page en français](README-FR.md)
-
 
 ## We can install it for you!
 We can install and configure the Affinity Items module for your website at no extra cost. Do not hesitate to contact us (see the Support section below) to discuss or make an appointment
-
 
 ## Support
 Do not hesitate to contact us for any questions. You can:
