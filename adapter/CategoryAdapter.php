@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
 * 2014 Affinity-Engine
 *

@@ -564,7 +564,7 @@ class AffinityItems extends Module {
 	{
 		$recommendations = array();
 		$render = array();
-		$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_'.strtoupper($hook)));
+		$hook_configuration = unserialize(Configuration::get('AE_CONFIGURATION_'.Tools::strtoupper($hook)));
 		$occurrence = $this->preg_match_count_object_key('/reco'.$hook.'/i', $hook_configuration);
 		if (self::isConfig() && self::isLastSync() && (bool)Configuration::get('AE_RECOMMENDATION'))
 		{
@@ -636,7 +636,8 @@ class AffinityItems extends Module {
 		}
 		if (!empty($recommendations))
 		{
-			if (!in_array($hook, array('Search', 'Category'))) {
+			if (!in_array($hook, array('Search', 'Category'))) 
+			{
 				$this->smarty->assign(array('recommendations' => $recommendations));
 				return $this->display(__FILE__, '/views/templates/hook/'.Tools::substr(str_replace('.', '', _PS_VERSION_), 0, 2).'/hrecommendation.tpl');
 			}
