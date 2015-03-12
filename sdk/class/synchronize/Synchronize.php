@@ -67,7 +67,7 @@ class Synchronize {
 			$elementList = $resyncRequest->post();
 			
 			if(isset($elementList->abRatio)) {
-				if(is_float($elementList->abRatio)) {
+				if(is_numeric($elementList->abRatio)) {
 					$abRatio = $elementList->abRatio * 100;
 					AEAdapter::setAbTestingPercentage($abRatio);
 				}
