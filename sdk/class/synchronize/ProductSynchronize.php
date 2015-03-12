@@ -155,7 +155,7 @@ class ProductSynchronize extends AbstractModuleSynchronize {
 	 	$listPrice = array();
 	 	$price = new stdClass();
 	 	$price->currency = Context::getContext()->currency->iso_code;
-	 	$price->amount = Product::getPriceStatic($productId);
+	 	$price->amount = Product::getPriceStatic($productId, false);
 	 	array_push($listPrice, $price);
 	 	if ($prices = ProductAdapter::getProductPrices($productId)) {
 	 		foreach ($prices as $pprice) {
