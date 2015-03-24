@@ -36,11 +36,13 @@
             {/literal}
             {for $position=1 to 2}
             {literal}
+            {/literal}{if isset($renderCategory[$position-1])}{literal}
             var renderCategory_{/literal}{$position}{literal} = $.trim('{/literal}{$renderCategory[$position-1]}{literal}');
             $("{/literal}{$hookCategoryConfiguration->recoSelectorCategory_{$position}}{literal}").first().{/literal}{$hookCategoryConfiguration->recoSelectorPositionCategory_{$position}}{literal}(renderCategory_{/literal}{$position}{literal});
             if ($(".aereco").length && $("{/literal}{$hookCategoryConfiguration->recoSelectorCategory_{$position}}{literal}").length) {
                 $(".aereco").show();
             }
+            {/literal}{/if}{literal}
             {/literal}
             {/for}
             {literal}
@@ -55,11 +57,13 @@
             {/literal}
             {for $position=1 to 2}
             {literal}
+            {/literal}{if isset($renderSearch[$position-1])}{literal}
             var renderSearch_{/literal}{$position}{literal} = $.trim('{/literal}{$renderSearch[$position-1]}{literal}');
             $("{/literal}{$hookSearchConfiguration->recoSelectorSearch_{$position}}{literal}").first().{/literal}{$hookSearchConfiguration->recoSelectorPositionSearch_{$position}}{literal}(renderSearch_{/literal}{$position}{literal});
             if ($(".aereco").length && $("{/literal}{$hookSearchConfiguration->recoSelectorSearch_{$position}}{literal}").length) {
                  $(".aereco").show();
-             }
+            }
+            {/literal}{/if}{literal}
             {/literal}
             {/for}
             {literal}

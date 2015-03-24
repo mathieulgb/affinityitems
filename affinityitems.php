@@ -45,7 +45,7 @@ class AffinityItems extends Module {
 	{
 		$this->name = 'affinityitems';
 		$this->tab = 'advertising_marketing';
-		$this->version = '2.1.0';
+		$this->version = '2.1.1';
 		$this->author = 'Affinity Engine';
 		parent::__construct();
 
@@ -600,11 +600,9 @@ class AffinityItems extends Module {
 					$aecontext->size = (int)$hook_configuration->{'recoSize'.$hook.'_'.$i};
 					$products = $this->getRecommendation($aecontext, false);
 					$theme = AEAdapter::getThemeById($hook_configuration->{'recoTheme'.$hook.'_'.$i});
-
-					if (!in_array($hook, array('Search', 'Category')))
-						array_push($recommendations, array('aeproducts' => $products,
-							'theme' => unserialize($theme[0]['configuration']), 'configuration' => $hook_configuration, 'titleZone' => $hook_configuration->{'recoTitle'.$hook.'_'.$i}));
-					else
+					array_push($recommendations, array('aeproducts' => $products,
+						'theme' => unserialize($theme[0]['configuration']), 'configuration' => $hook_configuration, 'titleZone' => $hook_configuration->{'recoTitle'.$hook.'_'.$i}));
+					if (in_array($hook, array('Search', 'Category')))
 					{
 						$this->smarty->assign(array('recommendations' => $recommendations));
 						$render[] = $this->display(__FILE__, '/views/templates/hook/'.Tools::substr(str_replace('.', '', _PS_VERSION_), 0, 2).'/srecommendation.tpl');
@@ -622,10 +620,9 @@ class AffinityItems extends Module {
 					if ((bool)$hook_configuration->{'reco'.$hook.'_'.$i})
 					{
 						$theme = AEAdapter::getThemeById($hook_configuration->{'recoTheme'.$hook.'_'.$i});
-						if (!in_array($hook, array('Search', 'Category')))
-							array_push($recommendations, array('aeproducts' =>  AEAdapter::renderPreviewRecommendation((int)$this->context->cookie->id_lang),
-								'theme' => unserialize($theme[0]['configuration']), 'configuration' => $hook_configuration, 'titleZone' => 'PREVIEW'));
-						else 
+						array_push($recommendations, array('aeproducts' =>  AEAdapter::renderPreviewRecommendation((int)$this->context->cookie->id_lang),
+							'theme' => unserialize($theme[0]['configuration']), 'configuration' => $hook_configuration, 'titleZone' => 'PREVIEW'));
+						if (in_array($hook, array('Search', 'Category')))
 						{
 							$this->smarty->assign(array('recommendations' => $recommendations));
 							$render[] = $this->display(__FILE__, '/views/templates/hook/'.Tools::substr(str_replace('.', '', _PS_VERSION_), 0, 2).'/srecommendation.tpl');
@@ -674,7 +671,7 @@ class AffinityItems extends Module {
 
 	public function renderCategory($category_id)
 	{
-		$this->prepareRecommendation('Category', $category_id);
+		return $this->prepareRecommendation('Category', $category_id);
 	}
 
 	public function actionSearch($expr)
@@ -709,7 +706,7 @@ class AffinityItems extends Module {
 	public function renderSearch($expr)
 	{
 		$this->actionSearch($expr);
-		$this->prepareRecommendation('Search', $expr);
+		return $this->prepareRecommendation('Search', $expr);
 	}
 
 	/*
