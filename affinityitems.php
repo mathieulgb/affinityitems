@@ -45,7 +45,7 @@ class AffinityItems extends Module {
 	{
 		$this->name = 'affinityitems';
 		$this->tab = 'advertising_marketing';
-		$this->version = '2.1.1';
+		$this->version = '2.1.2';
 		$this->author = 'Affinity Engine';
 		parent::__construct();
 
@@ -247,7 +247,7 @@ class AffinityItems extends Module {
 		$action->context = 'visit';
 		$action->page = $page;
 		if ($person instanceof stdClass)
-			exit;
+			return false;
 		else if ($person instanceof AEGuest)
 			$action->guestId = $person->personId;
 		if (Context::getContext()->customer->isLogged())
@@ -683,7 +683,7 @@ class AffinityItems extends Module {
 			$action->context = 'search';
 			$action->keywords = $expr;
 			if ($person instanceof stdClass)
-				exit;
+				return false;
 			else if ($person instanceof AEGuest)
 				$action->guestId = $person->personId;
 			if ($group = $person->getGroup())
