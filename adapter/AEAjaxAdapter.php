@@ -275,7 +275,7 @@ class AEAjaxAdapter {
 			$action->context = Tools::safeOutput(Tools::getValue('action'));
 
 			if ($person instanceof stdClass)
-				exit;
+				return false;
 			else if ($person instanceof AEGuest)
 				$action->guestId = $person->personId;
 
