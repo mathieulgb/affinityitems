@@ -45,7 +45,7 @@ class AffinityItems extends Module {
 	{
 		$this->name = 'affinityitems';
 		$this->tab = 'advertising_marketing';
-		$this->version = '2.1.2';
+		$this->version = '2.1.3';
 		$this->author = 'Affinity Engine';
 		parent::__construct();
 
@@ -258,11 +258,16 @@ class AffinityItems extends Module {
 			$action->ip = Tools::getRemoteAddr();
 		if (!AELibrary::isEmpty(Context::getContext()->language->iso_code))
 			$action->language = Context::getContext()->language->iso_code;
-		$request = new ActionRequest($action);
-		try {
-			$request->post();
-		} catch (Exception $e) {
-			error_log($e);
+		
+		if (!AELibrary::isEmpty(AEAdapter::getSiteId())
+			&& !AELibrary::isEmpty(AEAdapter::getSecurityKey()))
+		{
+			$request = new ActionRequest($action);
+			try {
+				$request->post();
+			} catch (Exception $e) {
+				error_log($e);
+			}
 		}
 	}
 
@@ -419,8 +424,13 @@ class AffinityItems extends Module {
 			$aecart->ip = Tools::getRemoteAddr();
 		if (!AELibrary::isEmpty(Context::getContext()->language->iso_code) && !(bool)Synchronize::getLock())
 			$aecart->language = Context::getContext()->language->iso_code;
-		$request = new ActionRequest($aecart);
-		$request->post();
+		
+		if (!AELibrary::isEmpty(AEAdapter::getSiteId())
+				&& !AELibrary::isEmpty(AEAdapter::getSecurityKey()))
+		{
+			$request = new ActionRequest($aecart);
+			$request->post();
+		}
 	}
 
 	public function addToCart($cart)
@@ -694,12 +704,18 @@ class AffinityItems extends Module {
 				$action->language = Context::getContext()->language->iso_code;
 			if (Context::getContext()->customer->isLogged())
 				$action->memberId = Context::getContext()->cookie->id_customer;
-			$request = new ActionRequest($action);
-			if (!$request->post())
+			
+			if (!AELibrary::isEmpty(AEAdapter::getSiteId())
+				&& !AELibrary::isEmpty(AEAdapter::getSecurityKey()))
 			{
-				$repository = new ActionRepository();
-				$repository->insert(AELibrary::castArray($action));
+				$request = new ActionRequest($action);
+				if (!$request->post())
+				{
+					$repository = new ActionRepository();
+					$repository->insert(AELibrary::castArray($action));
+				}
 			}
+
 		}
 	}
 

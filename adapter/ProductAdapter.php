@@ -99,7 +99,7 @@ class ProductAdapter {
 	public static function getProductsLocalizations($product_id)
 	{
 		$active_lang = !AELibrary::isEmpty(AEAdapter::getActiveLanguageIds()) ? 'AND l.id_lang IN ('.AEAdapter::getActiveLanguageIds().')' : '';
-		return Db::getInstance()->executeS('SELECT l.iso_code, pl.description, pl.description_short, pl.name, m.name as mname, s.name as sname
+		return Db::getInstance()->executeS('SELECT l.id_lang, l.iso_code, pl.description, pl.description_short, pl.name, m.name as mname, s.name as sname
 			FROM  `'._DB_PREFIX_.'product` p
 			LEFT JOIN `'._DB_PREFIX_.'product_lang` pl ON pl.id_product = p.id_product
 			LEFT JOIN `'._DB_PREFIX_.'lang` l ON l.id_lang = pl.id_lang
@@ -202,6 +202,22 @@ class ProductAdapter {
 		$multishop = (Context::getContext()->shop->isFeatureActive()) ? Shop::getContextShopID(true) : 1;
 		Db::getInstance()->execute('DELETE FROM `'._DB_PREFIX_.'ae_product_repository` WHERE id_product = '.(int)$product->productId.'
 			AND id_shop = '.(int)$multishop.';');
+	}
+
+	public static function getImageSize()
+	{
+		return Db::getInstance()->executeS('
+			SELECT name FROM `'._DB_PREFIX_.'image_type`'
+		);
+	}
+
+	public static function getImageIds($productId)
+	{
+		return Db::getInstance()->executeS('
+			SELECT i.`id_image` as id
+			FROM `'._DB_PREFIX_.'image` i
+			WHERE i.`id_product` = '.(int)$productId.'
+			ORDER BY i.`position`');
 	}
 
 }

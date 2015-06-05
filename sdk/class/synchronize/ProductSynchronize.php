@@ -105,7 +105,8 @@ class ProductSynchronize extends AbstractModuleSynchronize {
 				$plocalization->tags = $tagList;
 				$plocalization->attributes = $attributeList;
 				$plocalization->features = $featureList;
-
+				$link = new Link();
+				$plocalization->pageUrl = $link->getProductLink($product, null, null, null, $localization["id_lang"]);
 				array_push($localizationList, $plocalization);
 			}
 
@@ -116,8 +117,9 @@ class ProductSynchronize extends AbstractModuleSynchronize {
 			$aeproduct->productId = (int)$product["id_product"];
 			$aeproduct->updateDate = $product["date_upd"];
 			$aeproduct->categoryIds = $categoryList;
-			$aeproduct->recommendable = $this->isRecommendable($product);			
+			$aeproduct->recommendable = $this->isRecommendable($product);
 			$aeproduct->localizations = $localizationList;
+			$aeproduct->imageUrls = $this->getImageUrls($product['id_product'], $product['link_rewrite']);
 			$aeproduct->prices = $priceList;
 
 			array_push($aeproductList, $aeproduct);
@@ -151,26 +153,59 @@ class ProductSynchronize extends AbstractModuleSynchronize {
 	 	return $listTag;
 	}
 
+	public function getImageUrls($productId, $rewriteLink) {
+		$link = new Link();
+		$result = array();
+		$imagesSize = ProductAdapter::getImageSize();
+		$imageIds = ProductAdapter::getImageIds($productId);
+		$imageTags = array("large", "medium", "small", "other");
+
+		$urls = new stdClass();
+		foreach ($imageTags as $tag)
+			$urls->{$tag} = array();
+
+		foreach ($imageIds as $imageId) {
+			foreach ($imagesSize as $size) {
+				$url = $link->getImageLink($rewriteLink, $productId.'-'.$imageId['id'], $size['name']);
+				if(!empty($url)) {
+					foreach ($urls as $key => $value) {
+						if(is_int(strpos($size['name'], $key))) {
+							if(!in_array($url, $urls->{$key}))
+								array_push($urls->{$key}, $url);
+						}
+					}					
+					if(!in_array($url, $urls->large) && !in_array($url, $urls->medium) && !in_array($url, $urls->small))
+						array_push($urls->other, $url);
+				}
+			}
+		}
+
+		foreach ($urls as $key => $value) {
+			$obj = new stdClass();
+			$obj->name = $key;
+			$obj->urls = $value;
+			array_push($result, $obj);
+		}
+
+		return $result;
+	}
+
 	public static function getProductPrices($productId) {
 	 	$listPrice = array();
 	 	$price = new stdClass();
 	 	$price->currency = Context::getContext()->currency->iso_code;
 	 	$price->amount = Product::getPriceStatic($productId, false);
+	 	$price->displayedPrice = Product::getPriceStatic($productId, false, null, 6, null, false, true);
+
+	 	if(Product::getPriceStatic($productId, false, null, 6, null, false, false) != $price->displayedPrice)
+	 		$price->prediscountPrice = Product::getPriceStatic($productId, false, null, 6, null, false, false);
+	 	
 	 	array_push($listPrice, $price);
-	 	if ($prices = ProductAdapter::getProductPrices($productId)) {
-	 		foreach ($prices as $pprice) {
-	 			if($pprice['iso_code'] != Context::getContext()->currency->iso_code) {
-	 				$price = new stdClass();
-	 				$price->currency = $pprice['iso_code'];
-	 				$price->amount = $pprice['price'];
-	 				array_push($listPrice, $price);
-	 			}
-	 		}
-	 	}
+	 	
 	 	return $listPrice;
 	 }
 
-	 public static function getProductAttributes($productId, $isoCode){
+	 public static function getProductAttributes($productId, $isoCode) {
 	 	$listAttribute = array();
 	 	$characteristics = array();
 	 	if ($attributes = ProductAdapter::getProductAttributes($productId, $isoCode)) {
