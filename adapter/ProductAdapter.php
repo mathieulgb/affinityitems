@@ -206,9 +206,12 @@ class ProductAdapter {
 
 	public static function getImageSize()
 	{
+		$themeName = Context::getContext()->shop->theme_name;
 		return Db::getInstance()->executeS('
-			SELECT name FROM `'._DB_PREFIX_.'image_type`'
-		);
+			SELECT it.name 
+			FROM `'._DB_PREFIX_.'image_type` it
+			WHERE it.products = 1
+			AND it.name LIKE \'%'.pSQL($themeName).'%\'');
 	}
 
 	public static function getImageIds($productId)
