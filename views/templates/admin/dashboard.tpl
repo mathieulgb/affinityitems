@@ -177,13 +177,6 @@ $(document).ready(function() {
 		dark.style.visibility = "hidden";
 	});
 
-	$('.ae-type-recommendation-select').on("change", function() {
-		if($(this).val() == "recoAllFiltered") {
-			$(this).closest('table').next('.items-reco-all-filtered').fadeIn();
-		} else {
-			$(this).closest('table').next('.items-reco-all-filtered').fadeOut();
-		}
-	});
 
 	$('.items-open-theme-list').on("click", function() {
 		if(!$(this).closest('table').next().next().is(':visible')) {
@@ -305,6 +298,14 @@ $('.items-desactivate-button').on('click', function() {
 	});
 });
 
+$('.items-css-options').click(function() {
+	if($(this).next().is(":visible")) {
+		$(this).next().css('display', 'none');
+	} else {
+		$(this).next().css('display', 'block');
+	}
+});
+
 $("#myonoffswitch").on('change', function(){
 	var checked = $(this).is(':checked') ? 1 : 0;
 	$.ajax({
@@ -324,29 +325,11 @@ $("#myonoffswitch").on('change', function(){
 	});
 });
 
-$('.items-reco-all-filtered-select').on("change", function() {
-	if($(this).val() == "byCategory") {
-		$(this).closest('.items-reco-all-filtered').find(".categoryIds").show();
-		$(this).closest('.items-reco-all-filtered').find(".attributeIds").hide();
-		$(this).closest('.items-reco-all-filtered').find(".featureIds").hide();
-	} else if($(this).val() == "byAttribute") {
-		$(this).closest('.items-reco-all-filtered').find(".categoryIds").hide();
-		$(this).closest('.items-reco-all-filtered').find(".attributeIds").show();
-		$(this).closest('.items-reco-all-filtered').find(".featureIds").hide();
-	} else if($(this).val() == "byFeature") {
-		$(this).closest('.items-reco-all-filtered').find(".categoryIds").hide();
-		$(this).closest('.items-reco-all-filtered').find(".attributeIds").hide();
-		$(this).closest('.items-reco-all-filtered').find(".featureIds").show();
-	} else {
-		$(this).closest('.items-reco-all-filtered').find(".categoryIds").hide();
-		$(this).closest('.items-reco-all-filtered').find(".attributeIds").hide();
-		$(this).closest('.items-reco-all-filtered').find(".featureIds").hide();
-	}
-});
 {/literal}{include file="./live-editor.tpl"}{literal}
 });
 {/literal}
 </script>
+
 <div id="items-preview-overlay"></div>
 <div id="items-preview-overlay-content-bright" class="items-preview-overlay-content">
 	<img src='{$module_dir|escape:'htmlall':'UTF-8'}img/bright.png' alt='bright' />
@@ -519,12 +502,11 @@ $('.items-reco-all-filtered-select').on("change", function() {
 						<tr>
 							<th class="items-table-activation-cell">{l s='Activation' mod='affinityitems'}</th>
 							<th class="items-table-zone-title-cell">{l s='Zone title' mod='affinityitems'}</th> 
-							<th class="items-table-recommendation-type-cell">{l s='Recommendation type' mod='affinityitems'}</th>
+							<!--th class="items-table-recommendation-type-cell">{l s='Recommendation type' mod='affinityitems'}</th-->
 							<th class="items-table-product-number-cell">{l s='Product number' mod='affinityitems'}</th>
 							<th class="items-table-theme-cell">{l s='Theme' mod='affinityitems'}</th>
 						</tr>
 					</table>
-
 					<table style="width:100%">
 						<tr>
 							<td>						
@@ -537,32 +519,13 @@ $('.items-reco-all-filtered-select').on("change", function() {
 									</label>
 								</div>
 							</td>
-							<td>
+							<td class="reco-title">
 								<input class="items-selectors-input" name="recoTitle{$hook|escape:'htmlall':'UTF-8'}_1" type="text" value="{$configuration.{$hook|escape:'htmlall':'UTF-8'}->recoTitle{$zone1}}">
-							</td>
-							<td>
-								<select class="ae-type-recommendation-select" name="recoType{$hook|escape:'htmlall':'UTF-8'}_1">
-									{if {$hook|lower} == "home" || {$hook|lower} == "left" || {$hook|lower} == "right"}
-									<option {if $configuration.{$hook}->recoType{$zone1} == "recoAll"} selected {/if} value="recoAll">{l s='Personalized recommendation' mod='affinityitems'}</option>
-									<option {if $configuration.{$hook}->recoType{$zone1} == "recoAllFiltered"} selected {/if} value="recoAllFiltered">{l s='Filtered personalized recommendation' mod='affinityitems'}</option>
-									<option {if $configuration.{$hook}->recoType{$zone1} == "recoLastSeen"} selected {/if} value="recoLastSeen">{l s='Last liked products' mod='affinityitems'}</option>
-									{else if {$hook|lower} == "cart"}
-									<option value="recoCart">{l s='Personalized recommendation' mod='affinityitems'}</option>
-									{else if {$hook|lower} == "product"}
-									<option {if $configuration.{$hook}->recoType{$zone1} == "recoSimilar"} selected {/if} value="recoSimilar">{l s='Personalized recommendation' mod='affinityitems'}</option>
-									<option {if $configuration.{$hook}->recoType{$zone1} == "recoUpSell"} selected {/if} value="recoUpSell">{l s='Up selling' mod='affinityitems'}</option>
-									<option {if $configuration.{$hook}->recoType{$zone1} == "recoCrossSell"} selected {/if} value="recoCrossSell">{l s='Cross selling' mod='affinityitems'}</option>
-									{else if {$hook|lower} == "category"}
-									<option {if $configuration.{$hook}->recoType{$zone1} == "recoCategory"} selected {/if} value="recoCategory">{l s='Personalized recommendation' mod='affinityitems'}</option>
-									{else if {$hook|lower} == "search"}
-									<option {if $configuration.{$hook}->recoType{$zone1} == "recoSearch"} selected {/if} value="recoSearch">{l s='Personalized recommendation' mod='affinityitems'}</option>
-									{/if}
-								</select>
 							</td>
 							<td>
 								<input class="ae-number-reco-input" type="number" min="1" max="20" name="recoSize{$hook|escape:'htmlall':'UTF-8'}_1" value="{$configuration.{$hook|escape:'htmlall':'UTF-8'}->recoSize{$zone1}}">
 							</td>
-							<td>
+							<td class="reco-theme-selector">
 								<select disabled class="items-open-theme-list">
 									{foreach from=$themeList item=theme}
 									<option {if $theme.id_theme == $configuration.{$hook}->recoTheme{$zone1}} selected {/if} value="{$theme.id_theme}">{$theme.name|escape:'htmlall':'UTF-8'}</option>
@@ -592,45 +555,18 @@ $('.items-reco-all-filtered-select').on("change", function() {
 					</table>
 					{/if}
 
-					{if {$hook|lower} == "home" || {$hook|lower} == "left" || {$hook|lower} == "right"}
-					<div class="items-reco-all-filtered {if $configuration.{$hook|escape:'htmlall':'UTF-8'}->recoType{$zone1} == 'recoAllFiltered'} items-display {/if}">
-						<fieldset>
-							<legend>{l s='Filtered recommendation' mod='affinityitems'}</legend>
-							<select class="items-reco-all-filtered-select" name="recoFilter{$hook|escape:'htmlall':'UTF-8'}_1">
-								<option {if $configuration.{$hook}->recoFilter{$zone1} == "onSale"} selected {/if} value="onSale">{l s='By product on sale' mod='affinityitems'}</option>
-								<option {if $configuration.{$hook}->recoFilter{$zone1} == "byCategory"} selected {/if} value="byCategory">{l s='By categories' mod='affinityitems'}</option>
-								<option {if $configuration.{$hook}->recoFilter{$zone1} == "byAttribute"} selected {/if} value="byAttribute">{l s='By attributes' mod='affinityitems'}</option>
-								<option {if $configuration.{$hook}->recoFilter{$zone1} == "byFeature"} selected {/if} value="byFeature">{l s='By features' mod='affinityitems'}</option>
-							</select>
-							<div class="categoryIds {if $configuration.{$hook|escape:'htmlall':'UTF-8'}->recoFilter{$zone1} == 'byCategory'} items-display {/if}">
-								{l s='Filter by category ids (split by semicolon)' mod='affinityitems'} : <input name="categoryIds{$hook|escape:'htmlall':'UTF-8'}_1" value="{$configuration.{$hook|escape:'htmlall':'UTF-8'}->categoryIds{$zone1}}" type="text">
-							</div>
-							<div class="attributeIds {if $configuration.{$hook|escape:'htmlall':'UTF-8'}->recoFilter{$zone1} == 'byAttribute'} items-display {/if}">
-								{l s='Filter by attribute ids (split by semicolon)' mod='affinityitems'} : <input name="attributeIds{$hook|escape:'htmlall':'UTF-8'}_1" value="{$configuration.{$hook|escape:'htmlall':'UTF-8'}->attributeIds{$zone1}}" type="text">
-							</div>
-							<div class="featureIds {if $configuration.{$hook|escape:'htmlall':'UTF-8'}->recoFilter{$zone1} == 'byFeature'} items-display {/if}">
-								{l s='Filter by feature ids (split by semicolon)' mod='affinityitems'} : <input name="featureIds{$hook|escape:'htmlall':'UTF-8'}_1" value="{$configuration.{$hook|escape:'htmlall':'UTF-8'}->featureIds{$zone1}}" type="text">
-							</div>
-						</fieldset>
-					</div>
-					{else}
 					{if {$hook|lower} != "category" && {$hook|lower} != "search"}<div class="items-reco-all-filtered"></div>{/if}
-					{/if}
-
 					<div class="items-theme-list">
 						<ul>
 							{foreach from=$themeList item=theme}
-							{if $theme.name|lower == 'bright' || $theme.name|lower == 'dark'}<a href="#" onClick="showPreview('{$theme.name|escape:'htmlall':'UTF-8'}');return false;">{/if}
 							<li>
-								<label for="radio-style-white">{$theme.name|escape:'htmlall':'UTF-8'}  {if $theme.name|lower == 'bright' || $theme.name|lower == 'dark'}<i class="fa fa-eye"></i>{/if}  </label>
+								<label {if $theme.name|lower == 'bright' || $theme.name|lower == 'dark'} onClick="showPreview('{$theme.name|escape:'htmlall':'UTF-8'}');return false;" {/if} for="radio-style-white">{$theme.name|escape:'htmlall':'UTF-8'}  {if $theme.name|lower == 'bright' || $theme.name|lower == 'dark'}<i class="fa fa-eye"></i>{/if}  </label>
 								<input type="radio" name="recoTheme{$hook|escape:'htmlall':'UTF-8'}_1" value="{$theme.id_theme}" id="radio-style-white"
 								{if $theme.id_theme == $configuration.{$hook}->recoTheme{$zone1}} checked="checked" {/if} />    
 							</li>
-							{if $theme.name|lower == 'bright' || $theme.name|lower == 'dark'}</a>{/if}
 							{/foreach}
 						</ul>
 					</div>
-
 					<table width="100%">
 						<tr>
 							<td>
@@ -643,32 +579,13 @@ $('.items-reco-all-filtered-select').on("change", function() {
 									</label>
 								</div>
 							</td>
-							<td>
+							<td class="reco-title">
 								<input class="items-selectors-input" name="recoTitle{$hook|escape:'htmlall':'UTF-8'}_2" type="text" value="{$configuration.{$hook|escape:'htmlall':'UTF-8'}->recoTitle{$zone2}}">
-							</td>
-							<td>
-								<select class="ae-type-recommendation-select" name="recoType{$hook|escape:'htmlall':'UTF-8'}_2">
-									{if {$hook|lower} == "home" || {$hook|lower} == "left" || {$hook|lower} == "right"}
-									<option {if $configuration.{$hook}->recoType{$zone2} == "recoAll"} selected {/if} value="recoAll">{l s='Personalized recommendation' mod='affinityitems'}</option>
-									<option {if $configuration.{$hook}->recoType{$zone2} == "recoAllFiltered"} selected {/if} value="recoAllFiltered">{l s='Filtered personalized recommendation' mod='affinityitems'}</option>
-									<option {if $configuration.{$hook}->recoType{$zone2} == "recoLastSeen"} selected {/if} value="recoLastSeen">{l s='Last liked products' mod='affinityitems'}</option>
-									{else if {$hook|lower} == "cart"}
-									<option value="recoCart">{l s='Personalized recommendation' mod='affinityitems'}</option>
-									{else if {$hook|lower} == "product"}
-									<option {if $configuration.{$hook}->recoType{$zone2} == "recoSimilar"} selected {/if} value="recoSimilar">{l s='Personalized recommendation' mod='affinityitems'}</option>
-									<option {if $configuration.{$hook}->recoType{$zone2} == "recoUpSell"} selected {/if} value="recoUpSell">{l s='Up selling' mod='affinityitems'}</option>
-									<option {if $configuration.{$hook}->recoType{$zone2} == "recoCrossSell"} selected {/if} value="recoCrossSell">{l s='Cross selling' mod='affinityitems'}</option>
-									{else if {$hook|lower} == "category"}
-									<option {if $configuration.{$hook}->recoType{$zone2} == "recoCategory"} selected {/if} value="recoCategory">{l s='Personalized recommendation' mod='affinityitems'}</option>
-									{else if {$hook|lower} == "search"}
-									<option {if $configuration.{$hook}->recoType{$zone2} == "recoSearch"} selected {/if} value="recoSearch">{l s='Personalized recommendation' mod='affinityitems'}</option>
-									{/if}
-								</select>
 							</td>
 							<td>
 								<input class="ae-number-reco-input" type="number" min="1" max="20"  name="recoSize{$hook|escape:'htmlall':'UTF-8'}_2" value="{$configuration.{$hook|escape:'htmlall':'UTF-8'}->recoSize{$zone2}}">				
 							</td>
-							<td>
+							<td class="reco-theme-selector">
 								<select disabled class="items-open-theme-list">
 									{foreach from=$themeList item=theme}
 									<option {if $theme.id_theme == $configuration.{$hook}->recoTheme{$zone2}} selected {/if} value="{$theme.id_theme}">{$theme.name|escape:'htmlall':'UTF-8'}</option>
@@ -697,30 +614,7 @@ $('.items-reco-all-filtered-select').on("change", function() {
 					</table>
 					{/if}
 
-					{if {$hook|lower} == "home" || {$hook|lower} == "left" || {$hook|lower} == "right"}
-					<div class="items-reco-all-filtered {if $configuration.{$hook|escape:'htmlall':'UTF-8'}->recoType{$zone2} == 'recoAllFiltered'} items-display {/if}">
-						<fieldset>
-							<legend>{l s='Filtered recommendation' mod='affinityitems'}</legend>
-							<select class="items-reco-all-filtered-select" name="recoFilter{$hook|escape:'htmlall':'UTF-8'}_2">
-								<option {if $configuration.{$hook}->recoFilter{$zone2} == "onSale"} selected {/if} value="onSale">Produits en solde</option>
-								<option {if $configuration.{$hook}->recoFilter{$zone2} == "byCategory"} selected {/if} value="byCategory">Par catégorie</option>
-								<option {if $configuration.{$hook}->recoFilter{$zone2} == "byAttribute"} selected {/if} value="byAttribute">Par attribut</option>
-								<option {if $configuration.{$hook}->recoFilter{$zone2} == "byFeature"} selected {/if} value="byFeature">Par caractéritique</option>
-							</select>
-							<div class="categoryIds {if $configuration.{$hook|escape:'htmlall':'UTF-8'}->recoFilter{$zone2} == 'byCategory'} items-display {/if}">
-								{l s='Filter by category ids (split by semicolon)' mod='affinityitems'} : <input name="categoryIds{$hook|escape:'htmlall':'UTF-8'}_2" value="{$configuration.{$hook|escape:'htmlall':'UTF-8'}->categoryIds{$zone2}}" type="text">
-							</div>
-							<div class="attributeIds {if $configuration.{$hook|escape:'htmlall':'UTF-8'}->recoFilter{$zone2} == 'byAttribute'} items-display {/if}">
-								{l s='Filter by attribute ids (split by semicolon)' mod='affinityitems'} : <input name="attributeIds{$hook|escape:'htmlall':'UTF-8'}_2" value="{$configuration.{$hook|escape:'htmlall':'UTF-8'}->attributeIds{$zone2}}" type="text">
-							</div>
-							<div class="featureIds {if $configuration.{$hook|escape:'htmlall':'UTF-8'}->recoFilter{$zone2} == 'byFeature'} items-display {/if}">
-								{l s='Filter by feature ids (split by semicolon)' mod='affinityitems'} : <input name="featureIds{$hook|escape:'htmlall':'UTF-8'}_2" value="{$configuration.{$hook|escape:'htmlall':'UTF-8'}->featureIds{$zone2}}" type="text">
-							</div>
-						</fieldset>
-					</div>
-					{else}
 					{if {$hook|lower} != "category" && {$hook|lower} != "search"}<div class="items-reco-all-filtered"></div>{/if}
-					{/if}
 
 					<div class="items-theme-list">
 						<ul>
@@ -773,6 +667,9 @@ $('.items-reco-all-filtered-select').on("change", function() {
 				<li>{l s='Technical department : support@affinity-engine.fr | +33 9 54 52 85 12' mod='affinityitems'}</li>
 			</ul>
 		</ul>
+
+		<p>{l s='Plugin version' mod='affinityitems'} : {$pluginVersion}</p>
+
 	</div>
 
 	<div class="items-tabs-support">
@@ -926,11 +823,12 @@ $('.items-reco-all-filtered-select').on("change", function() {
 			<ul>
 				{foreach from=$themeList item=theme}
 				{if $theme.name|lower == 'bright' || $theme.name|lower == 'dark'}
-				<a href="#" onClick="showPreview('{$theme.name|escape:'htmlall':'UTF-8'}');return false;"><li class="radio-style-{$theme.name|lower}">
-					<label for="radio-style-{$theme.name|lower}">
-						{$theme.name|escape:'htmlall':'UTF-8'} <i class="fa fa-eye"></i></label>
+				<li class="radio-style-{$theme.name|lower}">
+					<label onClick="showPreview('{$theme.name|escape:'htmlall':'UTF-8'}');return false;" for="radio-style-{$theme.name|lower}">
+					{$theme.name|escape:'htmlall':'UTF-8'} <i class="fa fa-eye"></i>
+					</label>
 					<input {if $theme.name|lower == 'bright'} checked {/if} type="radio" name="graphic" value="{$theme.id_theme}" id="radio-style-{$theme.name|lower}" />
-				</li></a>
+				</li>
 				{/if}
 				{/foreach}
 			</ul>

@@ -21,7 +21,7 @@ class RecommendationRequest extends AbstractRequest {
 	public function __construct($content) {
 		if(is_object($content)) {
 			if ($content->person instanceof AEGuest) {
-				parent::__construct('/reco', $content);
+				parent::__construct('/recommendation', $content);
 			}
 		}
 	}

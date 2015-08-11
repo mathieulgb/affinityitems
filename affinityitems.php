@@ -45,7 +45,7 @@ class AffinityItems extends Module {
 	{
 		$this->name = 'affinityitems';
 		$this->tab = 'advertising_marketing';
-		$this->version = '2.1.3';
+		$this->version = '3.0.0';
 		$this->author = 'Affinity Engine';
 		parent::__construct();
 
@@ -583,33 +583,31 @@ class AffinityItems extends Module {
 				$aecontext = new stdClass();
 				if ((bool)$hook_configuration->{'reco'.$hook.'_'.$i})
 				{
-					$aecontext->context = $hook_configuration->{'recoType'.$hook.'_'.$i};
-					if (in_array($hook, array('Home', 'Left', 'Right'))) 
-					{
-						if (AELibrary::equals($hook_configuration->{'recoType'.$hook.'_'.$i}, 'recoAllFiltered'))
-						{
-							if (!AELibrary::equals($hook_configuration->{'recoFilter'.$hook.'_'.$i}, 'onSale'))
-							{
-								$aecontext->{Tools::strtolower(preg_replace('/by/i', '', $hook_configuration->{'recoFilter'.$hook.'_'.$i})).'Ids'} =
-								self::splitBySemicolon($hook_configuration->{Tools::strtolower(preg_replace('/by/i', '', $hook_configuration->{'recoFilter'.$hook.'_'.$i})).'Ids'.$hook.'_'.$i});
-							}
-							else
-								$aecontext->{$hook_configuration->{'recoFilter'.$hook.'_'.$i}} = true;
-						}
+					$aecontext->page = 'PS_' . Tools::strtoupper($hook);
+
+					if ($hook == 'Product') {
+						$aecontext->refType = "product";
+						$aecontext->refs = array(Tools::getValue('id_product'));
 					}
-					else if ($hook == 'Product')
-						$aecontext->productId = (string)Tools::getValue('id_product');
-					else if ($hook == 'Cart')
-						$aecontext->orderLines = $this->getCartOrderLines($params);
-					else if ($hook == 'Category')
-						$aecontext->categoryId = $params;
-					else if ($hook == 'Search')
+					else if ($hook == 'Cart') {
+						$aecontext->refType = "product";
+						$aecontext->refs = $this->getCartOrderLines($params);
+					}
+					else if ($hook == 'Category') {
+		                $refType = "category";
+						$aecontext->refs = array($params);
+					}
+					else if ($hook == 'Search') {
+		                $refType = "keywords";
 						$aecontext->keywords = $params;
+					}
 
 					$aecontext->area = Tools::strtoupper($hook);
 					$aecontext->size = (int)$hook_configuration->{'recoSize'.$hook.'_'.$i};
 					$products = $this->getRecommendation($aecontext, false);
 					$theme = AEAdapter::getThemeById($hook_configuration->{'recoTheme'.$hook.'_'.$i});
+					if(!empty($recommendations) && in_array($hook, array('Search', 'Category')))
+						$recommendations = array();
 					array_push($recommendations, array('aeproducts' => $products,
 						'theme' => unserialize($theme[0]['configuration']), 'configuration' => $hook_configuration, 'titleZone' => $hook_configuration->{'recoTitle'.$hook.'_'.$i}));
 					if (in_array($hook, array('Search', 'Category')))
@@ -666,7 +664,7 @@ class AffinityItems extends Module {
 
 	public function hookRightColumn()
 	{
-		return $this->prepareRecommendation('Left');
+		return $this->prepareRecommendation('Right');
 	}
 
 	public function hookProductFooter()
@@ -682,6 +680,10 @@ class AffinityItems extends Module {
 	public function renderCategory($category_id)
 	{
 		return $this->prepareRecommendation('Category', $category_id);
+	}
+
+	public function renderEmptyCart() {
+		return $this->prepareRecommendation('Search', '');
 	}
 
 	public function actionSearch($expr)
@@ -806,12 +808,14 @@ class AffinityItems extends Module {
 
 		$this->context->smarty->assign(array(
 			'version' => Tools::substr(str_replace('.', '', _PS_VERSION_), 0, 2),
+			'pluginVersion' => $this->version,
 			'baseUrl' =>  version_compare(_PS_VERSION_, '1.5', '>=') ? $this->context->shop->getBaseURL() : __PS_BASE_URI__,
 			'isConfig' => Configuration::get('AE_FUNNEL'),
 			'siteId' => Configuration::get('AE_SITE_ID'),
 			'aetoken' => Configuration::get('AE_BACKOFFICE_TOKEN'),
 			'data' => $data,
 			'statistics' => isset($data->statistics) ? Tools::jsonDecode($data->statistics) : array(),
+			'recoIds' => isset($data->recoIds) ? Tools::jsonDecode($data->recoIds) : array(),
 			'notifications' => $this->getNotification($data),
 			'abtestingPercentage' => Configuration::get('AE_A_TESTING'),
 			'recommendation' => Configuration::get('AE_RECOMMENDATION'),
@@ -927,17 +931,21 @@ public function postProcess()
 	{
 		$hook_search_configuration = unserialize(Configuration::get('AE_CONFIGURATION_SEARCH'));
 		$hook_category_configuration = unserialize(Configuration::get('AE_CONFIGURATION_CATEGORY'));
+		$hook_cart_configuration = unserialize(Configuration::get('AE_CONFIGURATION_CART'));
 
 		$smarty = $this->context->smarty;
 		$page = $smarty->tpl_vars['page_name']->value;
 
 		$this->setVisit($page);
-		
+
 		if (Tools::getValue('id_category'))
 			$render_category = $this->renderCategory(Tools::getValue('id_category'));
 		else if (Tools::getValue('search_query'))
 			$render_search = $this->renderSearch(Tools::getValue('search_query'));
-		
+
+		if($page == "order" && !Tools::getValue('step') && ((bool)$hook_cart_configuration->recoCart_1 || (bool)$hook_cart_configuration->recoCart_2))
+			$render_empty_cart = $this->renderEmptyCart();
+
 		if (!$this->getPerson() instanceof stdClass)
 		{
 			$this->smarty->assign(array(
@@ -945,6 +953,7 @@ public function postProcess()
 				'abtesting' => $this->getPerson()->getGroup(),
 				'renderCategory' => isset($render_category) ? $render_category : '',
 				'renderSearch' => isset($render_search) ? $render_search : '',
+				'renderEmptyCart' => isset($render_empty_cart) ? $render_empty_cart : '',
 				'categoryId' => Tools::getValue('id_category'),
 				'trackingJs' => (bool)Configuration::get('AE_TRACKING_JS'),
 				'pageName' => $page,

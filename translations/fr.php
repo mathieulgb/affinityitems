@@ -102,6 +102,7 @@ $_MODULE['<{affinityitems}prestashop>dashboard_ea71b96b8293f06978e83381cd0671b4'
 $_MODULE['<{affinityitems}prestashop>dashboard_b58ecdc0871b7cfa67a9f336ea6fefaf'] = 'contactez-nous au';
 $_MODULE['<{affinityitems}prestashop>dashboard_b17a1fc14d3aee9ce2b99c6b68ee06de'] = 'Service commercial : commercial@affinity-engine.fr | +33 9 80 47 24 83';
 $_MODULE['<{affinityitems}prestashop>dashboard_3976bb5a4b7e8f5bd3e760cfc65096f0'] = 'Service technique : support@affinity-engine.fr | +33 9 54 52 85 12';
+$_MODULE['<{affinityitems}prestashop>dashboard_ddcce3a3e9ec15f294c37945e1043081'] = 'Version du plugin';
 $_MODULE['<{affinityitems}prestashop>dashboard_1fe917b01f9a3f87fa2d7d3b7643fac1'] = 'FAQ';
 $_MODULE['<{affinityitems}prestashop>dashboard_b2d37ae1cedf42ff874289b721860af2'] = 'Logs';
 $_MODULE['<{affinityitems}prestashop>dashboard_b9b435bbce315b0cecb2f2df1f12cbe2'] = 'Vous souhaitez un support pour résoudre votre problème.';

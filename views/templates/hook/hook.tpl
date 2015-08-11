@@ -1,4 +1,4 @@
-{*
+ {*
 * 2014 Affinity-Engine
 *
 * NOTICE OF LICENSE
@@ -39,9 +39,6 @@
             {/literal}{if isset($renderCategory[$position-1])}{literal}
             var renderCategory_{/literal}{$position}{literal} = $.trim('{/literal}{$renderCategory[$position-1]}{literal}');
             $("{/literal}{$hookCategoryConfiguration->recoSelectorCategory_{$position}}{literal}").first().{/literal}{$hookCategoryConfiguration->recoSelectorPositionCategory_{$position}}{literal}(renderCategory_{/literal}{$position}{literal});
-            if ($(".aereco").length && $("{/literal}{$hookCategoryConfiguration->recoSelectorCategory_{$position}}{literal}").length) {
-                $(".aereco").show();
-            }
             {/literal}{/if}{literal}
             {/literal}
             {/for}
@@ -51,6 +48,7 @@
         {/if}
         {literal}
        {/literal}
+       
        {if $renderSearch != "" && !empty($renderSearch)}
        {literal}
         if ($("body").attr("id") == "search") {
@@ -60,8 +58,24 @@
             {/literal}{if isset($renderSearch[$position-1])}{literal}
             var renderSearch_{/literal}{$position}{literal} = $.trim('{/literal}{$renderSearch[$position-1]}{literal}');
             $("{/literal}{$hookSearchConfiguration->recoSelectorSearch_{$position}}{literal}").first().{/literal}{$hookSearchConfiguration->recoSelectorPositionSearch_{$position}}{literal}(renderSearch_{/literal}{$position}{literal});
-            if ($(".aereco").length && $("{/literal}{$hookSearchConfiguration->recoSelectorSearch_{$position}}{literal}").length) {
-                 $(".aereco").show();
+            {/literal}{/if}{literal}
+            {/literal}
+            {/for}
+            {literal}
+        }
+        {/literal}
+        {/if}
+
+       {if $renderEmptyCart != "" && !empty($renderEmptyCart)}
+       {literal}
+        if ($("body").attr("id") == "order") {
+            {/literal}
+            {for $position=1 to 2}
+            {literal}
+            {/literal}{if isset($renderEmptyCart[$position-1])}{literal}
+            var renderEmptyCart_{/literal}{$position}{literal} = $.trim('{/literal}{$renderEmptyCart[$position-1]}{literal}');
+            if($("#center_column .warning").is(":visible")) {
+                $("#center_column .warning").first().after(renderEmptyCart_{/literal}{$position}{literal});
             }
             {/literal}{/if}{literal}
             {/literal}
@@ -70,11 +84,40 @@
         }
         {/literal}
         {/if}
+
         {literal}
-        $('.ae-area a').on('click', function() {
-            aenow = new Date().getTime();
-            createCookie('aelastreco', (aenow+"."+$(this).parents(".ae-area").attr("class").split(" ")[1].split("-")[1]+"."+$(this).attr("rel")), 1);
+        aenow = new Date().getTime();
+        $('.ae-area a').mousedown(function(event) {
+            switch (event.which) {
+                case 1:
+                createCookie('aelastreco', (aenow+"."+$(this).parents(".ae-area").attr("class").split(" ")[1].split("-")[1]+"."+$(this).attr("rel")), 1);
+                break;
+                case 2:
+                postAction("trackRecoClick", {recoType : $(this).parents(".ae-area").attr("class").split(" ")[1].split("-")[1], productId : $(this).attr("rel")});
+                break;
+                case 3:
+                rightClickOnRecommendation(aenow, $(this).parents(".ae-area").attr("class").split(" ")[1].split("-")[1], $(this).attr("rel"));
+                break;
+            }
         });
+        if($('#product_page_product_id').val()) {
+            var allRightClick = JSON.parse(readCookie('aeRightClickReco'));
+            var i;
+            if(allRightClick !== null) {
+                if(allRightClick instanceof Array) {
+                    for(i = 0; i < allRightClick.length; i++) {
+                        if(allRightClick[i].productId == $('#product_page_product_id').val()) {
+                            postAction("trackRecoClick", {recoType : allRightClick[i].recoType, productId : allRightClick[i].productId});
+                            delete allRightClick[i];
+                        }
+                    }
+                }
+                allRightClick = reindexArray(allRightClick);
+                deleteCookie('aeRightClickReco');
+                if(allRightClick.length > 0)
+                    createCookie('aeRightClickReco', JSON.stringify(allRightClick), 1);
+            }
+        }
     });
     {/literal}{if isset($categoryId) && $categoryId != ''}{literal}
     var categoryId = {/literal}{$categoryId}{literal};

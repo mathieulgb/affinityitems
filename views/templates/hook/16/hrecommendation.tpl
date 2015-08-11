@@ -39,7 +39,19 @@
 	{if isset($reco.configuration)}<div class="ae-area ae-{$reco.configuration->area|escape:'htmlall'}">{/if}
 
 	<div {if $reco.theme.backgroundDisplayOptions} style="{if !$reco.theme.backgroundColorTransparent}background-color: {$reco.theme.backgroundColor|escape:'htmlall':'UTF-8'};{/if} border: {$reco.theme.backgroundBorderSize|escape:'htmlall':'UTF-8'}px solid {$reco.theme.backgroundBorderColor|escape:'htmlall':'UTF-8'}; border-radius: {$reco.theme.backgroundBorderRoundedSize|escape:'htmlall':'UTF-8'}px" {/if} id="{$reco.theme.backgroundProductsBlockId|escape:'htmlall':'UTF-8'}" class="{$reco.theme.backgroundProductsBlockClass|escape:'htmlall':'UTF-8'}">
-		{if $reco.theme.titleActivation}<h4 {if $reco.theme.titleDisplayOptions} style="color: {$reco.theme.titleColor|escape:'htmlall':'UTF-8'}; font-size: {$reco.theme.titleSize|escape:'htmlall':'UTF-8'}px; border: {$reco.theme.titleBorderSize|escape:'htmlall':'UTF-8'}px solid {$reco.theme.titleBorderColor|escape:'htmlall':'UTF-8'}; border-radius: {$reco.theme.titleBorderRoundedSize|escape:'htmlall':'UTF-8'}px; {if !$reco.theme.titleBackgroundColorTransparent}background-color: {$reco.theme.titleBackgroundColor|escape:'htmlall':'UTF-8'}; text-align: {$reco.theme.titleAlign|escape:'htmlall':'UTF-8'}; line-height: {$reco.theme.titleLineHeight|escape:'htmlall':'UTF-8'}px; {/if}"{/if} class="{$reco.theme.titleClass|escape:'htmlall':'UTF-8'}">{if isset($reco.titleZone)} {$reco.titleZone|escape:'htmlall':'UTF-8'} {else} {l s='We recommend' mod='affinityitems'} {/if}</h4>{/if}
+		{if $reco.theme.titleActivation}
+
+		<div class="{$reco.theme.titleContainerClass|escape:'htmlall':'UTF-8'}">
+
+		<div class="{$reco.theme.titleBeforeClass|escape:'htmlall':'UTF-8'}"></div>
+
+		<h4 {if $reco.theme.titleDisplayOptions} style="color: {$reco.theme.titleColor|escape:'htmlall':'UTF-8'}; font-size: {$reco.theme.titleSize|escape:'htmlall':'UTF-8'}px; border: {$reco.theme.titleBorderSize|escape:'htmlall':'UTF-8'}px solid {$reco.theme.titleBorderColor|escape:'htmlall':'UTF-8'}; border-radius: {$reco.theme.titleBorderRoundedSize|escape:'htmlall':'UTF-8'}px; {if !$reco.theme.titleBackgroundColorTransparent}background-color: {$reco.theme.titleBackgroundColor|escape:'htmlall':'UTF-8'}; text-align: {$reco.theme.titleAlign|escape:'htmlall':'UTF-8'}; line-height: {$reco.theme.titleLineHeight|escape:'htmlall':'UTF-8'}px; {/if}"{/if} class="{$reco.theme.titleClass|escape:'htmlall':'UTF-8'}">{if isset($reco.titleZone)} {$reco.titleZone|escape:'htmlall':'UTF-8'} {else} {l s='We recommend' mod='affinityitems'} {/if}</h4>
+
+		<div class="{$reco.theme.titleAfterClass|escape:'htmlall':'UTF-8'}"></div>
+
+		</div>
+
+		{/if}
 		<div id="{$reco.theme.backgroundContentId|escape:'htmlall':'UTF-8'}" class="{$reco.theme.backgroundContentClass|escape:'htmlall':'UTF-8'}">
 
 			<ul{if isset($id) && $id} id="{$id}"{/if} id="{$reco.theme.backgroundListId|escape:'htmlall':'UTF-8'}" class="{$reco.theme.backgroundListClass|escape:'htmlall':'UTF-8'} {if isset($class) && $class} {$class}{/if}{if isset($active) && $active == 1} active{/if}">
@@ -68,7 +80,6 @@
 							</a>
 						</h5>
 						{/if}
-						{hook h='displayProductListReviews' product=$product}
 						{if $reco.theme.productDescriptionActivation}
 						<p {if $reco.theme.productDescriptionDisplayOptions} style="height: {$reco.theme.productDescriptionHeight}px;color:{$reco.theme.productDescriptionColor};font-size: {$reco.theme.productDescriptionSize}px; text-align: {$reco.theme.productDescriptionAlign}; line-height: {$reco.theme.productDescriptionLineHeight}px;" {/if} id="{$reco.theme.productDescriptionId}" class="{$reco.theme.productDescriptionClass}" itemprop="description">
 							{$product.description_short|strip_tags:'UTF-8'|truncate:360:'...'}

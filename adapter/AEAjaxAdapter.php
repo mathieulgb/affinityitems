@@ -294,14 +294,16 @@ class AEAjaxAdapter {
 			$content = $action;
 			$request = new ActionRequest($content);
 
+			$possibilities = array("visit", "read", "rebound", "readCategory", "reboundCategory", "trackRecoClick");
+
+			if(!in_array($action->context, $possibilities))
+				return false;
+
 			if (!AELibrary::isEmpty(AEAdapter::getSiteId())
 				&& !AELibrary::isEmpty(AEAdapter::getSecurityKey()))
 			{
-				if (!$request->post())
-				{
-					$repository = new ActionRepository();
-					$repository->insert(AELibrary::castArray($content));
-				}
+				$request = new ActionRequest($content);
+				$request->post();
 			}
 
 			if (AELibrary::equals($action->context, 'read') && Tools::getValue('productId'))

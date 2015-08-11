@@ -159,6 +159,7 @@ class ProductSynchronize extends AbstractModuleSynchronize {
 		$imagesSize = ProductAdapter::getImageSize();
 		$imageIds = ProductAdapter::getImageIds($productId);
 		$imageTags = array("large", "medium", "small", "other");
+		$protocol = (Configuration::get('PS_SSL_ENABLED') || Tools::usingSecureMode()) ? 'https://' : 'http://';
 
 		$urls = new stdClass();
 		foreach ($imageTags as $tag)
@@ -166,7 +167,7 @@ class ProductSynchronize extends AbstractModuleSynchronize {
 
 		foreach ($imageIds as $imageId) {
 			foreach ($imagesSize as $size) {
-				$url = $link->getImageLink($rewriteLink, $productId.'-'.$imageId['id'], $size['name']);
+				$url = $protocol . $link->getImageLink($rewriteLink, $productId.'-'.$imageId['id'], $size['name']);
 				if(!empty($url)) {
 					foreach ($urls as $key => $value) {
 						if(is_int(strpos($size['name'], $key))) {
@@ -193,7 +194,8 @@ class ProductSynchronize extends AbstractModuleSynchronize {
 	public static function getProductPrices($productId) {
 	 	$listPrice = array();
 	 	$price = new stdClass();
-	 	$price->currency = Context::getContext()->currency->iso_code;
+	 	$currency = new Currency(Configuration::get('PS_CURRENCY_DEFAULT'));
+	 	$price->currency = $currency->iso_code;
 	 	$price->amount = Product::getPriceStatic($productId, false);
 	 	$price->displayedPrice = Product::getPriceStatic($productId, false, null, 6, null, false, true);
 

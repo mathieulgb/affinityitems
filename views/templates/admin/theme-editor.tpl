@@ -43,7 +43,7 @@
 						<input type="submit" value="{l s='Save' mod='affinityitems'}" class="items-button-submit">
 						<input type="submit" id="registerTheme" value="{l s='Save as' mod='affinityitems'}" class="items-button-submit">
 			</div>
-			<div class="clear"></div>			
+			<div class="clear"></div>
 		</div>
 
 		<div class="preview">
@@ -83,6 +83,11 @@
 							<input name="backgroundBorderSize" type="number" value="{$themeSelected.themeConfiguration.backgroundBorderSize|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
+
+					<a href="#" class="items-css-options" onClick="return false;"><img src="../img/t/AdminTools.gif" alt=""> {l s='Advanced options' mod='affinityitems'}</a>
+
+					<div class="items-advanced-options">
+
 					<fieldset>
 						<legend>CSS products bloc div</legend>
 						<div class="items-conf">
@@ -116,6 +121,9 @@
 							<input name="backgroundListClass" type="text" value="{$themeSelected.themeConfiguration.backgroundListClass|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
+
+					</div>
+
 				</div>
 				<div class="title-toolbox toolboxarea" style="display:none">
 					<div class="items-config-title">
@@ -173,6 +181,47 @@
 							<input name="titleLineHeight" type="number" value="{$themeSelected.themeConfiguration.titleLineHeight|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
+
+					<a href="#" class="items-css-options" onClick="return false;"><img src="../img/t/AdminTools.gif" alt=""> {l s='Advanced options' mod='affinityitems'}</a>
+
+					<div class="items-advanced-options">
+
+					<fieldset>
+						<legend>CSS {l s='Container' mod='affinityitems'} </legend>
+						<div class="items-conf">
+							<label>id :</label><br>
+							<input name="titleContainerId" type="text"  value="{$themeSelected.themeConfiguration.titleContainerId|escape:'htmlall':'UTF-8'}"/>
+						</div>
+						<div class="items-conf">
+							<label>class :</label><br>
+							<input name="titleContainerClass" type="text" value="{$themeSelected.themeConfiguration.titleContainerClass|escape:'htmlall':'UTF-8'}"/>
+						</div>
+					</fieldset>
+					
+					<fieldset>
+						<legend>CSS {l s='Title Before' mod='affinityitems'} </legend>
+						<div class="items-conf">
+							<label>id :</label><br>
+							<input name="titleBeforeId" type="text"  value="{$themeSelected.themeConfiguration.titleBeforeId|escape:'htmlall':'UTF-8'}"/>
+						</div>
+						<div class="items-conf">
+							<label>class :</label><br>
+							<input name="titleBeforeClass" type="text" value="{$themeSelected.themeConfiguration.titleBeforeClass|escape:'htmlall':'UTF-8'}"/>
+						</div>
+					</fieldset>
+
+					<fieldset>
+						<legend>CSS {l s='Title After' mod='affinityitems'} </legend>
+						<div class="items-conf">
+							<label>id :</label><br>
+							<input name="titleAfterId" type="text"  value="{$themeSelected.themeConfiguration.titleAfterId|escape:'htmlall':'UTF-8'}"/>
+						</div>
+						<div class="items-conf">
+							<label>class :</label><br>
+							<input name="titleAfterClass" type="text" value="{$themeSelected.themeConfiguration.titleAfterClass|escape:'htmlall':'UTF-8'}"/>
+						</div>
+					</fieldset>
+
 					<fieldset>
 						<legend>CSS {l s='Title' mod='affinityitems'} </legend>
 						<div class="items-conf">
@@ -184,6 +233,9 @@
 							<input name="titleClass" type="text" value="{$themeSelected.themeConfiguration.titleClass|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
+
+					</div>
+
 				</div>
 				<div class="product-toolbox toolboxarea" style="display:none">
 					<div class="items-config-title">
@@ -237,6 +289,11 @@
 							<input name="productMarginRight" type="number" value="{$themeSelected.themeConfiguration.productMarginRight|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
+					
+					<a href="#" class="items-css-options" onClick="return false;"><img src="../img/t/AdminTools.gif" alt=""> {l s='Advanced options' mod='affinityitems'}</a>
+
+					<div class="items-advanced-options">
+
 					<fieldset>				
 						<legend>{l s='Product element' mod='affinityitems'} (li)</legend>
 						<div class="items-conf">
@@ -283,6 +340,9 @@
 						</div>
 					</fieldset>
 					{/if}
+
+					</div>
+
 				</div>
 				<div class="productTitle-toolbox toolboxarea" style="display:none">
 					<div class="items-config-title">
@@ -322,30 +382,38 @@
 							<input name="productTitleLineHeight" type="number" value="{$themeSelected.themeConfiguration.productTitleLineHeight|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
-					<fieldset>				
-						<legend>CSS {l s='product title' mod='affinityitems'}</legend>
-						<div class="items-conf">
-							<label>id :</label><br>
-							<input name="productTitleId" type="text"  value="{$themeSelected.themeConfiguration.productTitleId|escape:'htmlall':'UTF-8'}"/>
-						</div>
-						<div class="items-conf">
-							<label>class :</label><br>
-							<input name="productTitleClass" type="text" value="{$themeSelected.themeConfiguration.productTitleClass|escape:'htmlall':'UTF-8'}"/>
-						</div>
-					</fieldset>
-					{if $version >= 16}
-					<fieldset>				
-						<legend>CSS {l s='product link title' mod='affinityitems'}</legend>
-						<div class="items-conf">
-							<label>id :</label><br>
-							<input name="productLinkTitleId" type="text"  value="{$themeSelected.themeConfiguration.productLinkTitleId|escape:'htmlall':'UTF-8'}"/>
-						</div>
-						<div class="items-conf">
-							<label>class :</label><br>
-							<input name="productLinkTitleClass" type="text" value="{$themeSelected.themeConfiguration.productLinkTitleClass|escape:'htmlall':'UTF-8'}"/>
-						</div>
-					</fieldset>
-					{/if}		
+					
+					<a href="#" class="items-css-options" onClick="return false;"><img src="../img/t/AdminTools.gif" alt=""> {l s='Advanced options' mod='affinityitems'}</a>
+
+					<div class="items-advanced-options">
+
+						<fieldset>				
+							<legend>CSS {l s='product title' mod='affinityitems'}</legend>
+							<div class="items-conf">
+								<label>id :</label><br>
+								<input name="productTitleId" type="text"  value="{$themeSelected.themeConfiguration.productTitleId|escape:'htmlall':'UTF-8'}"/>
+							</div>
+							<div class="items-conf">
+								<label>class :</label><br>
+								<input name="productTitleClass" type="text" value="{$themeSelected.themeConfiguration.productTitleClass|escape:'htmlall':'UTF-8'}"/>
+							</div>
+						</fieldset>
+						{if $version >= 16}
+						<fieldset>				
+							<legend>CSS {l s='product link title' mod='affinityitems'}</legend>
+							<div class="items-conf">
+								<label>id :</label><br>
+								<input name="productLinkTitleId" type="text"  value="{$themeSelected.themeConfiguration.productLinkTitleId|escape:'htmlall':'UTF-8'}"/>
+							</div>
+							<div class="items-conf">
+								<label>class :</label><br>
+								<input name="productLinkTitleClass" type="text" value="{$themeSelected.themeConfiguration.productLinkTitleClass|escape:'htmlall':'UTF-8'}"/>
+							</div>
+						</fieldset>
+						{/if}
+
+					</div>
+
 				</div>
 				<div class="description-toolbox toolboxarea" style="display:none">
 					<div class="items-config-title">
@@ -385,17 +453,23 @@
 							<input name="productDescriptionLineHeight" type="number" value="{$themeSelected.themeConfiguration.productDescriptionLineHeight|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
-					<fieldset>				
-						<legend>CSS {l s='product description' mod='affinityitems'}</legend>
-						<div class="items-conf">
-							<label>id :</label><br>
-							<input name="productDescriptionId" type="text"  value="{$themeSelected.themeConfiguration.productDescriptionId|escape:'htmlall':'UTF-8'}"/>
-						</div>
-						<div class="items-conf">
-							<label>class :</label><br>
-							<input name="productDescriptionClass" type="text" value="{$themeSelected.themeConfiguration.productDescriptionClass|escape:'htmlall':'UTF-8'}"/>
-						</div>
-					</fieldset>
+					
+					<a href="#" class="items-css-options" onClick="return false;"><img src="../img/t/AdminTools.gif" alt=""> {l s='Advanced options' mod='affinityitems'}</a>
+
+					<div class="items-advanced-options">
+						<fieldset>				
+							<legend>CSS {l s='product description' mod='affinityitems'}</legend>
+							<div class="items-conf">
+								<label>id :</label><br>
+								<input name="productDescriptionId" type="text"  value="{$themeSelected.themeConfiguration.productDescriptionId|escape:'htmlall':'UTF-8'}"/>
+							</div>
+							<div class="items-conf">
+								<label>class :</label><br>
+								<input name="productDescriptionClass" type="text" value="{$themeSelected.themeConfiguration.productDescriptionClass|escape:'htmlall':'UTF-8'}"/>
+							</div>
+						</fieldset>
+					</div>
+
 				</div>
 				<div class="image-toolbox toolboxarea" style="display:none">
 					<div class="items-config-title">
@@ -439,28 +513,36 @@
 							</select> 
 						</div>
 					</fieldset>
-					<fieldset>
-						<legend>CSS {l s='picture link' mod='affinityitems'} </legend>
-						<div class="items-conf">
-							<label>id :</label><br>
-							<input name="pictureLinkId" type="text"  value="{$themeSelected.themeConfiguration.pictureLinkId|escape:'htmlall':'UTF-8'}"/>
-						</div>
-						<div class="items-conf">
-							<label>class :</label><br>
-							<input name="pictureLinkClass" type="text" value="{$themeSelected.themeConfiguration.pictureLinkClass|escape:'htmlall':'UTF-8'}"/>
-						</div>
-					</fieldset>
-					<fieldset>
-						<legend>CSS {l s='picture' mod='affinityitems'}</legend>
-						<div class="items-conf">
-							<label>id :</label><br>
-							<input name="pictureId" type="text"  value="{$themeSelected.themeConfiguration.pictureId|escape:'htmlall':'UTF-8'}"/>
-						</div>
-						<div class="items-conf">
-							<label>class :</label><br>
-							<input name="pictureClass" type="text" value="{$themeSelected.themeConfiguration.pictureClass|escape:'htmlall':'UTF-8'}"/>
-						</div>
-					</fieldset>
+					
+					<a href="#" class="items-css-options" onClick="return false;"><img src="../img/t/AdminTools.gif" alt=""> {l s='Advanced options' mod='affinityitems'}</a>
+
+					<div class="items-advanced-options">
+
+						<fieldset>
+							<legend>CSS {l s='picture link' mod='affinityitems'} </legend>
+							<div class="items-conf">
+								<label>id :</label><br>
+								<input name="pictureLinkId" type="text"  value="{$themeSelected.themeConfiguration.pictureLinkId|escape:'htmlall':'UTF-8'}"/>
+							</div>
+							<div class="items-conf">
+								<label>class :</label><br>
+								<input name="pictureLinkClass" type="text" value="{$themeSelected.themeConfiguration.pictureLinkClass|escape:'htmlall':'UTF-8'}"/>
+							</div>
+						</fieldset>
+						<fieldset>
+							<legend>CSS {l s='picture' mod='affinityitems'}</legend>
+							<div class="items-conf">
+								<label>id :</label><br>
+								<input name="pictureId" type="text"  value="{$themeSelected.themeConfiguration.pictureId|escape:'htmlall':'UTF-8'}"/>
+							</div>
+							<div class="items-conf">
+								<label>class :</label><br>
+								<input name="pictureClass" type="text" value="{$themeSelected.themeConfiguration.pictureClass|escape:'htmlall':'UTF-8'}"/>
+							</div>
+						</fieldset>
+
+					</div>
+
 				</div>
 				<div class="price-toolbox toolboxarea" style="display:none">
 					<div class="items-config-title">
@@ -489,52 +571,59 @@
 						</div>
 					</fieldset>
 
-					<fieldset>
-						<legend>CSS price container</legend>
-						<div class="items-conf">
-							<label>id :</label><br>
-							<input name="priceContainerId" type="text"  value="{$themeSelected.themeConfiguration.priceContainerId|escape:'htmlall':'UTF-8'}"/>
-						</div>
-						<div class="items-conf">
-							<label>class :</label><br>
-							<input name="priceContainerClass" type="text" value="{$themeSelected.themeConfiguration.priceContainerClass|escape:'htmlall':'UTF-8'}"/>
-						</div>
-					</fieldset>
-					<fieldset>
-						<legend>CSS price</legend>
-						<div class="items-conf">
-							<label>id :</label><br>
-							<input name="priceId" type="text"  value="{$themeSelected.themeConfiguration.priceId|escape:'htmlall':'UTF-8'}"/>
-						</div>
-						<div class="items-conf">
-							<label>class :</label><br>
-							<input name="priceClass" type="text" value="{$themeSelected.themeConfiguration.priceClass|escape:'htmlall':'UTF-8'}"/>
-						</div>
-					</fieldset>
-					{if $version >= 16}
-					<fieldset>				
-						<legend>CSS old price</legend>
-						<div class="items-conf">
-							<label>id :</label><br>
-							<input name="oldPriceId" type="text"  value="{$themeSelected.themeConfiguration.oldPriceId|escape:'htmlall':'UTF-8'}"/>
-						</div>
-						<div class="items-conf">
-							<label>class :</label><br>
-							<input name="oldPriceClass" type="text" value="{$themeSelected.themeConfiguration.oldPriceClass|escape:'htmlall':'UTF-8'}"/>
-						</div>
-					</fieldset>
-					<fieldset>				
-						<legend>CSS price percent reduction</legend>
-						<div class="items-conf">
-							<label>id :</label><br>
-							<input name="priceReductionId" type="text"  value="{$themeSelected.themeConfiguration.priceReductionId|escape:'htmlall':'UTF-8'}"/>
-						</div>
-						<div class="items-conf">
-							<label>class :</label><br>
-							<input name="priceReductionClass" type="text" value="{$themeSelected.themeConfiguration.priceReductionClass|escape:'htmlall':'UTF-8'}"/>
-						</div>
-					</fieldset>
-					{/if}
+					<a href="#" class="items-css-options" onClick="return false;"><img src="../img/t/AdminTools.gif" alt=""> {l s='Advanced options' mod='affinityitems'}</a>
+
+					<div class="items-advanced-options">
+
+						<fieldset>
+							<legend>CSS price container</legend>
+							<div class="items-conf">
+								<label>id :</label><br>
+								<input name="priceContainerId" type="text"  value="{$themeSelected.themeConfiguration.priceContainerId|escape:'htmlall':'UTF-8'}"/>
+							</div>
+							<div class="items-conf">
+								<label>class :</label><br>
+								<input name="priceContainerClass" type="text" value="{$themeSelected.themeConfiguration.priceContainerClass|escape:'htmlall':'UTF-8'}"/>
+							</div>
+						</fieldset>
+						<fieldset>
+							<legend>CSS price</legend>
+							<div class="items-conf">
+								<label>id :</label><br>
+								<input name="priceId" type="text"  value="{$themeSelected.themeConfiguration.priceId|escape:'htmlall':'UTF-8'}"/>
+							</div>
+							<div class="items-conf">
+								<label>class :</label><br>
+								<input name="priceClass" type="text" value="{$themeSelected.themeConfiguration.priceClass|escape:'htmlall':'UTF-8'}"/>
+							</div>
+						</fieldset>
+						{if $version >= 16}
+						<fieldset>				
+							<legend>CSS old price</legend>
+							<div class="items-conf">
+								<label>id :</label><br>
+								<input name="oldPriceId" type="text"  value="{$themeSelected.themeConfiguration.oldPriceId|escape:'htmlall':'UTF-8'}"/>
+							</div>
+							<div class="items-conf">
+								<label>class :</label><br>
+								<input name="oldPriceClass" type="text" value="{$themeSelected.themeConfiguration.oldPriceClass|escape:'htmlall':'UTF-8'}"/>
+							</div>
+						</fieldset>
+						<fieldset>				
+							<legend>CSS price percent reduction</legend>
+							<div class="items-conf">
+								<label>id :</label><br>
+								<input name="priceReductionId" type="text"  value="{$themeSelected.themeConfiguration.priceReductionId|escape:'htmlall':'UTF-8'}"/>
+							</div>
+							<div class="items-conf">
+								<label>class :</label><br>
+								<input name="priceReductionClass" type="text" value="{$themeSelected.themeConfiguration.priceReductionClass|escape:'htmlall':'UTF-8'}"/>
+							</div>
+						</fieldset>
+						{/if}
+
+					</div>
+
 				</div>
 				<div class="cart-toolbox toolboxarea" style="display:none">
 					<div class="items-config-title">
@@ -591,17 +680,25 @@
 							<input name="cartLineHeight" type="number" value="{$themeSelected.themeConfiguration.cartLineHeight|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
-					<fieldset>
-						<legend>CSS price container</legend>
-						<div class="items-conf">
-							<label>id :</label><br>
-							<input name="cartId" type="text" value="{$themeSelected.themeConfiguration.cartId|escape:'htmlall':'UTF-8'}"/>
-						</div>
-						<div class="items-conf">
-							<label>class :</label><br>
-							<input name="cartClass" type="text" value="{$themeSelected.themeConfiguration.cartClass|escape:'htmlall':'UTF-8'}"/>
-						</div>
-					</fieldset>
+					
+					<a href="#" class="items-css-options" onClick="return false;"><img src="../img/t/AdminTools.gif" alt=""> {l s='Advanced options' mod='affinityitems'}</a>
+
+					<div class="items-advanced-options">
+
+						<fieldset>
+							<legend>CSS cart container</legend>
+							<div class="items-conf">
+								<label>id :</label><br>
+								<input name="cartId" type="text" value="{$themeSelected.themeConfiguration.cartId|escape:'htmlall':'UTF-8'}"/>
+							</div>
+							<div class="items-conf">
+								<label>class :</label><br>
+								<input name="cartClass" type="text" value="{$themeSelected.themeConfiguration.cartClass|escape:'htmlall':'UTF-8'}"/>
+							</div>
+						</fieldset>
+
+					</div>
+
 				</div>
 				<div class="detail-toolbox toolboxarea" style="display:none">
 					<div class="items-config-title">
@@ -624,17 +721,24 @@
 							<input name="detailSize" type="number" value="{$themeSelected.themeConfiguration.detailSize|escape:'htmlall':'UTF-8'}"/>
 						</div>
 					</fieldset>
-					<fieldset>
-						<legend>CSS product detail</legend>
-						<div class="items-conf">
-							<label>id :</label><br>
-							<input name="detailId" type="text"  value="{$themeSelected.themeConfiguration.detailId|escape:'htmlall':'UTF-8'}"/>
-						</div>
-						<div class="items-conf">
-							<label>class :</label><br>
-							<input name="detailClass" type="text" value="{$themeSelected.themeConfiguration.detailClass|escape:'htmlall':'UTF-8'}"/>
-						</div>
-					</fieldset>
+
+					<a href="#" class="items-css-options" onClick="return false;"><img src="../img/t/AdminTools.gif" alt=""> {l s='Advanced options' mod='affinityitems'}</a>						
+					<div class="items-advanced-options">
+
+						<fieldset>
+							<legend>CSS product detail</legend>
+							<div class="items-conf">
+								<label>id :</label><br>
+								<input name="detailId" type="text"  value="{$themeSelected.themeConfiguration.detailId|escape:'htmlall':'UTF-8'}"/>
+							</div>
+							<div class="items-conf">
+								<label>class :</label><br>
+								<input name="detailClass" type="text" value="{$themeSelected.themeConfiguration.detailClass|escape:'htmlall':'UTF-8'}"/>
+							</div>
+						</fieldset>
+
+					</div>
+
 				</div>
 				<div class="default-toolbox toolboxarea" style="display:inherit">
 					<div class="title">

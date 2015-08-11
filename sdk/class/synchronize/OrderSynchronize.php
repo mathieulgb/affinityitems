@@ -38,9 +38,11 @@ class OrderSynchronize extends AbstractModuleSynchronize {
 			$countPage = ceil($countOrder/parent::BULK_PACKAGE);
 			for($page = 0; $page <= ($countPage - 1); $page++) {
 				$content = $this->syncOrder($clause);
-				$request = new OrderRequest($content);
-				if($request->post()) 
-					$this->getRepository()->insert($content);
+				if(!empty($content)) {
+					$request = new OrderRequest($content);
+					if($request->post()) 
+						$this->getRepository()->insert($content);
+				}
 			}
 		}
 	}
@@ -52,9 +54,11 @@ class OrderSynchronize extends AbstractModuleSynchronize {
 			$countPage = ceil($countOrder/parent::BULK_PACKAGE);
 			for($page = 0; $page <= ($countPage - 1); $page++) {
 				$content = $this->syncOrder($clause);
-				$request = new OrderRequest($content);
-				if($request->put())
-					$this->getRepository()->update($content);
+				if(!empty($content)) {
+					$request = new OrderRequest($content);
+					if($request->put())
+						$this->getRepository()->update($content);
+				}
 			}
 		}
 	}

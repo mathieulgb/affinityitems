@@ -21,7 +21,7 @@ final class AENotification {
 	private $notificationList;
 
 	private $repository;
-	
+
 	public function __construct($pnotificationList) {
 		$this->notificationList = $pnotificationList;
 		$this->repository = new NotificationRepository();

@@ -27,7 +27,19 @@
 {if isset($reco.aeproducts) AND $reco.aeproducts}
 <div class="ae-area ae-{$reco.configuration->area|escape:'htmlall'}">
 <div {if $reco.theme.backgroundDisplayOptions} style="{if !$reco.theme.backgroundColorTransparent}background-color: {$reco.theme.backgroundColor};{/if} border: {$reco.theme.backgroundBorderSize}px solid {$reco.theme.backgroundBorderColor}; border-radius: {$reco.theme.backgroundBorderRoundedSize}px" {/if} id="{$reco.theme.backgroundProductsBlockId|escape:'htmlall'}" class="{$reco.theme.backgroundProductsBlockClass|escape:'htmlall'}">
-	{if $reco.theme.titleActivation}<h4 {if $reco.theme.titleDisplayOptions} style="color: {$reco.theme.titleColor}; font-size: {$reco.theme.titleSize}px; border: {$reco.theme.titleBorderSize}px solid {$reco.theme.titleBorderColor}; border-radius: {$reco.theme.titleBorderRoundedSize}px; {if !$reco.theme.titleBackgroundColorTransparent}background-color: {$reco.theme.titleBackgroundColor}{/if}; text-align: {$reco.theme.titleAlign}; line-height: {$reco.theme.titleLineHeight}px; "{/if} class="{$reco.theme.titleClass|escape:'htmlall'}">{$reco.titleZone}</h4>{/if}
+	{if $reco.theme.titleActivation}
+	
+	<div class="{$reco.theme.titleContainerClass|escape:'htmlall':'UTF-8'}">
+
+	<div class="{$reco.theme.titleBeforeClass|escape:'htmlall':'UTF-8'}"></div>
+
+	<h4 {if $reco.theme.titleDisplayOptions} style="color: {$reco.theme.titleColor}; font-size: {$reco.theme.titleSize}px; border: {$reco.theme.titleBorderSize}px solid {$reco.theme.titleBorderColor}; border-radius: {$reco.theme.titleBorderRoundedSize}px; {if !$reco.theme.titleBackgroundColorTransparent}background-color: {$reco.theme.titleBackgroundColor}{/if}; text-align: {$reco.theme.titleAlign}; line-height: {$reco.theme.titleLineHeight}px; "{/if} class="{$reco.theme.titleClass|escape:'htmlall'}">{$reco.titleZone}</h4>
+	
+	<div class="{$reco.theme.titleAfterClass|escape:'htmlall':'UTF-8'}"></div>
+
+	</div>
+
+	{/if}
 	<div id="{$reco.theme.backgroundContentId|escape:'htmlall'}" class="{$reco.theme.backgroundContentClass|escape:'htmlall'}">
 		<ul id="{$reco.theme.backgroundListId|escape:'htmlall'}" class="{$reco.theme.backgroundListClass|escape:'htmlall'}">
 			{foreach from=$reco.aeproducts item=product name=affinityItemsProducts}

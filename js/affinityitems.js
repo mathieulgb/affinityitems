@@ -40,6 +40,14 @@ function readCookie(name) {
 	return null;
 }
 
+function reindexArray(array) {
+	var result = [];
+	for( var key in array )
+		if(array[key] !== null)
+			result.push( array[key] );
+	return result;
+}
+
 function postAction(action, object) {
 	if(!object.recoType) {
 		if(object.productId) {
@@ -72,6 +80,16 @@ function postAction(action, object) {
 		});
 		deleteCookie('aelastreco');
 	}
+}
+
+function rightClickOnRecommendation(rightClickTime, recoType, productId) {
+	var aeRightClickReco = [];
+	if(readCookie('aeRightClickReco') !== null) {
+		aeRightClickReco = JSON.parse(readCookie('aeRightClickReco'));
+		deleteCookie('aeRightClickReco');
+	}
+	aeRightClickReco.push({rightClickTime : rightClickTime, recoType : recoType, productId : productId});
+	createCookie('aeRightClickReco', JSON.stringify(aeRightClickReco), 1);
 }
 
 $(document).ready(function() {
