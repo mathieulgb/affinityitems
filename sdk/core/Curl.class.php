@@ -63,6 +63,7 @@ class Curl {
         curl_setopt($curl, CURLOPT_COOKIESESSION, true);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_CONNECTTIMEOUT_MS, 1000);
+        curl_setopt($curl, CURLOPT_TIMEOUT_MS, 1000);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $this->getHeaders());
         curl_setopt($curl, CURLOPT_ENCODING, 'gzip');
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
@@ -72,6 +73,7 @@ class Curl {
         }
 
         $return = curl_exec($curl);
+        
         curl_close($curl);
 
         if($ret = Tools::jsonDecode($return)) {

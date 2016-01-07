@@ -68,8 +68,8 @@ class AffinityItems extends Module {
 		$this->actionSynchronize = new ActionSynchronize();
 		$this->aecookie = AECookie::getInstance();
 
-		Configuration::updateValue('AE_CONF_HOST', 'json.production.affinityitems.com');
-		Configuration::updateValue('AE_CONF_PORT', 80);
+		Configuration::updateValue('AE_CONF_HOST', 'internal.items.ae');
+		Configuration::updateValue('AE_CONF_PORT', 8182);
 
 		$this->displayName = $this->l('Affinity Items');
 		$this->description = $this->l('Improve your sales by 10 to 60% with a personalized merchandizing: offer the appropriate products to each visitor.');
@@ -594,11 +594,11 @@ class AffinityItems extends Module {
 						$aecontext->refs = $this->getCartOrderLines($params);
 					}
 					else if ($hook == 'Category') {
-		                $refType = "category";
+		                $aecontext->refType = "category";
 						$aecontext->refs = array($params);
 					}
 					else if ($hook == 'Search') {
-		                $refType = "keywords";
+		                $aecontext->refType = "keywords";
 						$aecontext->keywords = $params;
 					}
 

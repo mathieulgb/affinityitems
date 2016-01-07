@@ -76,6 +76,31 @@ class AEAdapter {
 
 	public static function renderRecommendation($select, $tax, $product_pool, $lang_id)
 	{
+		/*
+		$id_shop = (int)Context::getContext()->shop->id;
+		$products = Db::getInstance(_PS_USE_SQL_SLAVE_)->ExecuteS('
+			'.$select.'
+			FROM '._DB_PREFIX_.'product p
+			LEFT JOIN '._DB_PREFIX_.'product_lang pl ON (pl.id_product = p.id_product)
+			LEFT JOIN '._DB_PREFIX_.'product_attribute pa ON (p.id_product = pa.id_product)
+			LEFT JOIN '._DB_PREFIX_.'product_attribute_shop pas ON (pas.id_product_attribute = pa.id_product_attribute)
+			LEFT JOIN '._DB_PREFIX_.'manufacturer m ON m.id_manufacturer = p.id_manufacturer
+			LEFT JOIN '._DB_PREFIX_.'image i ON (i.id_product = p.id_product AND i.cover = 1)
+			LEFT JOIN '._DB_PREFIX_.'image_lang il ON (il.id_image = i.id_image)
+			LEFT JOIN '._DB_PREFIX_.'category_lang cl ON (cl.id_category = p.id_category_default)
+			'.$tax.'
+			WHERE p.id_product IN ('.implode(',', array_map('intval', $product_pool)).')
+			AND pl.id_lang = '.(int)$lang_id.'
+			AND cl.id_lang = '.(int)$lang_id.'
+			AND pas.id_shop = '.$id_shop.'
+			AND p.active = 1
+			GROUP BY p.id_product
+			ORDER BY FIELD(p.id_product,'.implode(',', array_map('intval', $product_pool)).')');
+		$products = Product::getProductsProperties((int)$lang_id, $products);
+		return $products;
+		*/
+
+
 		$products = Db::getInstance()->ExecuteS('
 			'.$select.'
 			FROM '._DB_PREFIX_.'product p
