@@ -129,8 +129,10 @@ class ProductSynchronize extends AbstractModuleSynchronize {
 	}
 
 	public function isRecommendable($product) {
-		return version_compare(_PS_VERSION_, '1.5', '>=') ? ((bool)$product["active"] && (bool)$product["available_for_order"] && $product["visibility"] != 'none') 
-						: ((bool)$product["active"] && (bool)$product["available_for_order"]);
+		$stock = ProductAdapter::getStock($product["id_product"]);
+		$stock = (int)$stock[0]['stock'];
+		return version_compare(_PS_VERSION_, '1.5', '>=') ? ((bool)$product["active"] && (bool)$product["available_for_order"] && $product["visibility"] != 'none' && $stock > 0) 
+						: ((bool)$product["active"] && (bool)$product["available_for_order"] && $stock > 0);
 	}
 	
 	public function getCategories($productId) {

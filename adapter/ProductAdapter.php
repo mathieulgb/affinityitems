@@ -221,6 +221,13 @@ class ProductAdapter {
 			ORDER BY i.`position`');
 	}
 
+	public static function getStock($productId)
+	{
+		$request = version_compare(_PS_VERSION_, '1.5', '>=') ? 'SELECT SUM(quantity) as stock FROM `'._DB_PREFIX_.'stock_available` WHERE id_product = '.(int)$productId.';' 
+																		: 'SELECT quantity as stock FROM `'._DB_PREFIX_.'product` WHERE id_product = '.(int)$productId.';';
+		return Db::getInstance()->executeS($request);
+	}
+
 }
 
 ?>

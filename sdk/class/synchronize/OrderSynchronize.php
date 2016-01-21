@@ -40,7 +40,7 @@ class OrderSynchronize extends AbstractModuleSynchronize {
 				$content = $this->syncOrder($clause);
 				if(!empty($content)) {
 					$request = new OrderRequest($content);
-					if($request->post()) 
+					if($request->post())
 						$this->getRepository()->insert($content);
 				}
 			}

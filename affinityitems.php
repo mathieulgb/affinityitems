@@ -45,7 +45,7 @@ class AffinityItems extends Module {
 	{
 		$this->name = 'affinityitems';
 		$this->tab = 'advertising_marketing';
-		$this->version = '3.0.0';
+		$this->version = '3.1.0';
 		$this->author = 'Affinity Engine';
 		parent::__construct();
 
@@ -68,8 +68,8 @@ class AffinityItems extends Module {
 		$this->actionSynchronize = new ActionSynchronize();
 		$this->aecookie = AECookie::getInstance();
 
-		Configuration::updateValue('AE_CONF_HOST', 'internal.items.ae');
-		Configuration::updateValue('AE_CONF_PORT', 8182);
+		Configuration::updateValue('AE_CONF_HOST', 'json.production.affinityitems.com');
+		Configuration::updateValue('AE_CONF_PORT', 80);
 
 		$this->displayName = $this->l('Affinity Items');
 		$this->description = $this->l('Improve your sales by 10 to 60% with a personalized merchandizing: offer the appropriate products to each visitor.');
@@ -494,10 +494,20 @@ class AffinityItems extends Module {
 	 *
 	*/
 
-	public function hookactionObjectOrderAddAfter()
+	public function hookactionObjectOrderAddAfter($params)
 	{
-		if (self::isConfig() && self::isLastSync())
+		if (self::isConfig() && self::isLastSync()) {
 			$this->orderSynchronize->syncNewElement();
+			$productIds = array();
+			foreach ($params['object']->product_list as $product) {
+				array_push($productIds, $product['id_product']);
+			}
+			$clause = 'WHERE p.id_product IN ('.implode(',', $productIds).')';
+			$syncStock = new ProductSynchronize();
+			$content = $syncStock->syncProduct($clause);
+			$request = new ProductRequest($content);
+			$request->post();
+		}
 	}
 
 	/*

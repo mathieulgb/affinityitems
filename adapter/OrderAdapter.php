@@ -49,7 +49,7 @@ class OrderAdapter {
 		if ((_PS_VERSION_) >= '1.5') 
 		{
 			return Db::getInstance()->ExecuteS('
-				SELECT o.id_order, o.date_add, o.date_upd, o.payment, o.current_state, osl.name as statusMessage, c.iso_code as currency, o.id_cart, o.id_customer, 
+				SELECT DISTINCT o.id_order, o.date_add, o.date_upd, o.payment, o.current_state, osl.name as statusMessage, c.iso_code as currency, o.id_cart, o.id_customer, 
 				'.$total_paid.', l.iso_code as language
 				FROM '._DB_PREFIX_.'orders o, '._DB_PREFIX_.'order_state_lang osl, `'._DB_PREFIX_.'lang` l, `'._DB_PREFIX_.'currency` c
 				'.$clause.'
@@ -67,7 +67,7 @@ class OrderAdapter {
 		else 
 		{
 			return Db::getInstance()->ExecuteS('
-				SELECT o.id_order, o.date_add, o.date_upd, o.payment, 
+				SELECT DISTINCT o.id_order, o.date_add, o.date_upd, o.payment, 
 				(SELECT id_order_state FROM `'._DB_PREFIX_.'order_history` oh WHERE oh.`id_order` = o.`id_order` ORDER BY oh.`date_add` DESC LIMIT 1) current_state, 
 				osl.name as statusMessage, c.iso_code as currency, o.id_cart, o.id_customer, '.$total_paid.', l.iso_code as language
 				FROM '._DB_PREFIX_.'orders o, '._DB_PREFIX_.'order_state_lang osl, `'._DB_PREFIX_.'lang` l, `'._DB_PREFIX_.'currency` c
